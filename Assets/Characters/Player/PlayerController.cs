@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
     public float rotateSpeed;
     public float dashDuration;
     public float dashForce;
+    public float dashCooldown;
 
     private PlayerControlsMapping controls;
     private PlayerState playerState;
@@ -120,8 +121,12 @@ public class PlayerController : MonoBehaviour
 
     private void DashPerformed()
     {
+        // calculate the time since the last dash, and if the player can dash
+        float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
+        bool canDash = playerState != PlayerState.Dashing && timeSinceDashCompleted >= dashCooldown;
+
         // make sure the player is not already dashing
-        if (playerState != PlayerState.Dashing)
+        if (canDash)
         {
             timeOfLastDash = Time.time;
 
