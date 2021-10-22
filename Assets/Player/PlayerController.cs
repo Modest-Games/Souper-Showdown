@@ -256,6 +256,9 @@ public class PlayerController : MonoBehaviour
             dropableRb.isKinematic = false;
             dropableRb.useGravity = true;
 
+            // set the dropable's velocity to the player's current velocity
+            dropableRb.velocity = 2f * new Vector3(movement.x, 0, movement.y);
+
             // update the carryState
             carryState = PlayerCarryState.Empty;
         }
