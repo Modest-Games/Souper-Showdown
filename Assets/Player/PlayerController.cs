@@ -4,23 +4,27 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using NaughtyAttributes;
 using System.Linq;
+using Unity.Netcode;
+using Unity.Netcode.Samples;
 
-public enum PlayerState
+[RequireComponent(typeof(NetworkObject))]
+[RequireComponent(typeof(ClientNetworkTransform))]
+public class PlayerController : NetworkBehaviour
 {
-    Idle,
-    Moving,
-    Dashing
-}
+    public enum PlayerState
+    {
+        Idle,
+        Moving,
+        Dashing
+    }
 
-public enum PlayerCarryState
-{
-    Empty,
-    CarryingObject,
-    CarryingPlayer
-}
+    public enum PlayerCarryState
+    {
+        Empty,
+        CarryingObject,
+        CarryingPlayer
+    }
 
-public class PlayerController : MonoBehaviour
-{
     [Header("Config")]
     public float moveSpeed;
     public float rotateSpeed;
@@ -41,6 +45,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] [ReadOnly] private Vector2 movement;
     [SerializeField] [ReadOnly] private Vector3 lookVector;
     [SerializeField] [ReadOnly] private float timeOfLastDash;
+    [SerializeField] private Vector2 defaultPositionRange = new Vector2(-5, 5);
 
     private Transform holdLocation;
     private Rigidbody rb;
@@ -59,17 +64,7 @@ public class PlayerController : MonoBehaviour
         controls.Gameplay.Throw.started     += ctx => ThrowStarted();
     }
 
-    private void OnEnable()
-    {
-        controls.Gameplay.Enable();
-    }
-
-    private void OnDisable()
-    {
-        controls.Gameplay.Disable();
-    }
-
-    void Start()
+    private void Start()
     {
         // setup variables
         lookVector = transform.forward;
@@ -81,15 +76,27 @@ public class PlayerController : MonoBehaviour
 
         // refresh the character
         RefreshCharacter();
+
+        // Random Spawn Position:
+        transform.position = new Vector3(Random.Range(defaultPositionRange.x, defaultPositionRange.y), 0, Random.Range(defaultPositionRange.x, defaultPositionRange.y));
     }
 
     void Update()
+    {
+        if (IsClient && IsOwner)
+        {
+            PlayerMovement();
+        }
+    }
+
+    private void PlayerMovement()
     {
         // calculate useful variables once
         float currentTime = Time.time;
 
         // switch on playerstate
-        switch (playerState) {
+        switch (playerState)
+        {
             case PlayerState.Idle:
                 // do nothing (for now)
                 break;
@@ -98,17 +105,17 @@ public class PlayerController : MonoBehaviour
                 // handle player movement
                 Vector3 movementVec = new Vector3(movement.x, 0, movement.y) * Time.deltaTime * moveSpeed;
                 transform.Translate(movementVec, Space.World);
-                //rb.MovePosition(rb.position + movementVec);
+                // rb.MovePosition(rb.position + movementVec);
 
                 // rotate towards motion vector
                 lookVector = movementVec.normalized;
-                transform.LookAt(Vector3.Lerp(
-                    transform.position + transform.forward, transform.position + lookVector, rotateSpeed * Time.deltaTime));
-                //transform.rotation.SetFromToRotation(transform.rotation.eulerAngles, movementVec);
+                transform.LookAt(Vector3.Lerp(transform.position + transform.forward, transform.position + lookVector, rotateSpeed * Time.deltaTime));
+                // transform.rotation.SetFromToRotation(transform.rotation.eulerAngles, movementVec);
 
-                // DEBUG
+                // DEBUG:
                 // draw motion vector
                 Debug.DrawRay(transform.position, movementVec.normalized * 2, Color.blue);
+
                 // draw facing vector
                 Debug.DrawRay(transform.position, transform.forward * 2, Color.green);
                 break;
@@ -119,12 +126,15 @@ public class PlayerController : MonoBehaviour
                 {
                     // complete the dash
                     playerState = (movement.magnitude == 0) ? PlayerState.Idle : PlayerState.Moving;
-                } else
+                }
+
+                else
                 {
                     transform.Translate(lookVector * dashForce * Time.deltaTime, Space.World);
 
                     playerState = PlayerState.Dashing;
                 }
+
                 break;
         }
     }
@@ -173,37 +183,46 @@ public class PlayerController : MonoBehaviour
 
     private void MovePerformed(Vector2 newMovement)
     {
-        // update the movement vector
-        movement = newMovement;
+        if (Application.isFocused)
+        {
+            // update the movement vector
+            movement = newMovement;
 
-        // set the playerstate to moving if not dashing
-        if (playerState != PlayerState.Dashing)
-            playerState = PlayerState.Moving;
+            // set the playerstate to moving if not dashing
+            if (playerState != PlayerState.Dashing)
+                playerState = PlayerState.Moving;
+        }
     }
 
     private void MoveCancelled()
     {
-        // reset the movement vector
-        movement = Vector2.zero;
+        if (Application.isFocused)
+        {
+            // reset the movement vector
+            movement = Vector2.zero;
 
-        // set playerstate to idle if not dashing
-        if (playerState != PlayerState.Dashing)
-            playerState = PlayerState.Idle;
+            // set playerstate to idle if not dashing
+            if (playerState != PlayerState.Dashing)
+                playerState = PlayerState.Idle;
+        }
     }
 
     private void DashPerformed()
     {
-        // calculate the time since the last dash, and if the player can dash
-        float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
-        bool canDash = playerState != PlayerState.Dashing && timeSinceDashCompleted >= dashCooldown;
-
-        // make sure the player is not already dashing
-        if (canDash)
+        if (Application.isFocused)
         {
-            timeOfLastDash = Time.time;
+            // calculate the time since the last dash, and if the player can dash
+            float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
+            bool canDash = playerState != PlayerState.Dashing && timeSinceDashCompleted >= dashCooldown;
 
-            // set the playerstate to dashing
-            playerState = PlayerState.Dashing;
+            // make sure the player is not already dashing
+            if (canDash)
+            {
+                timeOfLastDash = Time.time;
+
+                // set the playerstate to dashing
+                playerState = PlayerState.Dashing;
+            }
         }
     }
 
@@ -291,5 +310,15 @@ public class PlayerController : MonoBehaviour
             // set the carry state to empty
             carryState = PlayerCarryState.Empty;
         }
+    }
+
+    private void OnEnable()
+    {
+        controls.Gameplay.Enable();
+    }
+
+    private void OnDisable()
+    {
+        controls.Gameplay.Disable();
     }
 }
