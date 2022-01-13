@@ -365,7 +365,6 @@ GameObject:
   - component: {fileID: 234562847764672700}
   - component: {fileID: 3164488357604530773}
   - component: {fileID: 7395216321356158848}
-  - component: {fileID: 6872072237516638366}
   - component: {fileID: 8989315846680331516}
   m_Layer: 7
   m_Name: Player
@@ -479,19 +478,6 @@ MonoBehaviour:
   InLocalSpace: 0
   Interpolate: 1
   CanCommitToTransform: 0
---- !u!135 &6872072237516638366
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3608877965232234398}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.3
-  m_Center: {x: 0, y: 0.48000002, z: 0.74925756}
 --- !u!135 &8989315846680331516
 SphereCollider:
   m_ObjectHideFlags: 0
