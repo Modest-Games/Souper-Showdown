@@ -15,7 +15,8 @@ public class PlayerController : NetworkBehaviour
     {
         Idle,
         Moving,
-        Dashing
+        Dashing,
+        Ungrounded
     }
 
     public enum PlayerCarryState
@@ -88,7 +89,13 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            PlayerMovement();
+            if (isAlive)
+            {
+                PlayerMovement();
+            } else
+            {
+                // do dead things
+            }
         }
     }
 
@@ -101,17 +108,23 @@ public class PlayerController : NetworkBehaviour
         switch (playerState)
         {
             case PlayerState.Idle:
-                // do nothing (for now)
+                // clear rotatitonal velocity
+                rb.angularVelocity = Vector3.zero;
+
+                // play idle animation, etc.
                 break;
 
             case PlayerState.Moving:
                 // handle player movement
                 Vector3 movementVec = new Vector3(movement.x, 0, movement.y) * Time.deltaTime * moveSpeed;
-                transform.Translate(movementVec, Space.World);
-                // rb.MovePosition(rb.position + movementVec);
+                //rb.AddForce(movementVec, ForceMode.Impulse);
+                //transform.Translate(movementVec, Space.World);
+                rb.MovePosition(rb.position + movementVec);
 
                 // rotate towards motion vector
                 lookVector = movementVec.normalized;
+                lookVector.y = 0f; // remove any y angle from the look vector
+
                 transform.LookAt(Vector3.Lerp(transform.position + transform.forward, transform.position + lookVector, rotateSpeed * Time.deltaTime));
                 // transform.rotation.SetFromToRotation(transform.rotation.eulerAngles, movementVec);
 
@@ -133,11 +146,19 @@ public class PlayerController : NetworkBehaviour
 
                 else
                 {
-                    transform.Translate(lookVector * dashForce * Time.deltaTime, Space.World);
+                    // continue performing the dash
+                    //transform.Translate(lookVector * dashForce * Time.deltaTime, Space.World);
+                    //rb.MovePosition(rb.position + lookVector * dashForce * Time.deltaTime);
+                    rb.AddForce(lookVector * dashForce, ForceMode.Impulse);
+                    //rb.velocity = lookVector * dashForce;
 
                     playerState = PlayerState.Dashing;
                 }
 
+                break;
+
+            case PlayerState.Ungrounded:
+                // play a flail animation, etc.
                 break;
         }
     }
