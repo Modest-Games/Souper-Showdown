@@ -53,6 +53,7 @@ public class PlayerController : NetworkBehaviour
     private Transform holdLocation;
     private Rigidbody rb;
     private PlayerControlsMapping controls;
+    private Transform debugCanvasObj;
 
     private void Awake()
     {
@@ -70,6 +71,7 @@ public class PlayerController : NetworkBehaviour
     private void Start()
     {
         // setup variables
+        debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         isAlive = true;
         lookVector = transform.forward;
         timeOfLastDash = 0;
@@ -80,6 +82,9 @@ public class PlayerController : NetworkBehaviour
 
         // refresh the character
         RefreshCharacter();
+
+        // setup debugging
+        debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);
 
         // Random Spawn Position:
         transform.position = new Vector3(Random.Range(defaultPositionRange.x, defaultPositionRange.y), 0, Random.Range(defaultPositionRange.x, defaultPositionRange.y));
@@ -255,6 +260,8 @@ public class PlayerController : NetworkBehaviour
         // determine if can pickup
         bool canPickup = (carryState == PlayerCarryState.Empty) && (reachableCollectables.Count > 0) ;
 
+        Debug.Log("CanPickup: " + canPickup);
+
         // if the player can pickup
         if (canPickup)
         {
@@ -336,13 +343,33 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void OnDebugEnabled()
+    {
+        debugCanvasObj.gameObject.SetActive(true);
+    }
+
+    private void OnDebugDisabled()
+    {
+        debugCanvasObj.gameObject.SetActive(false);
+    }
+
     private void OnEnable()
     {
+        // enable controls
         controls.Gameplay.Enable();
+
+        // subscribe to events
+        GameController.DebugEnabled += OnDebugEnabled;
+        GameController.DebugDisabled += OnDebugDisabled;
     }
 
     private void OnDisable()
     {
+        // disable controls
         controls.Gameplay.Disable();
+
+        // unsubscribe from events
+        GameController.DebugEnabled -= OnDebugEnabled;
+        GameController.DebugDisabled -= OnDebugDisabled;
     }
 }

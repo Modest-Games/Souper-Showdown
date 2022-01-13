@@ -12,11 +12,9 @@ public class PlayerDebugUI : MonoBehaviour
     private PlayerController playerController;
     private Text playerStateText;
     private Text carryStateText;
-    private Quaternion initialRotation;
 
     void Start()
     {
-        initialRotation = transform.rotation;
         playerController = playerObj.GetComponent<PlayerController>();
         playerStateText = playerStateTextObj.GetComponent<Text>();
         carryStateText = carryStateTextObj.GetComponent<Text>();
@@ -24,8 +22,8 @@ public class PlayerDebugUI : MonoBehaviour
 
     void Update()
     {
-        // reset z rotation
-        transform.rotation = initialRotation;
+        // reset rotation
+        transform.rotation = Quaternion.Euler(90, 0, 0);
 
         // update the texts
         playerStateText.text = playerController.playerState.ToString();
