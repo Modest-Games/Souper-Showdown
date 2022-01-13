@@ -37,8 +37,10 @@ public class PlayerController : NetworkBehaviour
     public Character characterObject;
 
     [Header("State (ReadOnly)")]
-    [SerializeField] [ReadOnly] private PlayerState playerState;
-    [SerializeField] [ReadOnly] private PlayerCarryState carryState;
+    [SerializeField] [ReadOnly] public PlayerState playerState;
+    [SerializeField] [ReadOnly] public PlayerCarryState carryState;
+    [SerializeField] [ReadOnly] public Pollutant carriedObject;
+    [SerializeField] [ReadOnly] public bool isAlive;
     
     [Header("Variables (ReadOnly)")]
     [SerializeField] [ReadOnly] private List<GameObject> reachableCollectables;
@@ -67,6 +69,7 @@ public class PlayerController : NetworkBehaviour
     private void Start()
     {
         // setup variables
+        isAlive = true;
         lookVector = transform.forward;
         timeOfLastDash = 0;
         carryState = PlayerCarryState.Empty;
