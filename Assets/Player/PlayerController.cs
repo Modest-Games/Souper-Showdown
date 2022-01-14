@@ -45,7 +45,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] [ReadOnly] public PlayerCarryState carryState;
     [SerializeField] [ReadOnly] public Pollutant carriedObject;
     [SerializeField] [ReadOnly] public bool isAlive;
-    
+
     [Header("Variables (ReadOnly)")]
     [SerializeField] [ReadOnly] private List<GameObject> reachableCollectables;
     [SerializeField] [ReadOnly] private Vector2 movement;
@@ -294,6 +294,17 @@ public class PlayerController : NetworkBehaviour
 
             // update the carryState
             carryState = PlayerCarryState.CarryingObject;
+
+            // OLD
+            // disable physics on the collectable
+            //Rigidbody collectableRb = nearestReachableCollectable.GetComponent<Rigidbody>();
+            //collectableRb.isKinematic = true;
+            //collectableRb.useGravity = false;
+
+            // parent the collectable to the HoldLocation and reset it's local transform
+            //nearestReachableCollectable.transform.SetParent(holdLocation);
+            //nearestReachableCollectable.transform.localPosition = Vector3.zero;
+            //nearestReachableCollectable.transform.localRotation = Quaternion.identity;
         }
     }
 
@@ -305,7 +316,7 @@ public class PlayerController : NetworkBehaviour
         // if the player can drop
         if (canDrop)
         {
-            // create the dropped carried
+            // create the object carried
             GameObject droppedObj = Instantiate(pollutantPrefab, holdLocation.transform.position, holdLocation.transform.rotation);
             PollutantBehaviour droppedPollutantBehaviour = droppedObj.GetComponent<PollutantBehaviour>();
             droppedPollutantBehaviour.pollutantObject = objectHeld;
@@ -340,33 +351,26 @@ public class PlayerController : NetworkBehaviour
     private void ThrowPerformed()
     {
         // determine if can throw
-        bool canThrow = 
+        bool canThrow =
             (playerState == PlayerState.Idle || playerState == PlayerState.Moving) &&
             (carryState == PlayerCarryState.CarryingObject || carryState == PlayerCarryState.CarryingPlayer);
 
         // if the player can throw
         if (canThrow)
         {
-            // create the thrown object
-            GameObject thrownObj = Instantiate(pollutantPrefab, holdLocation.transform.position, holdLocation.transform.rotation);
-            PollutantBehaviour thrownPollutantBehaviour = thrownObj.GetComponent<PollutantBehaviour>();
-            thrownPollutantBehaviour.pollutantObject = objectHeld;
-            thrownPollutantBehaviour.RefreshMesh();
+            // throw whatever is in the holdLocation
+            Transform throwable = holdLocation.GetChild(0);
 
-            // throw the pollutant
-            thrownPollutantBehaviour.Throw(lookVector, throwForce);
+            // detach the throwable from the player
+            throwable.SetParent(null);
 
             // enable physics on the throwable
-            Rigidbody throwableRb = thrownObj.GetComponent<Rigidbody>();
+            Rigidbody throwableRb = throwable.GetComponent<Rigidbody>();
             throwableRb.isKinematic = false;
             throwableRb.useGravity = true;
 
             // apply a 'throw' velocity to the throwable in the forward vector
             throwableRb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
-
-            // delete the object held
-            Destroy(holdLocation.GetChild(0).gameObject);
-            objectHeld = null;
 
             // set the carry state to empty
             carryState = PlayerCarryState.Empty;

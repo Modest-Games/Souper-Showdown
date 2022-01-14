@@ -18,14 +18,11 @@ public class PollutantBehaviour : MonoBehaviour
     private Vector3 throwStartPos;
     private Vector3 throwDestination;
 
-    private void Awake()
+    void Start()
     {
         // setup variables
         trail = gameObject.GetComponent<TrailRenderer>();
-    }
 
-    void Start()
-    {
         RefreshMesh();
     }
 
@@ -87,6 +84,7 @@ public class PollutantBehaviour : MonoBehaviour
 
     public void Throw(Vector3 throwDirection, float throwDistance)
     {
+
         // enable the trail renderer
         trail.emitting = true;
         state = PollutantState.Airborn;
