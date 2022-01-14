@@ -442,6 +442,7 @@ MonoBehaviour:
   dashCooldown: 1
   throwForce: 15
   characterObject: {fileID: 11400000, guid: 5a18df4d90eeef3469661c849cdd0c40, type: 2}
+  pollutantPrefab: {fileID: 603379938518041589, guid: ad37020f956ccc8488e95febe57e934f, type: 3}
   playerState: 0
   carryState: 0
   carriedObject: {fileID: 0}
