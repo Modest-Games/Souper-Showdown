@@ -37,6 +37,9 @@ public class PlayerController : NetworkBehaviour
     [Header("Character")]
     public Character characterObject;
 
+    [Header("Global variables")]
+    public GameObject pollutantPrefab;
+
     [Header("State (ReadOnly)")]
     [SerializeField] [ReadOnly] public PlayerState playerState;
     [SerializeField] [ReadOnly] public PlayerCarryState carryState;
@@ -51,8 +54,10 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Vector2 defaultPositionRange = new Vector2(-5, 5);
 
     private Transform holdLocation;
+    private Pollutant objectHeld;
     private Rigidbody rb;
     private PlayerControlsMapping controls;
+    private Transform debugCanvasObj;
 
     private void Awake()
     {
@@ -70,6 +75,7 @@ public class PlayerController : NetworkBehaviour
     private void Start()
     {
         // setup variables
+        debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         isAlive = true;
         lookVector = transform.forward;
         timeOfLastDash = 0;
@@ -80,6 +86,9 @@ public class PlayerController : NetworkBehaviour
 
         // refresh the character
         RefreshCharacter();
+
+        // setup debugging
+        debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);
 
         // Random Spawn Position:
         transform.position = new Vector3(Random.Range(defaultPositionRange.x, defaultPositionRange.y), 0, Random.Range(defaultPositionRange.x, defaultPositionRange.y));
@@ -146,6 +155,9 @@ public class PlayerController : NetworkBehaviour
 
                 else
                 {
+                    Debug.DrawLine(rb.position, rb.position + (lookVector * 4), Color.red);
+                    Debug.Log(dashForce);
+
                     // continue performing the dash
                     //transform.Translate(lookVector * dashForce * Time.deltaTime, Space.World);
                     //rb.MovePosition(rb.position + lookVector * dashForce * Time.deltaTime);
@@ -255,6 +267,8 @@ public class PlayerController : NetworkBehaviour
         // determine if can pickup
         bool canPickup = (carryState == PlayerCarryState.Empty) && (reachableCollectables.Count > 0) ;
 
+        Debug.Log("CanPickup: " + canPickup);
+
         // if the player can pickup
         if (canPickup)
         {
@@ -265,15 +279,15 @@ public class PlayerController : NetworkBehaviour
             // get the nearest reachable collectable
             GameObject nearestReachableCollectable = reachableCollectables[0];
 
-            // disable physics on the collectable
-            Rigidbody collectableRb = nearestReachableCollectable.GetComponent<Rigidbody>();
-            collectableRb.isKinematic = true;
-            collectableRb.useGravity = false;
+            // pick up the nearest collectable
+            Pollutant pickedUpPollutant = nearestReachableCollectable.GetComponent<PollutantBehaviour>().Pickup();
 
-            // parent the collectable to the HoldLocation and reset it's local transform
-            nearestReachableCollectable.transform.SetParent(holdLocation);
-            nearestReachableCollectable.transform.localPosition = Vector3.zero;
-            nearestReachableCollectable.transform.localRotation = Quaternion.identity;
+            // create the picked up object at the hold location
+            Instantiate(pickedUpPollutant.mesh, holdLocation);
+            objectHeld = pickedUpPollutant;
+
+            // remove the nearest collectable from the list
+            reachableCollectables.RemoveAt(0);
 
             // update the carryState
             carryState = PlayerCarryState.CarryingObject;
@@ -288,19 +302,15 @@ public class PlayerController : NetworkBehaviour
         // if the player can drop
         if (canDrop)
         {
-            // drop whatever is in the holdLocation
-            Transform dropable = holdLocation.GetChild(0);
+            // create the dropped carried
+            GameObject droppedObj = Instantiate(pollutantPrefab, holdLocation.transform.position, holdLocation.transform.rotation);
+            PollutantBehaviour droppedPollutantBehaviour = droppedObj.GetComponent<PollutantBehaviour>();
+            droppedPollutantBehaviour.pollutantObject = objectHeld;
+            droppedPollutantBehaviour.RefreshMesh();
 
-            // detach the dropable from the player
-            dropable.SetParent(null);
-
-            // enable physics on the dropable
-            Rigidbody dropableRb = dropable.GetComponent<Rigidbody>();
-            dropableRb.isKinematic = false;
-            dropableRb.useGravity = true;
-
-            // set the dropable's velocity to the player's current velocity
-            dropableRb.velocity = 2f * new Vector3(movement.x, 0, movement.y);
+            // delete the object held
+            Destroy(holdLocation.GetChild(0).gameObject);
+            objectHeld = null;
 
             // update the carryState
             carryState = PlayerCarryState.Empty;
@@ -317,32 +327,59 @@ public class PlayerController : NetworkBehaviour
         // if the player can throw
         if (canThrow)
         {
-            // throw whatever is in the holdLocation
-            Transform throwable = holdLocation.GetChild(0);
+            // create the thrown object
+            GameObject thrownObj = Instantiate(pollutantPrefab, holdLocation.transform.position, holdLocation.transform.rotation);
+            PollutantBehaviour thrownPollutantBehaviour = thrownObj.GetComponent<PollutantBehaviour>();
+            thrownPollutantBehaviour.pollutantObject = objectHeld;
+            thrownPollutantBehaviour.RefreshMesh();
 
-            // detach the throwable from the player
-            throwable.SetParent(null);
+            // throw the pollutant
+            thrownPollutantBehaviour.Throw(lookVector, throwForce);
 
             // enable physics on the throwable
-            Rigidbody throwableRb = throwable.GetComponent<Rigidbody>();
+            Rigidbody throwableRb = thrownObj.GetComponent<Rigidbody>();
             throwableRb.isKinematic = false;
             throwableRb.useGravity = true;
 
             // apply a 'throw' velocity to the throwable in the forward vector
             throwableRb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
 
+            // delete the object held
+            Destroy(holdLocation.GetChild(0).gameObject);
+            objectHeld = null;
+
             // set the carry state to empty
             carryState = PlayerCarryState.Empty;
         }
     }
 
+    private void OnDebugEnabled()
+    {
+        debugCanvasObj.gameObject.SetActive(true);
+    }
+
+    private void OnDebugDisabled()
+    {
+        debugCanvasObj.gameObject.SetActive(false);
+    }
+
     private void OnEnable()
     {
+        // enable controls
         controls.Gameplay.Enable();
+
+        // subscribe to events
+        GameController.DebugEnabled += OnDebugEnabled;
+        GameController.DebugDisabled += OnDebugDisabled;
     }
 
     private void OnDisable()
     {
+        // disable controls
         controls.Gameplay.Disable();
+
+        // unsubscribe from events
+        GameController.DebugEnabled -= OnDebugEnabled;
+        GameController.DebugDisabled -= OnDebugDisabled;
     }
 }
