@@ -78,7 +78,6 @@ public class PollutantBehaviour : MonoBehaviour
 
     public void Throw(Vector3 throwDirection, float throwDistance)
     {
-
         // enable the trail renderer
         trail.emitting = true;
         state = PollutantState.Airborn;

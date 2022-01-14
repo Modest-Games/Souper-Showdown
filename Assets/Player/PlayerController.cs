@@ -364,6 +364,9 @@ public class PlayerController : NetworkBehaviour
             // set the carry state to empty
             carryState = PlayerCarryState.Empty;
 
+            // call the throw method on the pollutant
+            throwable.GetComponent<PollutantBehaviour>().Throw(lookVector, throwForce);
+
             // hide the aim indicator
             aimIndicator.gameObject.SetActive(false);
         }
