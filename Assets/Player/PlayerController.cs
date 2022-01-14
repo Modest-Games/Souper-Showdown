@@ -37,9 +37,6 @@ public class PlayerController : NetworkBehaviour
     [Header("Character")]
     public Character characterObject;
 
-    [Header("Global variables")]
-    public GameObject pollutantPrefab;
-
     [Header("State (ReadOnly)")]
     [SerializeField] [ReadOnly] public PlayerState playerState;
     [SerializeField] [ReadOnly] public PlayerCarryState carryState;
@@ -54,7 +51,6 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] private Vector2 defaultPositionRange = new Vector2(-5, 5);
 
     private Transform holdLocation;
-    private Pollutant objectHeld;
     private LineRenderer aimIndicator;
     private Rigidbody rb;
     private PlayerControlsMapping controls;
@@ -282,29 +278,18 @@ public class PlayerController : NetworkBehaviour
             // get the nearest reachable collectable
             GameObject nearestReachableCollectable = reachableCollectables[0];
 
-            // pick up the nearest collectable
-            Pollutant pickedUpPollutant = nearestReachableCollectable.GetComponent<PollutantBehaviour>().Pickup();
+            // disable physics on the collectable
+            Rigidbody collectableRb = nearestReachableCollectable.GetComponent<Rigidbody>();
+            collectableRb.isKinematic = true;
+            collectableRb.useGravity = false;
 
-            // create the picked up object at the hold location
-            Instantiate(pickedUpPollutant.mesh, holdLocation);
-            objectHeld = pickedUpPollutant;
-
-            // remove the nearest collectable from the list
-            reachableCollectables.RemoveAt(0);
+            // parent the collectable to the HoldLocation and reset it's local transform
+            nearestReachableCollectable.transform.SetParent(holdLocation);
+            nearestReachableCollectable.transform.localPosition = Vector3.zero;
+            nearestReachableCollectable.transform.localRotation = Quaternion.identity;
 
             // update the carryState
             carryState = PlayerCarryState.CarryingObject;
-
-            // OLD
-            // disable physics on the collectable
-            //Rigidbody collectableRb = nearestReachableCollectable.GetComponent<Rigidbody>();
-            //collectableRb.isKinematic = true;
-            //collectableRb.useGravity = false;
-
-            // parent the collectable to the HoldLocation and reset it's local transform
-            //nearestReachableCollectable.transform.SetParent(holdLocation);
-            //nearestReachableCollectable.transform.localPosition = Vector3.zero;
-            //nearestReachableCollectable.transform.localRotation = Quaternion.identity;
         }
     }
 
@@ -316,21 +301,25 @@ public class PlayerController : NetworkBehaviour
         // if the player can drop
         if (canDrop)
         {
-            // create the object carried
-            GameObject droppedObj = Instantiate(pollutantPrefab, holdLocation.transform.position, holdLocation.transform.rotation);
-            PollutantBehaviour droppedPollutantBehaviour = droppedObj.GetComponent<PollutantBehaviour>();
-            droppedPollutantBehaviour.pollutantObject = objectHeld;
-            droppedPollutantBehaviour.RefreshMesh();
+            // hide the aim indicator (in case throw is being held)
+            aimIndicator.gameObject.SetActive(false);
 
-            // delete the object held
-            Destroy(holdLocation.GetChild(0).gameObject);
-            objectHeld = null;
+            // drop whatever is in the holdLocation
+            Transform dropable = holdLocation.GetChild(0);
+
+            // detach the dropable from the player
+            dropable.SetParent(null);
+
+            // enable physics on the dropable
+            Rigidbody dropableRb = dropable.GetComponent<Rigidbody>();
+            dropableRb.isKinematic = false;
+            dropableRb.useGravity = true;
+
+            // set the dropable's velocity to the player's current velocity
+            dropableRb.velocity = 2f * new Vector3(movement.x, 0, movement.y);
 
             // update the carryState
             carryState = PlayerCarryState.Empty;
-
-            // hide the aim indicator (in case throw is being held)
-            aimIndicator.gameObject.SetActive(false);
         }
     }
 

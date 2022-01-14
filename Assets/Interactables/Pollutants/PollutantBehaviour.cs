@@ -41,7 +41,7 @@ public class PollutantBehaviour : MonoBehaviour
     }
 
     [Button]
-    public void RefreshMesh()
+    private void RefreshMesh()
     {
         // check if there is an existing mesh
         Transform oldMesh = transform.Find("Mesh");
@@ -51,21 +51,15 @@ public class PollutantBehaviour : MonoBehaviour
             DestroyImmediate(oldMesh.gameObject);
         }
 
-        // check if there is a mesh to render
-        if (pollutantObject != null)
-        {
-            // instantiate the new mesh
-            GameObject newMesh = Instantiate(pollutantObject.mesh, transform);
-            newMesh.name = "Mesh";
-        }
+        // instantiate the new mesh
+        GameObject newMesh = Instantiate(pollutantObject.mesh, transform);
+        newMesh.name = "Mesh";
     }
 
-    public Pollutant Pickup()
+    public void Pickup()
     {
         // destroy the gameobject
         Destroy(gameObject);
-
-        return pollutantObject;
     }
 
     private void OnCollisionEnter(Collision collision)
