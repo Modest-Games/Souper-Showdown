@@ -291,17 +291,6 @@ public class PlayerController : NetworkBehaviour
 
             // update the carryState
             carryState = PlayerCarryState.CarryingObject;
-
-            // OLD
-            // disable physics on the collectable
-            //Rigidbody collectableRb = nearestReachableCollectable.GetComponent<Rigidbody>();
-            //collectableRb.isKinematic = true;
-            //collectableRb.useGravity = false;
-
-            // parent the collectable to the HoldLocation and reset it's local transform
-            //nearestReachableCollectable.transform.SetParent(holdLocation);
-            //nearestReachableCollectable.transform.localPosition = Vector3.zero;
-            //nearestReachableCollectable.transform.localRotation = Quaternion.identity;
         }
     }
 
@@ -313,7 +302,7 @@ public class PlayerController : NetworkBehaviour
         // if the player can drop
         if (canDrop)
         {
-            // create the object carried
+            // create the dropped carried
             GameObject droppedObj = Instantiate(pollutantPrefab, holdLocation.transform.position, holdLocation.transform.rotation);
             PollutantBehaviour droppedPollutantBehaviour = droppedObj.GetComponent<PollutantBehaviour>();
             droppedPollutantBehaviour.pollutantObject = objectHeld;
@@ -325,20 +314,6 @@ public class PlayerController : NetworkBehaviour
 
             // update the carryState
             carryState = PlayerCarryState.Empty;
-
-            // drop whatever is in the holdLocation
-            //Transform dropable = holdLocation.GetChild(0);
-
-            // detach the dropable from the player
-            //dropable.SetParent(null);
-
-            // enable physics on the dropable
-            //Rigidbody dropableRb = dropable.GetComponent<Rigidbody>();
-            //dropableRb.isKinematic = false;
-            //dropableRb.useGravity = true;
-
-            // set the dropable's velocity to the player's current velocity
-            //dropableRb.velocity = 2f * new Vector3(movement.x, 0, movement.y);
         }
     }
 
@@ -352,19 +327,26 @@ public class PlayerController : NetworkBehaviour
         // if the player can throw
         if (canThrow)
         {
-            // throw whatever is in the holdLocation
-            Transform throwable = holdLocation.GetChild(0);
+            // create the thrown object
+            GameObject thrownObj = Instantiate(pollutantPrefab, holdLocation.transform.position, holdLocation.transform.rotation);
+            PollutantBehaviour thrownPollutantBehaviour = thrownObj.GetComponent<PollutantBehaviour>();
+            thrownPollutantBehaviour.pollutantObject = objectHeld;
+            thrownPollutantBehaviour.RefreshMesh();
 
-            // detach the throwable from the player
-            throwable.SetParent(null);
+            // throw the pollutant
+            thrownPollutantBehaviour.Throw(lookVector, throwForce);
 
             // enable physics on the throwable
-            Rigidbody throwableRb = throwable.GetComponent<Rigidbody>();
+            Rigidbody throwableRb = thrownObj.GetComponent<Rigidbody>();
             throwableRb.isKinematic = false;
             throwableRb.useGravity = true;
 
             // apply a 'throw' velocity to the throwable in the forward vector
             throwableRb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
+
+            // delete the object held
+            Destroy(holdLocation.GetChild(0).gameObject);
+            objectHeld = null;
 
             // set the carry state to empty
             carryState = PlayerCarryState.Empty;
