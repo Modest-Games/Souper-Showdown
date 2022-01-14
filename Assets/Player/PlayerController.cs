@@ -55,26 +55,15 @@ public class PlayerController : NetworkBehaviour
 
     private Transform holdLocation;
     private Pollutant objectHeld;
+    private LineRenderer aimIndicator;
     private Rigidbody rb;
     private PlayerControlsMapping controls;
     private Transform debugCanvasObj;
 
     private void Awake()
     {
-        controls = new PlayerControlsMapping();
-
-        // map control inputs
-        controls.Gameplay.Dash.performed    += ctx => DashPerformed();
-        controls.Gameplay.Move.performed    += ctx => MovePerformed(ctx.ReadValue<Vector2>());
-        controls.Gameplay.Move.canceled     += ctx => MoveCancelled();
-        controls.Gameplay.Grab.started      += ctx => GrabStarted();
-        controls.Gameplay.Grab.canceled     += ctx => GrabCancelled();
-        controls.Gameplay.Throw.started     += ctx => ThrowStarted();
-    }
-
-    private void Start()
-    {
         // setup variables
+        aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         isAlive = true;
         lookVector = transform.forward;
@@ -84,6 +73,20 @@ public class PlayerController : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         holdLocation = transform.Find("HoldLocation");
 
+        controls = new PlayerControlsMapping();
+
+        // map control inputs
+        controls.Gameplay.Dash.performed    += ctx => DashPerformed();
+        controls.Gameplay.Move.performed    += ctx => MovePerformed(ctx.ReadValue<Vector2>());
+        controls.Gameplay.Move.canceled     += ctx => MoveCancelled();
+        controls.Gameplay.Grab.started      += ctx => GrabStarted();
+        controls.Gameplay.Grab.canceled     += ctx => GrabCancelled();
+        controls.Gameplay.Throw.canceled    += ctx => ThrowPerformed();
+        controls.Gameplay.Throw.started     += ctx => ThrowStarted();
+    }
+
+    private void Start()
+    {
         // refresh the character
         RefreshCharacter();
 
@@ -314,10 +317,27 @@ public class PlayerController : NetworkBehaviour
 
             // update the carryState
             carryState = PlayerCarryState.Empty;
+
+            // hide the aim indicator (in case throw is being held)
+            aimIndicator.gameObject.SetActive(false);
         }
     }
 
     private void ThrowStarted()
+    {
+        // determine if can throw
+        bool canThrow =
+            (playerState == PlayerState.Idle || playerState == PlayerState.Moving) &&
+            (carryState == PlayerCarryState.CarryingObject || carryState == PlayerCarryState.CarryingPlayer);
+
+        if (canThrow)
+        {
+            // show the aim indicator
+            aimIndicator.gameObject.SetActive(true);
+        }
+    }
+
+    private void ThrowPerformed()
     {
         // determine if can throw
         bool canThrow = 
@@ -350,6 +370,9 @@ public class PlayerController : NetworkBehaviour
 
             // set the carry state to empty
             carryState = PlayerCarryState.Empty;
+
+            // hide the aim indicator
+            aimIndicator.gameObject.SetActive(false);
         }
     }
 
