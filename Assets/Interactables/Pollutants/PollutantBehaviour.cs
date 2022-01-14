@@ -71,12 +71,24 @@ public class PollutantBehaviour : MonoBehaviour
         return pollutantObject;
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        // switch on other tag
+        switch (collision.gameObject.tag)
+        {
+            // if colliding with the ground
+            case "Ground":
+                // stop being airborn
+                trail.emitting = false;
+                state = PollutantState.Idle;
+                break;
+        }
+    }
+
     public void Throw(Vector3 throwDirection, float throwDistance)
     {
         // enable the trail renderer
         trail.emitting = true;
         state = PollutantState.Airborn;
-
-
     }
 }
