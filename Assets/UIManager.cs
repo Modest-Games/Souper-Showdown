@@ -15,6 +15,10 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI connectedPlayersText;
 
+    [SerializeField] private Button spawnItemButton;
+
+    private bool hasServerStarted;
+
     private void Awake()
     {
         // For ease of testing:
@@ -28,6 +32,8 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        hasServerStarted = false;
+
         startHostButton.onClick.AddListener(() =>
         {
             if(NetworkManager.Singleton.StartHost())
@@ -65,6 +71,18 @@ public class UIManager : MonoBehaviour
             {
                 Debug.Log("Host not started!");
             }
+        });
+
+        NetworkManager.Singleton.OnServerStarted += () =>
+        {
+            hasServerStarted = true;
+        };
+
+        spawnItemButton.onClick.AddListener(() =>
+        {
+            if (!hasServerStarted) return;
+
+            Spawner.Instance.SpawnObject();
         });
     }
 }
