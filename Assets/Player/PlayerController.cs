@@ -151,6 +151,9 @@ public class PlayerController : NetworkBehaviour
 
                 else
                 {
+                    Debug.DrawLine(rb.position, rb.position + (lookVector * 4), Color.red);
+                    Debug.Log(dashForce);
+
                     // continue performing the dash
                     //transform.Translate(lookVector * dashForce * Time.deltaTime, Space.World);
                     //rb.MovePosition(rb.position + lookVector * dashForce * Time.deltaTime);
