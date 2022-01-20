@@ -9,6 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 410761949884701119}
+  - component: {fileID: 7444320169833281430}
+  - component: {fileID: 576999769412790974}
   m_Layer: 0
   m_Name: Soup Pot
   m_TagString: Untagged
@@ -31,6 +33,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7444320169833281430
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 696197427014834209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b70857e231925e540ae69498e257b75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!136 &576999769412790974
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 696197427014834209}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  m_Radius: 3.5
+  m_Height: 13
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &3218918331288473094
 GameObject:
   m_ObjectHideFlags: 0
@@ -40,7 +68,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7918164385764392994}
-  m_Layer: 0
+  - component: {fileID: 3246381181096336654}
+  m_Layer: 6
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -63,6 +92,20 @@ Transform:
   m_Father: {fileID: 410761949884701119}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!136 &3246381181096336654
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3218918331288473094}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 3.5
+  m_Height: 13
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4321572313250653413
 GameObject:
   m_ObjectHideFlags: 0
@@ -74,7 +117,6 @@ GameObject:
   - component: {fileID: 981030272495217973}
   - component: {fileID: 4074423554881280410}
   - component: {fileID: 3087826756554094776}
-  - component: {fileID: 6532105413683270532}
   m_Layer: 0
   m_Name: Cylinder
   m_TagString: Untagged
@@ -145,20 +187,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &6532105413683270532
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4321572313250653413}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
 --- !u!1 &8286991279480090662
 GameObject:
   m_ObjectHideFlags: 0
@@ -170,7 +198,6 @@ GameObject:
   - component: {fileID: 4360293403335901739}
   - component: {fileID: 7484317714193089811}
   - component: {fileID: 2193757827613856608}
-  - component: {fileID: 893128038680201146}
   m_Layer: 0
   m_Name: Cylinder_1
   m_TagString: Untagged
@@ -241,17 +268,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &893128038680201146
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8286991279480090662}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.5000001
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}

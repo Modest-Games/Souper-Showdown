@@ -155,7 +155,6 @@ public class PlayerController : NetworkBehaviour
                 else
                 {
                     Debug.DrawLine(rb.position, rb.position + (lookVector * 4), Color.red);
-                    Debug.Log(dashForce);
 
                     // continue performing the dash
                     //transform.Translate(lookVector * dashForce * Time.deltaTime, Space.World);
@@ -176,8 +175,6 @@ public class PlayerController : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
-
         // switch on the other object's tag
         switch (other.tag)
         {
