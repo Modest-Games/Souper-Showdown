@@ -56,6 +56,8 @@ public class PlayerController : NetworkBehaviour
     private PlayerControlsMapping controls;
     private Transform debugCanvasObj;
 
+    private NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
+
     private void Awake()
     {
         // setup variables
@@ -91,6 +93,9 @@ public class PlayerController : NetworkBehaviour
 
         // Random Spawn Position:
         transform.position = new Vector3(Random.Range(defaultPositionRange.x, defaultPositionRange.y), 0, Random.Range(defaultPositionRange.x, defaultPositionRange.y));
+
+        // NETWORKING:
+        UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
     }
 
     void Update()
@@ -100,10 +105,34 @@ public class PlayerController : NetworkBehaviour
             if (isAlive)
             {
                 PlayerMovement();
-            } else
+            } 
+            
+            else
             {
                 // do dead things
             }
+        }
+
+        ClientVisuals();
+    }
+
+    private void ClientVisuals()
+    {
+        if (networkCarryState.Value == PlayerCarryState.Empty)
+        {
+            // Set "Held Object" to inactive
+            transform.GetChild(1).gameObject.SetActive(false);
+        }
+
+        else if (networkCarryState.Value == PlayerCarryState.CarryingObject)
+        {
+            // Set "Held Object" to active
+            transform.GetChild(1).gameObject.SetActive(true);
+        }
+
+        else
+        {
+            // Carrying Player
         }
     }
 
@@ -263,63 +292,71 @@ public class PlayerController : NetworkBehaviour
 
     private void GrabStarted()
     {
-        // determine if can pickup
-        bool canPickup = (carryState == PlayerCarryState.Empty) && (reachableCollectables.Count > 0) ;
-
-        Debug.Log("CanPickup: " + canPickup);
-
-        // if the player can pickup
-        if (canPickup)
+        if (IsClient && IsOwner)
         {
-            // sort reachableCollectables by distance
-            reachableCollectables = reachableCollectables.OrderBy(
-                r => Vector3.Distance(transform.position, r.transform.position)).ToList();
+            // determine if can pickup
+            bool canPickup = (carryState == PlayerCarryState.Empty) && (reachableCollectables.Count > 0);
 
-            // get the nearest reachable collectable
-            GameObject nearestReachableCollectable = reachableCollectables[0];
+            Debug.Log("CanPickup: " + canPickup);
 
-            // disable physics on the collectable
-            Rigidbody collectableRb = nearestReachableCollectable.GetComponent<Rigidbody>();
-            collectableRb.isKinematic = true;
-            collectableRb.useGravity = false;
+            // if the player can pickup
+            if (canPickup)
+            {
+                // sort reachableCollectables by distance
+                reachableCollectables = reachableCollectables.OrderBy(
+                    r => Vector3.Distance(transform.position, r.transform.position)).ToList();
 
-            // parent the collectable to the HoldLocation and reset it's local transform
-            nearestReachableCollectable.transform.SetParent(holdLocation);
-            nearestReachableCollectable.transform.localPosition = Vector3.zero;
-            nearestReachableCollectable.transform.localRotation = Quaternion.identity;
+                // get the nearest reachable collectable
+                GameObject nearestReachableCollectable = reachableCollectables[0];
 
-            // update the carryState
-            carryState = PlayerCarryState.CarryingObject;
+                // disable physics on the collectable
+                Rigidbody collectableRb = nearestReachableCollectable.GetComponent<Rigidbody>();
+                collectableRb.isKinematic = true;
+                collectableRb.useGravity = false;
+
+                // parent the collectable to the HoldLocation and reset it's local transform
+                // nearestReachableCollectable.transform.SetParent(holdLocation);
+                // nearestReachableCollectable.transform.localPosition = Vector3.zero;
+                // nearestReachableCollectable.transform.localRotation = Quaternion.identity;
+
+                // update the carryState
+                carryState = PlayerCarryState.CarryingObject;
+                UpdatePlayerCarryStateServerRpc(PlayerCarryState.CarryingObject);
+            }
         }
     }
 
     private void GrabCancelled()
     {
-        // determine if can drop
-        bool canDrop = (carryState == PlayerCarryState.CarryingObject) || (carryState == PlayerCarryState.CarryingPlayer);
-
-        // if the player can drop
-        if (canDrop)
+        if (IsClient && IsOwner)
         {
-            // hide the aim indicator (in case throw is being held)
-            aimIndicator.gameObject.SetActive(false);
+            // determine if can drop
+            bool canDrop = (carryState == PlayerCarryState.CarryingObject) || (carryState == PlayerCarryState.CarryingPlayer);
 
-            // drop whatever is in the holdLocation
-            Transform dropable = holdLocation.GetChild(0);
+            // if the player can drop
+            if (canDrop)
+            {
+                // hide the aim indicator (in case throw is being held)
+                aimIndicator.gameObject.SetActive(false);
 
-            // detach the dropable from the player
-            dropable.SetParent(null);
+                // drop whatever is in the holdLocation
+                //Transform dropable = holdLocation.GetChild(0);
 
-            // enable physics on the dropable
-            Rigidbody dropableRb = dropable.GetComponent<Rigidbody>();
-            dropableRb.isKinematic = false;
-            dropableRb.useGravity = true;
+                // detach the dropable from the player
+                //dropable.SetParent(null);
 
-            // set the dropable's velocity to the player's current velocity
-            dropableRb.velocity = 2f * new Vector3(movement.x, 0, movement.y);
+                // enable physics on the dropable
+                //Rigidbody dropableRb = dropable.GetComponent<Rigidbody>();
+                //dropableRb.isKinematic = false;
+                //dropableRb.useGravity = true;
 
-            // update the carryState
-            carryState = PlayerCarryState.Empty;
+                // set the dropable's velocity to the player's current velocity
+                // dropableRb.velocity = 2f * new Vector3(movement.x, 0, movement.y);
+
+                // update the carryState
+                carryState = PlayerCarryState.Empty;
+                UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+            }
         }
     }
 
@@ -361,11 +398,12 @@ public class PlayerController : NetworkBehaviour
             // apply a 'throw' velocity to the throwable in the forward vector
             throwableRb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
 
-            // set the carry state to empty
-            carryState = PlayerCarryState.Empty;
-
             // call the throw method on the pollutant
             throwable.GetComponent<PollutantBehaviour>().Throw(lookVector, throwForce);
+
+            // set the carry state to empty
+            carryState = PlayerCarryState.Empty;
+            UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
 
             // hide the aim indicator
             aimIndicator.gameObject.SetActive(false);
@@ -400,5 +438,11 @@ public class PlayerController : NetworkBehaviour
         // unsubscribe from events
         GameController.DebugEnabled -= OnDebugEnabled;
         GameController.DebugDisabled -= OnDebugDisabled;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdatePlayerCarryStateServerRpc(PlayerCarryState newState)
+    {
+        networkCarryState.Value = newState;
     }
 }
