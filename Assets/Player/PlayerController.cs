@@ -55,10 +55,12 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody rb;
     private PlayerControlsMapping controls;
     private Transform debugCanvasObj;
+    private bool canMove;
 
     private void Awake()
     {
         // setup variables
+        canMove = FindObjectOfType<GameController>().gameState == GameController.GameState.Running;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         isAlive = true;
@@ -97,7 +99,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            if (isAlive)
+            if (isAlive && canMove)
             {
                 PlayerMovement();
             } else
@@ -369,6 +371,29 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void OnGameStarted()
+    {
+        canMove = true;
+    }
+
+    private void OnGamePaused()
+    {
+        canMove = false;
+    }
+
+    private void OnGameResumed()
+    {
+        canMove = true;
+    }
+
+    private void OnGameStopped()
+    {
+        // stop moving
+        rb.velocity = Vector3.zero;
+
+        canMove = false;
+    }
+
     private void OnDebugEnabled()
     {
         debugCanvasObj.gameObject.SetActive(true);
@@ -384,9 +409,13 @@ public class PlayerController : NetworkBehaviour
         // enable controls
         controls.Gameplay.Enable();
 
-        // subscribe to events
-        GameController.DebugEnabled += OnDebugEnabled;
-        GameController.DebugDisabled += OnDebugDisabled;
+        // setup event listeners
+        GameController.DebugEnabled     += OnDebugEnabled;
+        GameController.DebugDisabled    += OnDebugDisabled;
+        GameController.GameStarted      += OnGameStarted;
+        GameController.GamePaused       += OnGamePaused;
+        GameController.GameResumed      += OnGameResumed;
+        GameController.GameStopped      += OnGameStopped;
     }
 
     private void OnDisable()
@@ -394,8 +423,12 @@ public class PlayerController : NetworkBehaviour
         // disable controls
         controls.Gameplay.Disable();
 
-        // unsubscribe from events
-        GameController.DebugEnabled -= OnDebugEnabled;
-        GameController.DebugDisabled -= OnDebugDisabled;
+        // clear event listeners
+        GameController.DebugEnabled     -= OnDebugEnabled;
+        GameController.DebugDisabled    -= OnDebugDisabled;
+        GameController.GameStarted      -= OnGameStarted;
+        GameController.GamePaused       -= OnGamePaused;
+        GameController.GameResumed      -= OnGameResumed;
+        GameController.GameStopped      -= OnGameStopped;
     }
 }
