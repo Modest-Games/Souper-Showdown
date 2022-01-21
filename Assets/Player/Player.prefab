@@ -580,7 +580,7 @@ MonoBehaviour:
   dashForce: 1.7
   dashCooldown: 1
   throwForce: 15
-  characterObject: {fileID: 11400000, guid: 5a18df4d90eeef3469661c849cdd0c40, type: 2}
+  characterObject: {fileID: 11400000, guid: 1d85da3e7e51c5d45b26814cd41613cd, type: 2}
   playerState: 0
   carryState: 0
   carriedObject: {fileID: 0}
