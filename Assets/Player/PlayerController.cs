@@ -376,22 +376,8 @@ public class PlayerController : NetworkBehaviour
         // if the player can throw
         if (canThrow)
         {
-            // throw whatever is in the holdLocation
-            Transform throwable = holdLocation.GetChild(0);
 
-            // detach the throwable from the player
-            throwable.SetParent(null);
-
-            // enable physics on the throwable
-            Rigidbody throwableRb = throwable.GetComponent<Rigidbody>();
-            throwableRb.isKinematic = false;
-            throwableRb.useGravity = true;
-
-            // apply a 'throw' velocity to the throwable in the forward vector
-            throwableRb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
-
-            // call the throw method on the pollutant
-            throwable.GetComponent<PollutantBehaviour>().Throw(lookVector, throwForce);
+            heldObject.GetComponent<PollutantBehaviour>().OnThrowServerRpc(transform.position, lookVector, throwForce);
 
             // set the carry state to empty
             carryState = PlayerCarryState.Empty;

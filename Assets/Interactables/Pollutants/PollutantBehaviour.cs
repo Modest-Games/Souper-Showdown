@@ -94,8 +94,7 @@ public class PollutantBehaviour : NetworkBehaviour
     public void Throw(Vector3 throwDirection, float throwDistance)
     {
         // enable the trail renderer
-        trail.emitting = true;
-        state = PollutantState.Airborn;
+        
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -115,5 +114,16 @@ public class PollutantBehaviour : NetworkBehaviour
 
         rb.useGravity = true;
         sc.enabled = true;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void OnThrowServerRpc(Vector3 playerPos, Vector3 lookVector, float throwForce)
+    {
+        OnDropServerRpc(playerPos);
+
+        rb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
+
+        trail.emitting = true;
+        state = PollutantState.Airborn;
     }
 }
