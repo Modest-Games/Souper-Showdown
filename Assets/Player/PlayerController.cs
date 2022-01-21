@@ -56,6 +56,8 @@ public class PlayerController : NetworkBehaviour
     private PlayerControlsMapping controls;
     private Transform debugCanvasObj;
 
+    private GameObject heldObject;
+
     private NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
 
     private void Awake()
@@ -309,15 +311,11 @@ public class PlayerController : NetworkBehaviour
                 // get the nearest reachable collectable
                 GameObject nearestReachableCollectable = reachableCollectables[0];
 
-                // disable physics on the collectable
-                Rigidbody collectableRb = nearestReachableCollectable.GetComponent<Rigidbody>();
-                collectableRb.isKinematic = true;
-                collectableRb.useGravity = false;
+                // Store the nearest reachable collectable for dropping purposes:
+                heldObject = nearestReachableCollectable;
 
-                // parent the collectable to the HoldLocation and reset it's local transform
-                // nearestReachableCollectable.transform.SetParent(holdLocation);
-                // nearestReachableCollectable.transform.localPosition = Vector3.zero;
-                // nearestReachableCollectable.transform.localRotation = Quaternion.identity;
+                // Call OnPickup ServerRpc:
+                nearestReachableCollectable.GetComponent<PollutantBehaviour>().OnPickupServerRpc();
 
                 // update the carryState
                 carryState = PlayerCarryState.CarryingObject;
@@ -339,16 +337,10 @@ public class PlayerController : NetworkBehaviour
                 // hide the aim indicator (in case throw is being held)
                 aimIndicator.gameObject.SetActive(false);
 
-                // drop whatever is in the holdLocation
-                //Transform dropable = holdLocation.GetChild(0);
-
-                // detach the dropable from the player
-                //dropable.SetParent(null);
-
-                // enable physics on the dropable
-                //Rigidbody dropableRb = dropable.GetComponent<Rigidbody>();
-                //dropableRb.isKinematic = false;
-                //dropableRb.useGravity = true;
+                if (heldObject != null)
+                {
+                    heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position);
+                }
 
                 // set the dropable's velocity to the player's current velocity
                 // dropableRb.velocity = 2f * new Vector3(movement.x, 0, movement.y);

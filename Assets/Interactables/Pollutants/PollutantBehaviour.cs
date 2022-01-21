@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
+using Unity.Netcode.Samples;
 using NaughtyAttributes;
+using Unity.Netcode.Components;
 
-public class PollutantBehaviour : MonoBehaviour
+public class PollutantBehaviour : NetworkBehaviour
 {
     public enum PollutantState
     {
@@ -18,12 +21,24 @@ public class PollutantBehaviour : MonoBehaviour
     private Vector3 throwStartPos;
     private Vector3 throwDestination;
 
+    private Rigidbody rb;
+    private SphereCollider sc;
+    private NetworkTransform nt;
+
+    private GameObject mesh;
+
     void Start()
     {
         // setup variables
         trail = gameObject.GetComponent<TrailRenderer>();
 
-        RefreshMesh();
+        rb = GetComponent<Rigidbody>();
+        sc = GetComponent<SphereCollider>();
+        nt = GetComponent<NetworkTransform>();
+
+        // RefreshMesh();
+
+        mesh = transform.GetChild(0).gameObject;
     }
 
     void Update()
@@ -81,5 +96,24 @@ public class PollutantBehaviour : MonoBehaviour
         // enable the trail renderer
         trail.emitting = true;
         state = PollutantState.Airborn;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void OnPickupServerRpc()
+    {
+        transform.localScale = Vector3.zero;
+
+        rb.useGravity = false;
+        sc.enabled = false;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void OnDropServerRpc(Vector3 playerPos)
+    {
+        transform.position = new Vector3(playerPos.x, playerPos.y + 2.5f, playerPos.z);
+        transform.localScale = new Vector3(1, 1, 1);
+
+        rb.useGravity = true;
+        sc.enabled = true;
     }
 }
