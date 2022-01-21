@@ -30,6 +30,12 @@ public class GameController : MonoBehaviour
     [Header("Game State")]
     [ReadOnly] public GameState gameState;
 
+    [Header("Game Config")]
+    public int numStartingPollutants;
+    public bool autoStart;
+    [Tooltip("The duration of the game in seconds")] public float gameDuration;
+
+    [SerializeField] [ReadOnly] private float gameTimeElapsed;
     private SoupPot_Behaviour soupPot;
     private Spawner spawner;
     private PlayerControlsMapping controls;
@@ -62,13 +68,38 @@ public class GameController : MonoBehaviour
                 DebugDisabled();
         }
 
+        // setup the map
+        SetupMap();
+
         // start the game
-        //StartGame();
+        if (autoStart)
+            StartGame();
     }
 
     void Update()
     {
+        switch (gameState)
+        {
+            case GameState.Running:
+                // check if the game should be over
+                if (gameTimeElapsed >= gameDuration)
+                {
+                    // stop the game
+                    StopGame();
+                } else
+                {
+                    // add delta time to the time elapsed
+                    gameTimeElapsed += Time.deltaTime;
+                }
 
+                break;
+        }
+    }
+
+    private void SetupMap()
+    {
+        // spawn the starting pollutants
+        spawner.SpawnManyPollutants(numStartingPollutants);
     }
 
     [Button("Start Game")]
@@ -123,6 +154,14 @@ public class GameController : MonoBehaviour
         }
 
         Debug.Log("Debug toggled. Now set to: " + isDebugEnabled);
+    }
+
+    public float TimeRemaining
+    {
+        get
+        {
+            return Mathf.Max(gameDuration - gameTimeElapsed, 0f);
+        }
     }
 
     private void OnSoupReceivedTrash()

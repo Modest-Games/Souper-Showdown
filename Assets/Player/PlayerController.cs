@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using NaughtyAttributes;
 using System.Linq;
 using Unity.Netcode;
 using Unity.Netcode.Samples;
+using NaughtyAttributes;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(ClientNetworkTransform))]
@@ -74,13 +74,13 @@ public class PlayerController : NetworkBehaviour
         controls = new PlayerControlsMapping();
 
         // map control inputs
-        controls.Gameplay.Dash.performed    += ctx => DashPerformed();
-        controls.Gameplay.Move.performed    += ctx => MovePerformed(ctx.ReadValue<Vector2>());
-        controls.Gameplay.Move.canceled     += ctx => MoveCancelled();
-        controls.Gameplay.Grab.started      += ctx => GrabStarted();
-        controls.Gameplay.Grab.canceled     += ctx => GrabCancelled();
-        controls.Gameplay.Throw.canceled    += ctx => ThrowPerformed();
-        controls.Gameplay.Throw.started     += ctx => ThrowStarted();
+        controls.Gameplay.Dash.performed += ctx => DashPerformed();
+        controls.Gameplay.Move.performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
+        controls.Gameplay.Move.canceled += ctx => MoveCancelled();
+        controls.Gameplay.Grab.started += ctx => GrabStarted();
+        controls.Gameplay.Grab.canceled += ctx => GrabCancelled();
+        controls.Gameplay.Throw.canceled += ctx => ThrowPerformed();
+        controls.Gameplay.Throw.started += ctx => ThrowStarted();
     }
 
     private void Start()
@@ -199,7 +199,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    [Button]
+    [NaughtyAttributes.Button("Refresh Character", EButtonEnableMode.Editor)]
     private void RefreshCharacter()
     {
         // check if there is an existing mesh
@@ -213,6 +213,19 @@ public class PlayerController : NetworkBehaviour
         // instantiate the new mesh
         GameObject newMesh = Instantiate(characterObject.characterPrefab, transform);
         newMesh.name = "Character";
+    }
+
+    [NaughtyAttributes.Button("Refresh Reachable Collectables")]
+    private void RefreshReachableCollectables()
+    {
+        for (int i = 0; i < reachableCollectables.Count; i++)
+        {
+            // remove missing reachable collectables
+            if (reachableCollectables[i] == null)
+                reachableCollectables.RemoveAt(i);
+        }
+
+        Debug.Log(reachableCollectables);
     }
 
     private void MovePerformed(Vector2 newMovement)
@@ -262,6 +275,9 @@ public class PlayerController : NetworkBehaviour
 
     private void GrabStarted()
     {
+        // refresh reachable collectables
+        RefreshReachableCollectables();
+
         // determine if can pickup
         bool canPickup = (carryState == PlayerCarryState.Empty) && (reachableCollectables.Count > 0) ;
 

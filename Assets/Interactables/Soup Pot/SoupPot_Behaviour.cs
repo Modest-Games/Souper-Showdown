@@ -23,43 +23,19 @@ public class SoupPot_Behaviour : MonoBehaviour
         switch (other.gameObject.tag)
         {
             case "Pollutant":
-                // destroy the trash
-                Destroy(other.gameObject);
+                // make sure the pollutant is airborn
+                if (other.gameObject.GetComponent<PollutantBehaviour>().state
+                    == PollutantBehaviour.PollutantState.Airborn)
+                {
+                    // destroy the trash
+                    Destroy(other.gameObject);
 
-                // call the received trash event
-                if (SoupReceivedTrash != null)
-                    SoupReceivedTrash();
+                    // call the received trash event
+                    if (SoupReceivedTrash != null)
+                        SoupReceivedTrash();
 
-                Debug.Log("Soup received pollutant!");
-
-                break;
-
-            case "Character":
-                // kill the player
-
-                // call the received player event
-                if (SoupReceivedPlayer != null)
-                    SoupReceivedPlayer();
-
-                Debug.Log("Soup received player!");
-
-                break;
-        }
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        switch (collision.gameObject.tag)
-        {
-            case "Pollutant":
-                // destroy the trash
-                Destroy(collision.gameObject);
-
-                // call the received trash event
-                if (SoupReceivedTrash != null)
-                    SoupReceivedTrash();
-
-                Debug.Log("Soup received pollutant!");
+                    Debug.Log("Soup received pollutant!");
+                }
 
                 break;
 
