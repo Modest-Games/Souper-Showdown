@@ -354,37 +354,42 @@ public class PlayerController : NetworkBehaviour
 
     private void ThrowStarted()
     {
-        // determine if can throw
-        bool canThrow =
+        if (IsClient && IsOwner)
+        {
+            // determine if can throw
+            bool canThrow =
             (playerState == PlayerState.Idle || playerState == PlayerState.Moving) &&
             (carryState == PlayerCarryState.CarryingObject || carryState == PlayerCarryState.CarryingPlayer);
 
-        if (canThrow)
-        {
-            // show the aim indicator
-            aimIndicator.gameObject.SetActive(true);
+            if (canThrow)
+            {
+                // show the aim indicator
+                aimIndicator.gameObject.SetActive(true);
+            }
         }
     }
 
     private void ThrowPerformed()
     {
-        // determine if can throw
-        bool canThrow =
+        if (IsClient && IsOwner)
+        {
+            // determine if can throw
+            bool canThrow =
             (playerState == PlayerState.Idle || playerState == PlayerState.Moving) &&
             (carryState == PlayerCarryState.CarryingObject || carryState == PlayerCarryState.CarryingPlayer);
 
-        // if the player can throw
-        if (canThrow)
-        {
+            // if the player can throw
+            if (canThrow)
+            {
+                heldObject.GetComponent<PollutantBehaviour>().OnThrowServerRpc(transform.position, lookVector, throwForce);
 
-            heldObject.GetComponent<PollutantBehaviour>().OnThrowServerRpc(transform.position, lookVector, throwForce);
+                // set the carry state to empty
+                carryState = PlayerCarryState.Empty;
+                UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
 
-            // set the carry state to empty
-            carryState = PlayerCarryState.Empty;
-            UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
-
-            // hide the aim indicator
-            aimIndicator.gameObject.SetActive(false);
+                // hide the aim indicator
+                aimIndicator.gameObject.SetActive(false);
+            }
         }
     }
 

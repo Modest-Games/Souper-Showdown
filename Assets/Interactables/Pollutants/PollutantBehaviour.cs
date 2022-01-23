@@ -91,19 +91,16 @@ public class PollutantBehaviour : NetworkBehaviour
         }
     }
 
-    public void Throw(Vector3 throwDirection, float throwDistance)
-    {
-        // enable the trail renderer
-        
-    }
-
     [ServerRpc(RequireOwnership = false)]
     public void OnPickupServerRpc()
     {
+        transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
         transform.localScale = Vector3.zero;
 
         rb.useGravity = false;
-        sc.enabled = false;
+        rb.isKinematic = true;
+
+        OnPickupClientRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -113,7 +110,9 @@ public class PollutantBehaviour : NetworkBehaviour
         transform.localScale = new Vector3(1, 1, 1);
 
         rb.useGravity = true;
-        sc.enabled = true;
+        rb.isKinematic = false;
+
+        OnDropClientRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -123,7 +122,36 @@ public class PollutantBehaviour : NetworkBehaviour
 
         rb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
 
+        StartCoroutine(ThrowEffectsDelay());
+    }
+
+    [ClientRpc]
+    public void OnPickupClientRpc()
+    {
+        rb.useGravity = false;
+        rb.isKinematic = true;
+        sc.enabled = false;
+    }
+
+    [ClientRpc]
+    public void OnDropClientRpc()
+    {
+        rb.useGravity = true;
+        rb.isKinematic = false;
+        sc.enabled = true;
+    }
+
+    [ClientRpc]
+    public void OnThrowClientRpc()
+    {
         trail.emitting = true;
         state = PollutantState.Airborn;
+    }
+
+    public IEnumerator ThrowEffectsDelay()
+    {
+        yield return new WaitForSeconds(.25f);
+
+        OnThrowClientRpc();
     }
 }

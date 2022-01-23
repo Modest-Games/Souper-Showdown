@@ -48,7 +48,5 @@ public class PlayersManager : NetworkBehaviour
                 connectedPlayers.Value--;
             }
         };
-
-
     }
 }
