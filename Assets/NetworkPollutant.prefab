@@ -147,6 +147,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pollutantObject: {fileID: 11400000, guid: 976f6c240026233449c01a57e47e58a8, type: 2}
   state: 0
+  rb: {fileID: 0}
 --- !u!135 &6332544153703697550
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -324,7 +325,7 @@ MonoBehaviour:
   RotAngleThreshold: 0.01
   ScaleThreshold: 0.01
   InLocalSpace: 0
-  Interpolate: 0
+  Interpolate: 1
   CanCommitToTransform: 0
 --- !u!114 &-6327144893204572983
 MonoBehaviour:

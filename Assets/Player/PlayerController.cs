@@ -44,7 +44,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] [ReadOnly] public bool isAlive;
 
     [Header("Variables (ReadOnly)")]
-    [SerializeField] [ReadOnly] private List<GameObject> reachableCollectables;
+    [SerializeField] [ReadOnly] public List<GameObject> reachableCollectables;
     [SerializeField] [ReadOnly] private Vector2 movement;
     [SerializeField] [ReadOnly] private Vector3 lookVector;
     [SerializeField] [ReadOnly] private float timeOfLastDash;
@@ -214,7 +214,12 @@ public class PlayerController : NetworkBehaviour
         {
             case "Pollutant":
                 // add the pollutant to the list of reachable collectables
-                reachableCollectables.Add(other.gameObject);
+                if (!reachableCollectables.Contains(other.gameObject))
+                {
+                    reachableCollectables.Add(other.gameObject);
+                }
+
+                Debug.Log("ENTER: " + other.gameObject.GetInstanceID());
                 break;
         }
     }
@@ -227,6 +232,7 @@ public class PlayerController : NetworkBehaviour
             case "Pollutant":
                 // remove the pollutant from the list of reachable collectables
                 reachableCollectables.Remove(other.gameObject);
+                Debug.Log("EXIT: " + other.gameObject.GetInstanceID());
                 break;
         }
     }
@@ -317,6 +323,8 @@ public class PlayerController : NetworkBehaviour
                 // Call OnPickup ServerRpc:
                 nearestReachableCollectable.GetComponent<PollutantBehaviour>().OnPickupServerRpc();
 
+                reachableCollectables.Remove(nearestReachableCollectable);
+
                 // update the carryState
                 carryState = PlayerCarryState.CarryingObject;
                 UpdatePlayerCarryStateServerRpc(PlayerCarryState.CarryingObject);
@@ -339,11 +347,8 @@ public class PlayerController : NetworkBehaviour
 
                 if (heldObject != null)
                 {
-                    heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position);
+                    heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, lookVector, throwForce, false);
                 }
-
-                // set the dropable's velocity to the player's current velocity
-                // dropableRb.velocity = 2f * new Vector3(movement.x, 0, movement.y);
 
                 // update the carryState
                 carryState = PlayerCarryState.Empty;
@@ -381,7 +386,10 @@ public class PlayerController : NetworkBehaviour
             // if the player can throw
             if (canThrow)
             {
-                heldObject.GetComponent<PollutantBehaviour>().OnThrowServerRpc(transform.position, lookVector, throwForce);
+                if (heldObject != null)
+                {
+                    heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, lookVector, throwForce, true);
+                }
 
                 // set the carry state to empty
                 carryState = PlayerCarryState.Empty;

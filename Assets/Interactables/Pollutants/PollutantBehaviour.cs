@@ -21,24 +21,17 @@ public class PollutantBehaviour : NetworkBehaviour
     private Vector3 throwStartPos;
     private Vector3 throwDestination;
 
-    private Rigidbody rb;
+    public Rigidbody rb;
     private SphereCollider sc;
-    private NetworkTransform nt;
-
-    private GameObject mesh;
 
     void Start()
     {
         // setup variables
         trail = gameObject.GetComponent<TrailRenderer>();
-
         rb = GetComponent<Rigidbody>();
         sc = GetComponent<SphereCollider>();
-        nt = GetComponent<NetworkTransform>();
 
         // RefreshMesh();
-
-        mesh = transform.GetChild(0).gameObject;
     }
 
     void Update()
@@ -94,7 +87,6 @@ public class PollutantBehaviour : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void OnPickupServerRpc()
     {
-        transform.position = new Vector3(transform.position.x, transform.position.y + 2.5f, transform.position.z);
         transform.localScale = Vector3.zero;
 
         rb.useGravity = false;
@@ -104,22 +96,32 @@ public class PollutantBehaviour : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void OnDropServerRpc(Vector3 playerPos)
+    public void OnDropServerRpc(Vector3 playerPos, Vector3 lookVector, float throwForce, bool isThrown)
     {
-        transform.position = new Vector3(playerPos.x, playerPos.y + 2.5f, playerPos.z);
-        transform.localScale = new Vector3(1, 1, 1);
+        // transform.position = new Vector3(playerPos.x, playerPos.y + 2.5f, playerPos.z);
+        // transform.localScale = new Vector3(1, 1, 1);
 
         rb.useGravity = true;
         rb.isKinematic = false;
+        sc.enabled = true;
 
-        OnDropClientRpc();
+        var obj = Instantiate(gameObject, new Vector3(playerPos.x, playerPos.y + 2.5f, playerPos.z), Quaternion.identity);
+        obj.GetComponent<NetworkObject>().Spawn();
+
+        obj.transform.localScale = new Vector3(1, 1, 1);
+
+        if (isThrown)
+        {
+            var newThrowable = obj.GetComponent<PollutantBehaviour>();
+            newThrowable.OnThrowServerRpc(playerPos, lookVector, throwForce);
+        }
+
+        Destroy(gameObject);
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void OnThrowServerRpc(Vector3 playerPos, Vector3 lookVector, float throwForce)
     {
-        OnDropServerRpc(playerPos);
-
         rb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
 
         StartCoroutine(ThrowEffectsDelay());
