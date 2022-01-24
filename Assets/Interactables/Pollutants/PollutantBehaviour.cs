@@ -107,14 +107,14 @@ public class PollutantBehaviour : NetworkBehaviour
 
         var obj = Instantiate(gameObject, new Vector3(playerPos.x, playerPos.y + 2.5f, playerPos.z), Quaternion.identity);
         obj.GetComponent<NetworkObject>().Spawn();
-
         obj.transform.localScale = new Vector3(1, 1, 1);
 
         var newThrowable = obj.GetComponent<PollutantBehaviour>();
 
         if (isThrown)
         {
-            newThrowable.OnThrowServerRpc(playerPos, lookVector, throwForce);
+            newThrowable.rb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
+            StartCoroutine(ThrowEffectsDelay());
         }
 
         Destroy(gameObject);
@@ -125,9 +125,7 @@ public class PollutantBehaviour : NetworkBehaviour
     {
         // OnDropServerRpc(playerPos);
 
-        rb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
-
-        StartCoroutine(ThrowEffectsDelay());
+        
     }
 
     [ClientRpc]
