@@ -386,10 +386,7 @@ public class PlayerController : NetworkBehaviour
             // if the player can throw
             if (canThrow)
             {
-                if (heldObject != null)
-                {
-                    heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, lookVector, throwForce, true);
-                }
+                heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, lookVector, throwForce, true);
 
                 // set the carry state to empty
                 carryState = PlayerCarryState.Empty;

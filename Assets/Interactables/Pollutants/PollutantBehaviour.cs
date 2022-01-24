@@ -110,9 +110,10 @@ public class PollutantBehaviour : NetworkBehaviour
 
         obj.transform.localScale = new Vector3(1, 1, 1);
 
+        var newThrowable = obj.GetComponent<PollutantBehaviour>();
+
         if (isThrown)
         {
-            var newThrowable = obj.GetComponent<PollutantBehaviour>();
             newThrowable.OnThrowServerRpc(playerPos, lookVector, throwForce);
         }
 
@@ -122,6 +123,8 @@ public class PollutantBehaviour : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void OnThrowServerRpc(Vector3 playerPos, Vector3 lookVector, float throwForce)
     {
+        // OnDropServerRpc(playerPos);
+
         rb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
 
         StartCoroutine(ThrowEffectsDelay());
