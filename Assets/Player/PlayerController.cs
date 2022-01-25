@@ -347,7 +347,8 @@ public class PlayerController : NetworkBehaviour
                 aimIndicator.gameObject.SetActive(false);
 
                 StartCoroutine(TempDisablePickup());
-                heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, lookVector, throwForce, false);
+                var playerVelocity = 2f * new Vector3(movement.x, 0, movement.y);
+                heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, transform.forward, playerVelocity, lookVector, throwForce, false);
 
                 // update the carryState
                 carryState = PlayerCarryState.Empty;
@@ -386,7 +387,8 @@ public class PlayerController : NetworkBehaviour
             if (canThrow)
             {
                 StartCoroutine(TempDisablePickup());
-                heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, lookVector, throwForce, true);
+                var playerVelocity = 2f * new Vector3(movement.x, 0, movement.y);
+                heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, transform.forward, playerVelocity, lookVector, throwForce, true);
 
                 // set the carry state to empty
                 carryState = PlayerCarryState.Empty;

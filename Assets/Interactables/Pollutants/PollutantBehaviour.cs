@@ -94,21 +94,30 @@ public class PollutantBehaviour : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void OnDropServerRpc(Vector3 playerPos, Vector3 lookVector, float throwForce, bool isThrown)
+    public void OnDropServerRpc(Vector3 playerPos, Vector3 playerForward, Vector3 playerVelocity, Vector3 lookVector, float throwForce, bool isThrown)
     {
         // Position of throwable is always determined by the server, this means physics properties should be changed
         // by the server as well:
         rb.useGravity = true;
         rb.isKinematic = false;
 
-        var obj = Instantiate(gameObject, new Vector3(playerPos.x, playerPos.y + 2.5f, playerPos.z), Quaternion.identity);
+        var dropPosition = new Vector3(playerPos.x, playerPos.y + 2.5f, playerPos.z);
+        dropPosition += (playerForward * 0.50f);
+
+        var obj = Instantiate(gameObject, dropPosition, Quaternion.identity);
         obj.GetComponent<NetworkObject>().Spawn();
 
+        var newThrowable = obj.GetComponent<PollutantBehaviour>();
+        
         if (isThrown)
         {
-            var newThrowable = obj.GetComponent<PollutantBehaviour>();
             newThrowable.rb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
             newThrowable.OnThrowClientRpc();
+        }
+
+        else
+        {
+            newThrowable.rb.velocity = playerVelocity;
         }
 
         Destroy(gameObject);
