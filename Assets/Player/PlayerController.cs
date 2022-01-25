@@ -57,6 +57,7 @@ public class PlayerController : NetworkBehaviour
     private Transform debugCanvasObj;
 
     private GameObject heldObject;
+    private bool justThrew;
 
     private NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
 
@@ -72,6 +73,8 @@ public class PlayerController : NetworkBehaviour
         playerState = PlayerState.Idle;
         rb = GetComponent<Rigidbody>();
         holdLocation = transform.Find("HoldLocation");
+
+        justThrew = false;
 
         controls = new PlayerControlsMapping();
 
@@ -207,14 +210,12 @@ public class PlayerController : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
-
         // switch on the other object's tag
         switch (other.tag)
         {
             case "Pollutant":
                 // add the pollutant to the list of reachable collectables
-                if (!reachableCollectables.Contains(other.gameObject))
+                if (!reachableCollectables.Contains(other.gameObject) && !justThrew)
                 {
                     reachableCollectables.Add(other.gameObject);
                 }
@@ -345,10 +346,8 @@ public class PlayerController : NetworkBehaviour
                 // hide the aim indicator (in case throw is being held)
                 aimIndicator.gameObject.SetActive(false);
 
-                if (heldObject != null)
-                {
-                    heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, lookVector, throwForce, false);
-                }
+                StartCoroutine(TempDisablePickup());
+                heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, lookVector, throwForce, false);
 
                 // update the carryState
                 carryState = PlayerCarryState.Empty;
@@ -386,6 +385,7 @@ public class PlayerController : NetworkBehaviour
             // if the player can throw
             if (canThrow)
             {
+                StartCoroutine(TempDisablePickup());
                 heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, lookVector, throwForce, true);
 
                 // set the carry state to empty
@@ -432,5 +432,14 @@ public class PlayerController : NetworkBehaviour
     public void UpdatePlayerCarryStateServerRpc(PlayerCarryState newState)
     {
         networkCarryState.Value = newState;
+    }
+
+    public IEnumerator TempDisablePickup()
+    {
+        justThrew = true;
+
+        yield return new WaitForSeconds(0.50f);
+
+        justThrew = false;
     }
 }

@@ -22,14 +22,12 @@ public class PollutantBehaviour : NetworkBehaviour
     private Vector3 throwDestination;
 
     public Rigidbody rb;
-    private SphereCollider sc;
 
-    void Start()
+    void Awake()
     {
         // setup variables
         trail = gameObject.GetComponent<TrailRenderer>();
         rb = GetComponent<Rigidbody>();
-        sc = GetComponent<SphereCollider>();
 
         // RefreshMesh();
     }
@@ -87,74 +85,47 @@ public class PollutantBehaviour : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void OnPickupServerRpc()
     {
-        transform.localScale = Vector3.zero;
+        transform.position = new Vector3(0, -100, 0);
 
+        // Position of throwable is always determined by the server, this means physics properties should be changed
+        // by the server as well:
         rb.useGravity = false;
         rb.isKinematic = true;
-
-        OnPickupClientRpc();
     }
 
     [ServerRpc(RequireOwnership = false)]
     public void OnDropServerRpc(Vector3 playerPos, Vector3 lookVector, float throwForce, bool isThrown)
     {
-        // transform.position = new Vector3(playerPos.x, playerPos.y + 2.5f, playerPos.z);
-        // transform.localScale = new Vector3(1, 1, 1);
-
+        // Position of throwable is always determined by the server, this means physics properties should be changed
+        // by the server as well:
         rb.useGravity = true;
         rb.isKinematic = false;
-        sc.enabled = true;
 
         var obj = Instantiate(gameObject, new Vector3(playerPos.x, playerPos.y + 2.5f, playerPos.z), Quaternion.identity);
         obj.GetComponent<NetworkObject>().Spawn();
-        obj.transform.localScale = new Vector3(1, 1, 1);
-
-        var newThrowable = obj.GetComponent<PollutantBehaviour>();
 
         if (isThrown)
         {
+            var newThrowable = obj.GetComponent<PollutantBehaviour>();
             newThrowable.rb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
-            StartCoroutine(ThrowEffectsDelay());
+            newThrowable.OnThrowClientRpc();
         }
 
         Destroy(gameObject);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void OnThrowServerRpc(Vector3 playerPos, Vector3 lookVector, float throwForce)
-    {
-        // OnDropServerRpc(playerPos);
-
-        
-    }
-
-    [ClientRpc]
-    public void OnPickupClientRpc()
-    {
-        rb.useGravity = false;
-        rb.isKinematic = true;
-        sc.enabled = false;
-    }
-
-    [ClientRpc]
-    public void OnDropClientRpc()
-    {
-        rb.useGravity = true;
-        rb.isKinematic = false;
-        sc.enabled = true;
-    }
 
     [ClientRpc]
     public void OnThrowClientRpc()
     {
-        trail.emitting = true;
-        state = PollutantState.Airborn;
+        StartCoroutine(ThrowEffectsDelay());
     }
 
     public IEnumerator ThrowEffectsDelay()
     {
         yield return new WaitForSeconds(.25f);
 
-        OnThrowClientRpc();
+        trail.emitting = true;
+        state = PollutantState.Airborn;
     }
 }
