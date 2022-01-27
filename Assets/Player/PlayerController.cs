@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using NaughtyAttributes;
 using System.Linq;
 using Unity.Netcode;
 using Unity.Netcode.Samples;
+using NaughtyAttributes;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(ClientNetworkTransform))]
@@ -55,6 +55,7 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody rb;
     private PlayerControlsMapping controls;
     private Transform debugCanvasObj;
+    private bool canMove;
 
     private GameObject heldObject;
     private bool justThrew;
@@ -64,6 +65,7 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         // setup variables
+        canMove = FindObjectOfType<GameController>().gameState == GameController.GameState.Running;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         isAlive = true;
@@ -79,13 +81,13 @@ public class PlayerController : NetworkBehaviour
         controls = new PlayerControlsMapping();
 
         // map control inputs
-        controls.Gameplay.Dash.performed    += ctx => DashPerformed();
-        controls.Gameplay.Move.performed    += ctx => MovePerformed(ctx.ReadValue<Vector2>());
-        controls.Gameplay.Move.canceled     += ctx => MoveCancelled();
-        controls.Gameplay.Grab.started      += ctx => GrabStarted();
-        controls.Gameplay.Grab.canceled     += ctx => GrabCancelled();
-        controls.Gameplay.Throw.canceled    += ctx => ThrowPerformed();
-        controls.Gameplay.Throw.started     += ctx => ThrowStarted();
+        controls.Gameplay.Dash.performed += ctx => DashPerformed();
+        controls.Gameplay.Move.performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
+        controls.Gameplay.Move.canceled += ctx => MoveCancelled();
+        controls.Gameplay.Grab.started += ctx => GrabStarted();
+        controls.Gameplay.Grab.canceled += ctx => GrabCancelled();
+        controls.Gameplay.Throw.canceled += ctx => ThrowPerformed();
+        controls.Gameplay.Throw.started += ctx => ThrowStarted();
     }
 
     private void Start()
@@ -107,11 +109,11 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            if (isAlive)
+            if (isAlive && canMove)
             {
                 PlayerMovement();
-            } 
-            
+            }
+
             else
             {
                 // do dead things
@@ -189,7 +191,6 @@ public class PlayerController : NetworkBehaviour
                 else
                 {
                     Debug.DrawLine(rb.position, rb.position + (lookVector * 4), Color.red);
-                    Debug.Log(dashForce);
 
                     // continue performing the dash
                     //transform.Translate(lookVector * dashForce * Time.deltaTime, Space.World);
@@ -238,7 +239,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    [Button]
+    [NaughtyAttributes.Button("Refresh Character", EButtonEnableMode.Editor)]
     private void RefreshCharacter()
     {
         // check if there is an existing mesh
@@ -252,6 +253,19 @@ public class PlayerController : NetworkBehaviour
         // instantiate the new mesh
         GameObject newMesh = Instantiate(characterObject.characterPrefab, transform);
         newMesh.name = "Character";
+    }
+
+    [NaughtyAttributes.Button("Refresh Reachable Collectables")]
+    private void RefreshReachableCollectables()
+    {
+        for (int i = 0; i < reachableCollectables.Count; i++)
+        {
+            // remove missing reachable collectables
+            if (reachableCollectables[i] == null)
+                reachableCollectables.RemoveAt(i);
+        }
+
+        Debug.Log(reachableCollectables);
     }
 
     private void MovePerformed(Vector2 newMovement)
@@ -303,6 +317,9 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
+            // refresh reachable collectables
+            RefreshReachableCollectables();
+
             // determine if can pickup
             bool canPickup = (carryState == PlayerCarryState.Empty) && (reachableCollectables.Count > 0);
 
@@ -400,6 +417,29 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void OnGameStarted()
+    {
+        canMove = true;
+    }
+
+    private void OnGamePaused()
+    {
+        canMove = false;
+    }
+
+    private void OnGameResumed()
+    {
+        canMove = true;
+    }
+
+    private void OnGameStopped()
+    {
+        // stop moving
+        rb.velocity = Vector3.zero;
+
+        canMove = false;
+    }
+
     private void OnDebugEnabled()
     {
         debugCanvasObj.gameObject.SetActive(true);
@@ -415,9 +455,13 @@ public class PlayerController : NetworkBehaviour
         // enable controls
         controls.Gameplay.Enable();
 
-        // subscribe to events
-        GameController.DebugEnabled += OnDebugEnabled;
-        GameController.DebugDisabled += OnDebugDisabled;
+        // setup event listeners
+        GameController.DebugEnabled     += OnDebugEnabled;
+        GameController.DebugDisabled    += OnDebugDisabled;
+        GameController.GameStarted      += OnGameStarted;
+        GameController.GamePaused       += OnGamePaused;
+        GameController.GameResumed      += OnGameResumed;
+        GameController.GameStopped      += OnGameStopped;
     }
 
     private void OnDisable()
@@ -425,9 +469,13 @@ public class PlayerController : NetworkBehaviour
         // disable controls
         controls.Gameplay.Disable();
 
-        // unsubscribe from events
-        GameController.DebugEnabled -= OnDebugEnabled;
-        GameController.DebugDisabled -= OnDebugDisabled;
+        // clear event listeners
+        GameController.DebugEnabled     -= OnDebugEnabled;
+        GameController.DebugDisabled    -= OnDebugDisabled;
+        GameController.GameStarted      -= OnGameStarted;
+        GameController.GamePaused       -= OnGamePaused;
+        GameController.GameResumed      -= OnGameResumed;
+        GameController.GameStopped      -= OnGameStopped;
     }
 
     [ServerRpc(RequireOwnership = false)]
