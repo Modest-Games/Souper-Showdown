@@ -14,6 +14,7 @@ public class coordinates_generator: MonoBehaviour
 
     public Coords[,] gridCoordinates;
     public NeighbourItem[] thisNeighbourCoords;
+    public float[] straightLine;
 
     public struct Coords 
     {
@@ -112,7 +113,7 @@ public class coordinates_generator: MonoBehaviour
             }
         }
 
-        // The algorithm will return this array of structs
+        // The algorithm will return this list of structs
         List<SpawnItem> envObjectsList = new List<SpawnItem>(); 
 
         // ================================ //
@@ -187,9 +188,155 @@ public class coordinates_generator: MonoBehaviour
                         thisItem.orientation = 0;
                         thisItem.objectType = "blender";
 
-                        Debug.Log(thisItem.location);
+                    }
+
+                }
+            }
+        }
+        // ================================ //
+        //     End of Spawn Blender         //
+        // ================================ //
+
+
+
+        // ================================ //
+        //     Spawn in chef's knife        //
+        // ================================ //
+        for (int j = 0 ; j < (int)gridDimensions.y ; j++ ) 
+        {
+            for (int i = 0 ; i < (int)gridDimensions.x ;  i++) 
+            {
+                // only check neighbours if this point is a starting point
+                if (gridCoordinates[i, j].objectType == "starting point") 
+                {
+                    thisNeighbourCoords = new NeighbourItem[8];
+                    int k = 0;
+                    
+                    // construct neighbour coords list
+                    foreach(Vector2 coords in neighbourCoords) 
+                    {
+                        int cellsNeighboursX = (int)coords.x + i;
+                        int cellsNeighboursY = (int)coords.y + j;
+
+                        // clamp values so that non-existing points are not added to the list
+                        if (cellsNeighboursX >= 0 && cellsNeighboursX < (int)gridDimensions.x && cellsNeighboursY >= 0 && cellsNeighboursY < (int)gridDimensions.y)
+                        {
+                            NeighbourItem cellInfo = new NeighbourItem();
+                            cellInfo.location = new Vector2(cellsNeighboursX, cellsNeighboursY);
+                            cellInfo.aliveBool = gridCoordinates[cellsNeighboursX, cellsNeighboursY].aliveBool;
+                            cellInfo.objectType = gridCoordinates[cellsNeighboursX, cellsNeighboursY].objectType;
+                            thisNeighbourCoords[k] = cellInfo;
+                        }
+
+                        k++;
+                        
+                    }
+
+                    // loop through neighbour coordinates
+                    // if they are a starting point, increment 
+                    int numStartPoints = 0;
+                    // we have to check if all the coords around are empty. If not, we can't spawn a blender there
+                    int numEmptyTiles = 0;
+                    // we need this because we're only going to spawn a knife here if the points are colinear
+                    List<Vector2> straightLine = new List<Vector2>();
+
+                    foreach(NeighbourItem coordInfo in thisNeighbourCoords) 
+                    {
+                        if (coordInfo.objectType == "starting point")
+                        {
+                            numStartPoints++;
+
+                            // add this coordinate to the straight line (needs to be checked if it is colinear with other points)
+                            Vector2 cellCoords = new Vector2(coordInfo.location.x, coordInfo.location.y);
+                            straightLine.Add(cellCoords);
+
+                        }
+                        if (coordInfo.objectType == "starting point" || coordInfo.objectType == "none")
+                        {
+                            numEmptyTiles++;
+                        }
+                    }
+
+                    //Debug.Log(numStartPoints);
+
+                    // if there are two starting points in the 3x3 area, check if they are colinear
+                    if (numStartPoints == 2)
+                    {
+
+                        // add the current coords to be checked if they are colinear
+                        Vector2 cellCoords = new Vector2(i, j);
+                        straightLine.Add(cellCoords);
+
+                        // check if these three points are colinear
+                        if ((straightLine[2].y - straightLine[1].y) * (straightLine[1].x - straightLine[0].x) == (straightLine[1].y - straightLine[0].y) * (straightLine[2].x - straightLine[1].x)) 
+                        {
+
+                            int slope;
+
+                            // get the slope (this will be used for the orientation)
+                            if (straightLine[0].x == straightLine[1].x && straightLine[1].x == straightLine[2].x) 
+                            {
+                                // horizontal
+                                slope = 0;
+                            }
+                            else if (straightLine[0].y == straightLine[1].y && straightLine[1].y == straightLine[2].y)
+                            {
+                                // vertical
+                                slope = 2;
+                            }
+                            else 
+                            {
+                                // any other slope
+                                slope = ((int)straightLine[2].y - (int)straightLine[1].y) / ((int)straightLine[2].x - (int)straightLine[1].x);
+                            }
+
+                            int orientation;
+
+                            // get the orientation from the slope
+                            switch(slope)
+                            {
+                                case 0:
+                                    orientation = 0;
+                                    break;
+                                
+                                case 2:
+                                    orientation = 90;
+                                    break;
+
+                                case 1:
+                                    orientation = 45;
+                                    break;
+
+                                case -1:
+                                    orientation = 135;
+                                    break;
+                                
+                                default:
+                                    orientation = 0;
+                                    break;
+                            }
+
+                            // update grid coordinates array
+                            foreach(Vector2 coords in straightLine) 
+                            {   
+                                gridCoordinates[(int)coords.x, (int)coords.y].aliveBool = true;
+                                gridCoordinates[(int)coords.x, (int)coords.y].objectType = "chef knife";
+                            }
+
+                            // add this item to the list of item to be spawned
+                            // Add this center cell to the spawn items list 
+                            SpawnItem thisItem = new SpawnItem();
+                            thisItem.location = new Vector2(i, j);
+                            thisItem.orientation = orientation;
+                            thisItem.objectType = "chef knife";
+
+                            Debug.Log(thisItem.location);
+                            Debug.Log(i + "," + j);
+                        }
 
                     }
+
+
 
                 }
             }
@@ -197,7 +344,9 @@ public class coordinates_generator: MonoBehaviour
 
 
 
-        
+
+
+
     }
 
 
