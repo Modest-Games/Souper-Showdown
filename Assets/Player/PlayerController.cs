@@ -93,7 +93,7 @@ public class PlayerController : NetworkBehaviour
     private void Start()
     {
         // refresh the character
-        RefreshCharacter();
+        //RefreshCharacter();
 
         // setup debugging
         debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);
