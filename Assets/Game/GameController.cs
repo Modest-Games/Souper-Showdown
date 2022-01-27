@@ -12,6 +12,7 @@ public class GameController : NetworkBehaviour
 
     public enum GameState
     {
+        Unstarted,
         Stopped,
         Running,
         Paused
@@ -32,7 +33,7 @@ public class GameController : NetworkBehaviour
     [ReadOnly] public bool isDebugEnabled;
 
     [Header("Game State")]
-    public NetworkVariable<GameState> gameState = new NetworkVariable<GameState>(GameState.Stopped);
+    public NetworkVariable<GameState> gameState = new NetworkVariable<GameState>(GameState.Unstarted);
     private GameState lastGameState;
 
     [Header("Game Config")]
@@ -67,6 +68,7 @@ public class GameController : NetworkBehaviour
     {
         // setup variables
         lastGameState = GameState.Stopped;
+        Debug.Log(gameState.Value);
         //gameState.Value = GameState.Stopped;
         spawner = FindObjectOfType<ObjectSpawner>();
         soupPot = FindObjectOfType<SoupPot_Behaviour>();
@@ -85,51 +87,21 @@ public class GameController : NetworkBehaviour
         }
 
         // listen for the server to start
-        NetworkManager.Singleton.OnServerStarted += () =>
-        {
-            // setup the map
-            SetupMap();
+        //NetworkManager.Singleton.OnServerStarted += OnServerStart;
+    }
 
-            // start the game
-            if (autoStart)
-                StartGame();
-        };
+    public void InitializeGame()
+    {
+        // setup the map
+        SetupMap();
+
+        // start the game
+        if (autoStart)
+            UpdateGameStateServerRpc(GameState.Running);
     }
 
     void Update()
     {
-        // check if the gamestate has changed
-        if (lastGameState != gameState.Value)
-        {
-            // call the corresponding event
-            switch (gameState.Value)
-            {
-                case GameState.Paused:
-                    PauseGame();
-                    break;
-
-                case GameState.Running:
-                    switch (lastGameState)
-                    {
-                        case GameState.Paused:
-                            ResumeGame();
-                            break;
-
-                        case GameState.Stopped:
-                            StartGame();
-                            break;
-                    }
-                    break;
-
-                case GameState.Stopped:
-                    StopGame();
-                    break;
-            }
-
-            // update lastGameState
-            lastGameState = gameState.Value;
-        }
-        
         switch (gameState.Value)
         {
             case GameState.Running:
@@ -137,7 +109,7 @@ public class GameController : NetworkBehaviour
                 if (gameTimeElapsed >= gameDuration)
                 {
                     // stop the game
-                    gameState.Value = GameState.Stopped;
+                    UpdateGameStateServerRpc(GameState.Stopped);
                 } else
                 {
                     // add delta time to the time elapsed
@@ -154,10 +126,9 @@ public class GameController : NetworkBehaviour
         spawner.SpawnManyPollutants(numStartingPollutants);
     }
 
-    [Button("Start Game")]
     public void StartGame()
     {
-        gameState.Value = GameState.Running;
+        Debug.Log("STARTING GAME");
 
         if (GameStarted != null)
             GameStarted();
@@ -165,25 +136,18 @@ public class GameController : NetworkBehaviour
 
     private void PauseGame()
     {
-        gameState.Value = GameState.Paused;
-
         if (GamePaused != null)
             GamePaused();
     }
 
     private void ResumeGame()
     {
-        gameState.Value = GameState.Running;
-
         if (GameResumed != null)
             GameResumed();
     }
 
-    [Button("Stop Game")]
     private void StopGame()
     {
-        gameState.Value = GameState.Stopped;
-
         if (GameStopped != null)
             GameStopped();
     }
@@ -222,10 +186,45 @@ public class GameController : NetworkBehaviour
             spawner.SpawnPollutant();
     }
 
+    private void OnGameStateChanged(GameState oldState, GameState newState)
+    {
+        Debug.LogFormat("old: {0}, new: {1}", oldState, newState);
+
+        if (IsOwner && IsClient)
+        {
+            switch (newState)
+            {
+                case GameState.Stopped:
+                    StopGame();
+                    break;
+
+                case GameState.Running:
+                    switch (oldState)
+                    {
+                        case GameState.Paused:
+                            ResumeGame();
+                            break;
+
+                        default:
+                            StartGame();
+                            break;
+                    }
+                    break;
+
+                case GameState.Paused:
+                    PauseGame();
+                    break;
+            }
+        }
+    }
+
     private void OnEnable()
     {
         // setup event listeners
         SoupPot_Behaviour.SoupReceivedTrash += OnSoupReceivedTrash;
+
+        // setup network variable listeners
+        gameState.OnValueChanged += OnGameStateChanged;
 
         // enable controls
         controls.Debug.Enable();
@@ -235,6 +234,9 @@ public class GameController : NetworkBehaviour
     {
         // clear event listeners
         SoupPot_Behaviour.SoupReceivedTrash -= OnSoupReceivedTrash;
+
+        // clear network variable listeners
+        gameState.OnValueChanged += OnGameStateChanged;
 
         // disable controls
         controls.Debug.Disable();

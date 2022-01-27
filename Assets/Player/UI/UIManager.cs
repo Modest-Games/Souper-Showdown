@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI connectedPlayersText;
 
-    //[SerializeField] private Button spawnItemButton;
+    [SerializeField] private Button startGameButton;
 
     private bool hasServerStarted;
 
@@ -39,6 +39,13 @@ public class UIManager : MonoBehaviour
             if(NetworkManager.Singleton.StartHost())
             {
                 Debug.Log("Host started...");
+
+                // setup the map
+                //GameController.Instance.SetupMap();
+
+                // start the game
+                //if (GameController.Instance.autoStart)
+                //    GameController.Instance.UpdateGameStateServerRpc(GameController.GameState.Running);
             }
 
             else
@@ -78,11 +85,10 @@ public class UIManager : MonoBehaviour
             hasServerStarted = true;
         };
 
-        //spawnItemButton.onClick.AddListener(() =>
-        //{
-        //    if (!hasServerStarted) return;
-
-        //    Spawner.Instance.SpawnObject();
-        //});
+        startGameButton.onClick.AddListener(() =>
+        {
+            if (!hasServerStarted) return;
+            GameController.Instance.InitializeGame();
+        });
     }
 }
