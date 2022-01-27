@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 576999769412790974}
   m_Layer: 0
   m_Name: Soup Pot
-  m_TagString: Untagged
+  m_TagString: Soup Pot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

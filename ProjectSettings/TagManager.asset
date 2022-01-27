@@ -6,6 +6,9 @@ TagManager:
   tags:
   - Pollutant
   - Ground
+  - Soup Pot
+  - Wall
+  - Projectile
   layers:
   - Default
   - TransparentFX
