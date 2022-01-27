@@ -32,7 +32,7 @@ public class GameController : NetworkBehaviour
     [ReadOnly] public bool isDebugEnabled;
 
     [Header("Game State")]
-    public NetworkVariable<GameState> gameState = new NetworkVariable<GameState>();
+    public NetworkVariable<GameState> gameState = new NetworkVariable<GameState>(GameState.Stopped);
     private GameState lastGameState;
 
     [Header("Game Config")]
@@ -67,7 +67,7 @@ public class GameController : NetworkBehaviour
     {
         // setup variables
         lastGameState = GameState.Stopped;
-        gameState.Value = GameState.Stopped;
+        //gameState.Value = GameState.Stopped;
         spawner = FindObjectOfType<ObjectSpawner>();
         soupPot = FindObjectOfType<SoupPot_Behaviour>();
         isDebugEnabled = debugEnabledByDefault;
@@ -87,10 +87,6 @@ public class GameController : NetworkBehaviour
         // listen for the server to start
         NetworkManager.Singleton.OnServerStarted += () =>
         {
-            // only run setup code on the server
-            if (!IsServer)
-                return;
-
             // setup the map
             SetupMap();
 
@@ -152,7 +148,7 @@ public class GameController : NetworkBehaviour
         }
     }
 
-    private void SetupMap()
+    public void SetupMap()
     {
         // spawn the starting pollutants
         spawner.SpawnManyPollutants(numStartingPollutants);
@@ -161,7 +157,7 @@ public class GameController : NetworkBehaviour
     [Button("Start Game")]
     public void StartGame()
     {
-        UpdateGameStateServerRpc(GameState.Running);
+        gameState.Value = GameState.Running;
 
         if (GameStarted != null)
             GameStarted();
@@ -169,7 +165,7 @@ public class GameController : NetworkBehaviour
 
     private void PauseGame()
     {
-        UpdateGameStateServerRpc(GameState.Paused);
+        gameState.Value = GameState.Paused;
 
         if (GamePaused != null)
             GamePaused();
@@ -177,7 +173,7 @@ public class GameController : NetworkBehaviour
 
     private void ResumeGame()
     {
-        UpdateGameStateServerRpc(GameState.Running);
+        gameState.Value = GameState.Running;
 
         if (GameResumed != null)
             GameResumed();
@@ -186,10 +182,7 @@ public class GameController : NetworkBehaviour
     [Button("Stop Game")]
     private void StopGame()
     {
-        // get all players
-
-
-        UpdateGameStateServerRpc(GameState.Stopped);
+        gameState.Value = GameState.Stopped;
 
         if (GameStopped != null)
             GameStopped();
