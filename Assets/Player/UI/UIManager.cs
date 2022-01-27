@@ -7,6 +7,8 @@ using Unity.Netcode;
 
 public class UIManager : MonoBehaviour
 {
+    public static UIManager Instance { get; private set; }
+
     [SerializeField] private Button startHostButton;
 
     [SerializeField] private Button startServerButton;
@@ -17,12 +19,24 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Button startGameButton;
 
+    public Toggle isChefToggle;
+
     private bool hasServerStarted;
 
     private void Awake()
     {
         // For ease of testing:
         Cursor.visible = true;
+
+        // singleton stuff
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
     private void Update()
@@ -39,13 +53,6 @@ public class UIManager : MonoBehaviour
             if(NetworkManager.Singleton.StartHost())
             {
                 Debug.Log("Host started...");
-
-                // setup the map
-                //GameController.Instance.SetupMap();
-
-                // start the game
-                //if (GameController.Instance.autoStart)
-                //    GameController.Instance.UpdateGameStateServerRpc(GameController.GameState.Running);
             }
 
             else

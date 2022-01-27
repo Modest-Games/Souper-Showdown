@@ -36,6 +36,7 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Character")]
     public Character characterObject;
+    public bool isChef = false;
 
     [Header("State (ReadOnly)")]
     [SerializeField] [ReadOnly] public PlayerState playerState;
@@ -65,6 +66,7 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         // setup variables
+        isChef = UIManager.Instance.isChefToggle.isOn;
         canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
@@ -252,6 +254,10 @@ public class PlayerController : NetworkBehaviour
 
         // instantiate the new mesh
         GameObject newMesh = Instantiate(characterObject.characterPrefab, transform);
+
+        // enable the chef hat if this player is a chef
+        transform.Find("ChefHat").gameObject.SetActive(isChef);
+
         newMesh.name = "Character";
     }
 
