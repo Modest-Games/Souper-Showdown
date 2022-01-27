@@ -137,7 +137,7 @@ public class GameController : NetworkBehaviour
                 if (gameTimeElapsed >= gameDuration)
                 {
                     // stop the game
-                    UpdateGameStateServerRpc(GameState.Stopped);
+                    gameState.Value = GameState.Stopped;
                 } else
                 {
                     // add delta time to the time elapsed
