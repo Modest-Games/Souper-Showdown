@@ -85,38 +85,41 @@ public class GameController : NetworkBehaviour
             if (DebugDisabled != null)
                 DebugDisabled();
         }
-
-        // listen for the server to start
-        //NetworkManager.Singleton.OnServerStarted += OnServerStart;
     }
 
     public void InitializeGame()
     {
-        // setup the map
-        SetupMap();
+        if (IsServer)
+        {
+            // setup the map
+            SetupMap();
 
-        // start the game
-        if (autoStart)
-            UpdateGameStateServerRpc(GameState.Running);
+            // start the game (server only)
+            if (autoStart)
+                gameState.Value = GameState.Running;
+        }
     }
 
     void Update()
     {
-        switch (gameState.Value)
+        if (IsServer)
         {
-            case GameState.Running:
-                // check if the game should be over
-                if (gameTimeElapsed >= gameDuration)
-                {
-                    // stop the game
-                    UpdateGameStateServerRpc(GameState.Stopped);
-                } else
-                {
-                    // add delta time to the time elapsed
-                    gameTimeElapsed += Time.deltaTime;
-                }
+            switch (gameState.Value)
+            {
+                case GameState.Running:
+                    // check if the game should be over
+                    if (gameTimeElapsed >= gameDuration)
+                    {
+                        // stop the game
+                        gameState.Value = GameState.Stopped;
+                    } else
+                    {
+                        // add delta time to the time elapsed
+                        gameTimeElapsed += Time.deltaTime;
+                    }
 
-                break;
+                    break;
+            }
         }
     }
 
@@ -190,31 +193,28 @@ public class GameController : NetworkBehaviour
     {
         Debug.LogFormat("old: {0}, new: {1}", oldState, newState);
 
-        if (IsOwner && IsClient)
+        switch (newState)
         {
-            switch (newState)
-            {
-                case GameState.Stopped:
-                    StopGame();
-                    break;
+            case GameState.Stopped:
+                StopGame();
+                break;
 
-                case GameState.Running:
-                    switch (oldState)
-                    {
-                        case GameState.Paused:
-                            ResumeGame();
-                            break;
+            case GameState.Running:
+                switch (oldState)
+                {
+                    case GameState.Paused:
+                        ResumeGame();
+                        break;
 
-                        default:
-                            StartGame();
-                            break;
-                    }
-                    break;
+                    default:
+                        StartGame();
+                        break;
+                }
+                break;
 
-                case GameState.Paused:
-                    PauseGame();
-                    break;
-            }
+            case GameState.Paused:
+                PauseGame();
+                break;
         }
     }
 
@@ -240,11 +240,5 @@ public class GameController : NetworkBehaviour
 
         // disable controls
         controls.Debug.Disable();
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void UpdateGameStateServerRpc(GameState newState)
-    {
-        gameState.Value = newState;
     }
 }
