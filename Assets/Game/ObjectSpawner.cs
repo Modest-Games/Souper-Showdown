@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
+using Unity.Netcode;
 
-public class Spawner : MonoBehaviour
+public class ObjectSpawner : NetworkBehaviour
 {
     public GameObject pollutantPrefab;
     public Pollutant[] pollutants;
@@ -11,6 +12,7 @@ public class Spawner : MonoBehaviour
     [Header("Config")]
     public Vector2 spawnBounds;
     public float soupZoneRadius;
+    public float defaultYValue;
 
     void Start()
     {
@@ -31,6 +33,7 @@ public class Spawner : MonoBehaviour
         GameObject newPollutant = Instantiate(pollutantPrefab, spawnLocation, Quaternion.identity);
 
         newPollutant.GetComponent<PollutantBehaviour>().pollutantObject = pollutants[Random.Range(0, pollutants.Length - 1)];
+        newPollutant.GetComponent<NetworkObject>().Spawn();
 
         Debug.Log("Spawned pollutant at " + spawnLocation);
     }
@@ -57,6 +60,6 @@ public class Spawner : MonoBehaviour
         float yMin = Mathf.Max(0f, soupZoneRadius - Mathf.Abs(xVal));
         float yVal = Random.Range(yMin, spawnBounds.y / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
 
-        return new Vector3(xVal, 0, yVal);
+        return new Vector3(xVal, defaultYValue, yVal);
     }
 }

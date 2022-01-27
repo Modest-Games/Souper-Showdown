@@ -275,6 +275,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4500201671765141090, guid: 60a36376f10936e4481827bc155f643f, type: 3}
+      propertyPath: defaultYValue
+      value: 0.25
+      objectReference: {fileID: 0}
+    - target: {fileID: -4500201671765141090, guid: 60a36376f10936e4481827bc155f643f, type: 3}
+      propertyPath: pollutantPrefab
+      value: 
+      objectReference: {fileID: 5288980905173298321, guid: 440a5ac09cb64e44a8d21b77ae348f52, type: 3}
     - target: {fileID: 817039696896736792, guid: 60a36376f10936e4481827bc155f643f, type: 3}
       propertyPath: m_RootOrder
       value: 9
@@ -1351,6 +1359,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[0].Prefab
+      value: 
+      objectReference: {fileID: 5288980905173298321, guid: 440a5ac09cb64e44a8d21b77ae348f52, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
 --- !u!1001 &2257501264253505767

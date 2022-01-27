@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private TextMeshProUGUI connectedPlayersText;
 
-    [SerializeField] private Button spawnItemButton;
+    //[SerializeField] private Button spawnItemButton;
 
     private bool hasServerStarted;
 
@@ -78,11 +78,11 @@ public class UIManager : MonoBehaviour
             hasServerStarted = true;
         };
 
-        spawnItemButton.onClick.AddListener(() =>
-        {
-            if (!hasServerStarted) return;
+        //spawnItemButton.onClick.AddListener(() =>
+        //{
+        //    if (!hasServerStarted) return;
 
-            Spawner.Instance.SpawnObject();
-        });
+        //    Spawner.Instance.SpawnObject();
+        //});
     }
 }

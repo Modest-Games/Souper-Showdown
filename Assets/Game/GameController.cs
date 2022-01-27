@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
-public class GameController : MonoBehaviour
+public class GameController : NetworkBehaviour
 {
     public enum GameState
     {
@@ -37,7 +38,7 @@ public class GameController : MonoBehaviour
 
     [SerializeField] [ReadOnly] private float gameTimeElapsed;
     private SoupPot_Behaviour soupPot;
-    private Spawner spawner;
+    private ObjectSpawner spawner;
     private PlayerControlsMapping controls;
 
     private void Awake()
@@ -52,7 +53,7 @@ public class GameController : MonoBehaviour
     {
         // setup variables
         gameState = GameState.Stopped;
-        spawner = FindObjectOfType<Spawner>();
+        spawner = FindObjectOfType<ObjectSpawner>();
         soupPot = FindObjectOfType<SoupPot_Behaviour>();
         isDebugEnabled = debugEnabledByDefault;
 
@@ -68,12 +69,20 @@ public class GameController : MonoBehaviour
                 DebugDisabled();
         }
 
-        // setup the map
-        SetupMap();
+        // listen for the server to start
+        NetworkManager.Singleton.OnServerStarted += () =>
+        {
+            // only run setup code on the server
+            //if (!IsServer)
+            //    return;
 
-        // start the game
-        if (autoStart)
-            StartGame();
+            // setup the map
+            SetupMap();
+
+            // start the game
+            if (autoStart)
+                StartGame();
+        };
     }
 
     void Update()

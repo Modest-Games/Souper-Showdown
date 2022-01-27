@@ -29,7 +29,7 @@ public class PollutantBehaviour : NetworkBehaviour
         trail = gameObject.GetComponent<TrailRenderer>();
         rb = GetComponent<Rigidbody>();
 
-        // RefreshMesh();
+        //RefreshMesh();
     }
 
     void Update()
