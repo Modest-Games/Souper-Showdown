@@ -55,7 +55,7 @@ public class PlayerController : NetworkBehaviour
     private Rigidbody rb;
     private PlayerControlsMapping controls;
     private Transform debugCanvasObj;
-    private bool canMove;
+    public bool canMove;
 
     private GameObject heldObject;
     private bool justThrew;
@@ -65,7 +65,7 @@ public class PlayerController : NetworkBehaviour
     private void Awake()
     {
         // setup variables
-        canMove = FindObjectOfType<GameController>().gameState == GameController.GameState.Running;
+        canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         isAlive = true;
@@ -93,7 +93,7 @@ public class PlayerController : NetworkBehaviour
     private void Start()
     {
         // refresh the character
-        //RefreshCharacter();
+        RefreshCharacter();
 
         // setup debugging
         debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);

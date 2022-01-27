@@ -7,6 +7,9 @@ using Unity.Netcode;
 
 public class GameController : NetworkBehaviour
 {
+    // singleton class object
+    public static GameController Instance { get; private set; }
+
     public enum GameState
     {
         Stopped,
@@ -29,7 +32,8 @@ public class GameController : NetworkBehaviour
     [ReadOnly] public bool isDebugEnabled;
 
     [Header("Game State")]
-    [ReadOnly] public GameState gameState;
+    public NetworkVariable<GameState> gameState = new NetworkVariable<GameState>();
+    private GameState lastGameState;
 
     [Header("Game Config")]
     public int numStartingPollutants;
@@ -47,12 +51,23 @@ public class GameController : NetworkBehaviour
 
         // map relevant control inputs
         controls.Debug.ToggleDebug.performed += ctx => ToggleDebug();
+
+        // singleton stuff
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
     }
 
     void Start()
     {
         // setup variables
-        gameState = GameState.Stopped;
+        lastGameState = GameState.Stopped;
+        gameState.Value = GameState.Stopped;
         spawner = FindObjectOfType<ObjectSpawner>();
         soupPot = FindObjectOfType<SoupPot_Behaviour>();
         isDebugEnabled = debugEnabledByDefault;
@@ -73,8 +88,8 @@ public class GameController : NetworkBehaviour
         NetworkManager.Singleton.OnServerStarted += () =>
         {
             // only run setup code on the server
-            //if (!IsServer)
-            //    return;
+            if (!IsServer)
+                return;
 
             // setup the map
             SetupMap();
@@ -87,14 +102,46 @@ public class GameController : NetworkBehaviour
 
     void Update()
     {
-        switch (gameState)
+        // check if the gamestate has changed
+        if (lastGameState != gameState.Value)
+        {
+            // call the corresponding event
+            switch (gameState.Value)
+            {
+                case GameState.Paused:
+                    PauseGame();
+                    break;
+
+                case GameState.Running:
+                    switch (lastGameState)
+                    {
+                        case GameState.Paused:
+                            ResumeGame();
+                            break;
+
+                        case GameState.Stopped:
+                            StartGame();
+                            break;
+                    }
+                    break;
+
+                case GameState.Stopped:
+                    StopGame();
+                    break;
+            }
+
+            // update lastGameState
+            lastGameState = gameState.Value;
+        }
+        
+        switch (gameState.Value)
         {
             case GameState.Running:
                 // check if the game should be over
                 if (gameTimeElapsed >= gameDuration)
                 {
                     // stop the game
-                    StopGame();
+                    UpdateGameStateServerRpc(GameState.Stopped);
                 } else
                 {
                     // add delta time to the time elapsed
@@ -114,7 +161,7 @@ public class GameController : NetworkBehaviour
     [Button("Start Game")]
     public void StartGame()
     {
-        gameState = GameState.Running;
+        UpdateGameStateServerRpc(GameState.Running);
 
         if (GameStarted != null)
             GameStarted();
@@ -122,7 +169,7 @@ public class GameController : NetworkBehaviour
 
     private void PauseGame()
     {
-        gameState = GameState.Paused;
+        UpdateGameStateServerRpc(GameState.Paused);
 
         if (GamePaused != null)
             GamePaused();
@@ -130,7 +177,7 @@ public class GameController : NetworkBehaviour
 
     private void ResumeGame()
     {
-        gameState = GameState.Running;
+        UpdateGameStateServerRpc(GameState.Running);
 
         if (GameResumed != null)
             GameResumed();
@@ -139,7 +186,10 @@ public class GameController : NetworkBehaviour
     [Button("Stop Game")]
     private void StopGame()
     {
-        gameState = GameState.Stopped;
+        // get all players
+
+
+        UpdateGameStateServerRpc(GameState.Stopped);
 
         if (GameStopped != null)
             GameStopped();
@@ -175,7 +225,7 @@ public class GameController : NetworkBehaviour
 
     private void OnSoupReceivedTrash()
     {
-        if (gameState != GameState.Stopped)
+        if (gameState.Value != GameState.Stopped)
             spawner.SpawnPollutant();
     }
 
@@ -195,5 +245,11 @@ public class GameController : NetworkBehaviour
 
         // disable controls
         controls.Debug.Disable();
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateGameStateServerRpc(GameState newState)
+    {
+        gameState.Value = newState;
     }
 }
