@@ -204,6 +204,7 @@ public class coordinates_generator: MonoBehaviour
         // ================================ //
         for (int j = 0 ; j < (int)gridDimensions.y ; j++ ) 
         {
+
             for (int i = 0 ; i < (int)gridDimensions.x ;  i++) 
             {
                 // only check neighbours if this point is a starting point
@@ -341,10 +342,56 @@ public class coordinates_generator: MonoBehaviour
                 }
             }
         }
+        // ================================ //
+        //    End of Spawn chef's knife     //
+        // ================================ //
 
+        // ================================ //
+        //       Spawn in 2x1 items         //
+        // ================================ //
+        for (int j = 0 ; j < (int)gridDimensions.y ; j++ ) 
+        {
 
+            for (int i = 0 ; i < (int)gridDimensions.x ;  i++) 
+            {
+                // only check neighbours if this point is a starting point
+                if (gridCoordinates[i, j].objectType == "starting point") 
+                {
+                    thisNeighbourCoords = new NeighbourItem[8];
+                    int k = 0;
+                    
+                    // construct neighbour coords list
+                    foreach(Vector2 coords in neighbourCoords) 
+                    {
+                        int cellsNeighboursX = (int)coords.x + i;
+                        int cellsNeighboursY = (int)coords.y + j;
 
+                        // clamp values so that non-existing points are not added to the list
+                        if (cellsNeighboursX >= 0 && cellsNeighboursX < (int)gridDimensions.x && cellsNeighboursY >= 0 && cellsNeighboursY < (int)gridDimensions.y)
+                        {
+                            NeighbourItem cellInfo = new NeighbourItem();
+                            cellInfo.location = new Vector2(cellsNeighboursX, cellsNeighboursY);
+                            cellInfo.aliveBool = gridCoordinates[cellsNeighboursX, cellsNeighboursY].aliveBool;
+                            cellInfo.objectType = gridCoordinates[cellsNeighboursX, cellsNeighboursY].objectType;
+                            thisNeighbourCoords[k] = cellInfo;
+                        }
 
+                        k++;
+                        
+                    }
+
+                    // loop through neighbour coordinates
+                    // if they are a starting point, increment 
+                    int numStartPoints = 0;
+                    // we have to check if all the coords around are empty. If not, we can't spawn a blender there
+                    int numEmptyTiles = 0;
+                }
+            }
+        }
+
+        // ================================ //
+        //     End of spawn 2x1 items       //
+        // ================================ //
 
 
     }
