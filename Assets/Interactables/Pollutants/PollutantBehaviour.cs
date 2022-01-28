@@ -108,7 +108,8 @@ public class PollutantBehaviour : NetworkBehaviour
         obj.GetComponent<NetworkObject>().Spawn();
 
         var newThrowable = obj.GetComponent<PollutantBehaviour>();
-        
+        newThrowable.state = PollutantState.Airborn;
+
         if (isThrown)
         {
             newThrowable.rb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);

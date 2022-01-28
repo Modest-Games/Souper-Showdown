@@ -14,16 +14,6 @@ public class ObjectSpawner : NetworkBehaviour
     public float soupZoneRadius;
     public float defaultYValue;
 
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
-
     [Button("Spawn Pollutant")]
     public void SpawnPollutant()
     {

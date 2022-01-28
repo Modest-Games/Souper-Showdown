@@ -48,11 +48,6 @@ public class GameController : NetworkBehaviour
 
     private void Awake()
     {
-        controls = new PlayerControlsMapping();
-
-        // map relevant control inputs
-        controls.Debug.ToggleDebug.performed += ctx => ToggleDebug();
-
         // singleton stuff
         if (Instance != null && Instance != this)
         {
@@ -62,6 +57,11 @@ public class GameController : NetworkBehaviour
         {
             Instance = this;
         }
+
+        controls = new PlayerControlsMapping();
+
+        // map relevant control inputs
+        controls.Debug.ToggleDebug.performed += ctx => ToggleDebug();
     }
 
     void Start()
@@ -185,8 +185,9 @@ public class GameController : NetworkBehaviour
 
     private void OnSoupReceivedTrash()
     {
-        if (gameState.Value != GameState.Stopped)
-            spawner.SpawnPollutant();
+        if (gameState.Value == GameState.Stopped) return;
+
+        spawner.SpawnPollutant();
     }
 
     private void OnGameStateChanged(GameState oldState, GameState newState)
