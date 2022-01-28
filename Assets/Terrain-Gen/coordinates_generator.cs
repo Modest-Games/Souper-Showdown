@@ -179,7 +179,7 @@ public class coordinates_generator: MonoBehaviour
                         }
 
                         // update the center cell in the gridCoordinates
-                        gridCoordinates[i, j].aliveBool = true;
+                        gridCoordinates[i, j].aliveBool = false;
                         gridCoordinates[i, j].objectType = "blender";
 
                         // Add this center cell to the spawn items list
@@ -187,6 +187,7 @@ public class coordinates_generator: MonoBehaviour
                         thisItem.location = new Vector2(i, j);
                         thisItem.orientation = 0;
                         thisItem.objectType = "blender";
+                        envObjectsList.Add(thisItem);
 
                     }
 
@@ -320,7 +321,7 @@ public class coordinates_generator: MonoBehaviour
                             // update grid coordinates array
                             foreach(Vector2 coords in straightLine) 
                             {   
-                                gridCoordinates[(int)coords.x, (int)coords.y].aliveBool = true;
+                                gridCoordinates[(int)coords.x, (int)coords.y].aliveBool = false;
                                 gridCoordinates[(int)coords.x, (int)coords.y].objectType = "chef knife";
                             }
 
@@ -330,9 +331,7 @@ public class coordinates_generator: MonoBehaviour
                             thisItem.location = new Vector2(i, j);
                             thisItem.orientation = orientation;
                             thisItem.objectType = "chef knife";
-
-                            Debug.Log(thisItem.location);
-                            Debug.Log(i + "," + j);
+                            envObjectsList.Add(thisItem);
                         }
 
                     }
@@ -359,6 +358,7 @@ public class coordinates_generator: MonoBehaviour
                 {
                     thisNeighbourCoords = new NeighbourItem[8];
                     int k = 0;
+                    int neighbourCoordsIndex = 0;
                     
                     // construct neighbour coords list
                     foreach(Vector2 coords in neighbourCoords) 
@@ -374,6 +374,12 @@ public class coordinates_generator: MonoBehaviour
                             cellInfo.aliveBool = gridCoordinates[cellsNeighboursX, cellsNeighboursY].aliveBool;
                             cellInfo.objectType = gridCoordinates[cellsNeighboursX, cellsNeighboursY].objectType;
                             thisNeighbourCoords[k] = cellInfo;
+
+                            // if this neighbour cell is a starting point, remember its index. This will be used later for the orientation
+                            if (cellInfo.objectType == "starting point")
+                            {
+                                neighbourCoordsIndex = k;
+                            }
                         }
 
                         k++;
@@ -385,6 +391,70 @@ public class coordinates_generator: MonoBehaviour
                     int numStartPoints = 0;
                     // we have to check if all the coords around are empty. If not, we can't spawn a blender there
                     int numEmptyTiles = 0;
+
+                    foreach(NeighbourItem coordInfo in thisNeighbourCoords) 
+                    {
+                        if (coordInfo.objectType == "starting point")
+                        {
+                            numStartPoints++;
+                        }
+                        if (coordInfo.objectType == "starting point" || coordInfo.objectType == "none")
+                        {
+                            numEmptyTiles++;
+                        }
+                    }
+
+                    if (numStartPoints == 1)
+                    {  
+                        // get the orientation of the object
+                        int orientation;
+                        switch(neighbourCoordsIndex)
+                        {
+                            case 0:
+                                orientation = 135;
+                                break;
+                            case 1:
+                                orientation = 90;
+                                break;
+                            case 2:
+                                orientation = 45;
+                                break;
+                            case 3:
+                                orientation = 0;
+                                break;
+                            case 4:
+                                orientation = 315;
+                                break;
+                            case 5:
+                                orientation = 270;
+                                break;
+                            case 6:
+                                orientation = 225;
+                                break;
+                            case 7:
+                                orientation = 180;
+                                break;
+                            default:
+                                orientation = 0;
+                                break;
+                        }
+
+                        // update grid coordinates array
+                        gridCoordinates[(int)thisNeighbourCoords[neighbourCoordsIndex].location.x, (int)thisNeighbourCoords[neighbourCoordsIndex].location.y].aliveBool = false;
+                        gridCoordinates[(int)thisNeighbourCoords[neighbourCoordsIndex].location.x, (int)thisNeighbourCoords[neighbourCoordsIndex].location.y].objectType = "small knife";
+
+                        gridCoordinates[i, j].aliveBool = false;
+                        gridCoordinates[i, j].objectType = "small knife";
+
+                        // add this item to the list of item to be spawned
+                        SpawnItem thisItem = new SpawnItem();
+                        thisItem.location = new Vector2(i, j);
+                        thisItem.orientation = orientation;
+                        thisItem.objectType = "small knife";
+                        envObjectsList.Add(thisItem);
+                    }
+
+
                 }
             }
         }
