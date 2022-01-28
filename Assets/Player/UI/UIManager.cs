@@ -37,6 +37,8 @@ public class UIManager : MonoBehaviour
         {
             Instance = this;
         }
+
+        isChefToggle.isOn = false;
     }
 
     private void Update()

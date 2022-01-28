@@ -111,7 +111,7 @@ public class PollutantBehaviour : NetworkBehaviour
         
         if (isThrown)
         {
-            newThrowable.rb.AddForce(playerForward.normalized * throwForce, ForceMode.Impulse);
+            newThrowable.rb.AddForce((playerForward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);
             newThrowable.OnThrowClientRpc();
         }
 

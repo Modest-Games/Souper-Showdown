@@ -580,7 +580,7 @@ MonoBehaviour:
   dashDuration: 0.15
   dashForce: 1.7
   dashCooldown: 1
-  throwForce: 15
+  throwForce: 5
   characterObject: {fileID: 11400000, guid: 1d85da3e7e51c5d45b26814cd41613cd, type: 2}
   isChef: 1
   playerState: 0
