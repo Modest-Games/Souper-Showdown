@@ -112,7 +112,7 @@ public class PollutantBehaviour : NetworkBehaviour
 
         if (isThrown)
         {
-            newThrowable.rb.AddForce(lookVector.normalized * throwForce, ForceMode.Impulse);
+            newThrowable.rb.AddForce((playerForward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);
             newThrowable.OnThrowClientRpc();
         }
 
@@ -133,7 +133,7 @@ public class PollutantBehaviour : NetworkBehaviour
 
     public IEnumerator ThrowEffectsDelay()
     {
-        yield return new WaitForSeconds(.25f);
+        yield return new WaitForSeconds(.1f);
 
         trail.emitting = true;
         state = PollutantState.Airborn;
