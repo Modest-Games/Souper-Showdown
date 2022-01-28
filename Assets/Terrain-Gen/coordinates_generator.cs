@@ -14,7 +14,7 @@ public class coordinates_generator: MonoBehaviour
 
     public Coords[,] gridCoordinates;
     public NeighbourItem[] thisNeighbourCoords;
-    public float[] straightLine;
+    private float[] straightLine;
 
     public struct Coords 
     {
@@ -463,8 +463,25 @@ public class coordinates_generator: MonoBehaviour
         //     End of spawn 2x1 items       //
         // ================================ //
 
+        // final object list
+        //return envObjectsList;
+
+        // print list of items
+        foreach (SpawnItem item in envObjectsList) {
+            Debug.Log("Will spawn a " + item.objectType + " at coordinates " + item.location);
+        }
+
+        /*
+            Algorithm returns a list envObjectsList of SpawnItem:
+                (Vector2)location
+                (int)orientation
+                (string)objectType
+        */
+
 
     }
-
+    // ======================== //
+    //  End of Generate Terrain //
+    // ======================== // 
 
 }
