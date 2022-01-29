@@ -16,6 +16,19 @@ public class coordinates_generator: MonoBehaviour
     public NeighbourItem[] thisNeighbourCoords;
     private float[] straightLine;
 
+    // Object Types:
+    private const string none = "none";
+    private const string startingPoint = "starting point";
+    private const string soup = "soup";
+    private const string blender = "blender";
+    private const string chefKnife = "chef's knife";
+    private const string smallKnife = "small knife";
+
+    // Prefabs:
+    public GameObject smallKnifePrefab;
+    public GameObject chefKnifePrefab;
+    public GameObject blenderPrefab;
+
     public struct Coords 
     {
         public bool aliveBool;
@@ -55,7 +68,7 @@ public class coordinates_generator: MonoBehaviour
         
         Coords startingCell = new Coords();
         startingCell.aliveBool = false;
-        startingCell.objectType = "none";
+        startingCell.objectType = none;
 
         // fill grid coordinates with coordinates
         for (int j = 0 ; j < (int)gridDimensions.y ; j++ ) 
@@ -86,7 +99,7 @@ public class coordinates_generator: MonoBehaviour
             gridCoordinates[(int)coords.x, (int)coords.y].aliveBool = true;
 
             // define the object here to the soup
-            gridCoordinates[(int)coords.x, (int)coords.y].objectType = "soup";
+            gridCoordinates[(int)coords.x, (int)coords.y].objectType = soup;
 
             //Debug.Log(gridCoordinates[(int)coords.x, (int)coords.y].aliveBool);
         }
@@ -103,13 +116,13 @@ public class coordinates_generator: MonoBehaviour
         foreach(Vector2 coords in startingPoints) 
         {
             // this point only becomes a starting point if it's not in the soup (we don't want anything spawning where the soup is)
-            if (gridCoordinates[(int)coords.x, (int)coords.y].objectType == "none") {
+            if (gridCoordinates[(int)coords.x, (int)coords.y].objectType == none) {
 
                 // set this cell to alive
                 gridCoordinates[(int)coords.x, (int)coords.y].aliveBool = true;
 
                 // define the object here to a starting point
-                gridCoordinates[(int)coords.x, (int)coords.y].objectType = "starting point";
+                gridCoordinates[(int)coords.x, (int)coords.y].objectType = startingPoint;
             }
         }
 
@@ -124,7 +137,7 @@ public class coordinates_generator: MonoBehaviour
             for (int i = 0 ; i < (int)gridDimensions.x ;  i++) 
             {
                 // only check neighbours if this point is a starting point
-                if (gridCoordinates[i, j].objectType == "starting point") 
+                if (gridCoordinates[i, j].objectType == startingPoint) 
                 {
                     thisNeighbourCoords = new NeighbourItem[8];
                     int k = 0;
@@ -157,11 +170,11 @@ public class coordinates_generator: MonoBehaviour
 
                     foreach(NeighbourItem coordInfo in thisNeighbourCoords) 
                     {
-                        if (coordInfo.objectType == "starting point")
+                        if (coordInfo.objectType == startingPoint)
                         {
                             numStartPoints++;
                         }
-                        if (coordInfo.objectType == "starting point" || coordInfo.objectType == "none")
+                        if (coordInfo.objectType == startingPoint || coordInfo.objectType == none)
                         {
                             numEmptyTiles++;
                         }
@@ -175,18 +188,18 @@ public class coordinates_generator: MonoBehaviour
                         foreach(NeighbourItem coordInfo in thisNeighbourCoords) 
                         {   
                             gridCoordinates[(int)coordInfo.location.x, (int)coordInfo.location.y].aliveBool = true;
-                            gridCoordinates[(int)coordInfo.location.x, (int)coordInfo.location.y].objectType = "blender";
+                            gridCoordinates[(int)coordInfo.location.x, (int)coordInfo.location.y].objectType = blender;
                         }
 
                         // update the center cell in the gridCoordinates
                         gridCoordinates[i, j].aliveBool = false;
-                        gridCoordinates[i, j].objectType = "blender";
+                        gridCoordinates[i, j].objectType = blender;
 
                         // Add this center cell to the spawn items list
                         SpawnItem thisItem = new SpawnItem();
                         thisItem.location = new Vector2(i, j);
                         thisItem.orientation = 0;
-                        thisItem.objectType = "blender";
+                        thisItem.objectType = blender;
                         envObjectsList.Add(thisItem);
 
                     }
@@ -209,7 +222,7 @@ public class coordinates_generator: MonoBehaviour
             for (int i = 0 ; i < (int)gridDimensions.x ;  i++) 
             {
                 // only check neighbours if this point is a starting point
-                if (gridCoordinates[i, j].objectType == "starting point") 
+                if (gridCoordinates[i, j].objectType == startingPoint) 
                 {
                     thisNeighbourCoords = new NeighbourItem[8];
                     int k = 0;
@@ -244,7 +257,7 @@ public class coordinates_generator: MonoBehaviour
 
                     foreach(NeighbourItem coordInfo in thisNeighbourCoords) 
                     {
-                        if (coordInfo.objectType == "starting point")
+                        if (coordInfo.objectType == startingPoint)
                         {
                             numStartPoints++;
 
@@ -253,7 +266,7 @@ public class coordinates_generator: MonoBehaviour
                             straightLine.Add(cellCoords);
 
                         }
-                        if (coordInfo.objectType == "starting point" || coordInfo.objectType == "none")
+                        if (coordInfo.objectType == startingPoint || coordInfo.objectType == none)
                         {
                             numEmptyTiles++;
                         }
@@ -322,7 +335,7 @@ public class coordinates_generator: MonoBehaviour
                             foreach(Vector2 coords in straightLine) 
                             {   
                                 gridCoordinates[(int)coords.x, (int)coords.y].aliveBool = false;
-                                gridCoordinates[(int)coords.x, (int)coords.y].objectType = "chef knife";
+                                gridCoordinates[(int)coords.x, (int)coords.y].objectType = chefKnife;
                             }
 
                             // add this item to the list of item to be spawned
@@ -330,7 +343,7 @@ public class coordinates_generator: MonoBehaviour
                             SpawnItem thisItem = new SpawnItem();
                             thisItem.location = new Vector2(i, j);
                             thisItem.orientation = orientation;
-                            thisItem.objectType = "chef knife";
+                            thisItem.objectType = chefKnife;
                             envObjectsList.Add(thisItem);
                         }
 
@@ -354,7 +367,7 @@ public class coordinates_generator: MonoBehaviour
             for (int i = 0 ; i < (int)gridDimensions.x ;  i++) 
             {
                 // only check neighbours if this point is a starting point
-                if (gridCoordinates[i, j].objectType == "starting point") 
+                if (gridCoordinates[i, j].objectType == startingPoint) 
                 {
                     thisNeighbourCoords = new NeighbourItem[8];
                     int k = 0;
@@ -376,7 +389,7 @@ public class coordinates_generator: MonoBehaviour
                             thisNeighbourCoords[k] = cellInfo;
 
                             // if this neighbour cell is a starting point, remember its index. This will be used later for the orientation
-                            if (cellInfo.objectType == "starting point")
+                            if (cellInfo.objectType == startingPoint)
                             {
                                 neighbourCoordsIndex = k;
                             }
@@ -394,11 +407,11 @@ public class coordinates_generator: MonoBehaviour
 
                     foreach(NeighbourItem coordInfo in thisNeighbourCoords) 
                     {
-                        if (coordInfo.objectType == "starting point")
+                        if (coordInfo.objectType == startingPoint)
                         {
                             numStartPoints++;
                         }
-                        if (coordInfo.objectType == "starting point" || coordInfo.objectType == "none")
+                        if (coordInfo.objectType == startingPoint || coordInfo.objectType == none)
                         {
                             numEmptyTiles++;
                         }
@@ -444,13 +457,13 @@ public class coordinates_generator: MonoBehaviour
                         gridCoordinates[(int)thisNeighbourCoords[neighbourCoordsIndex].location.x, (int)thisNeighbourCoords[neighbourCoordsIndex].location.y].objectType = "small knife";
 
                         gridCoordinates[i, j].aliveBool = false;
-                        gridCoordinates[i, j].objectType = "small knife";
+                        gridCoordinates[i, j].objectType = smallKnife;
 
                         // add this item to the list of item to be spawned
                         SpawnItem thisItem = new SpawnItem();
                         thisItem.location = new Vector2(i, j);
                         thisItem.orientation = orientation;
-                        thisItem.objectType = "small knife";
+                        thisItem.objectType = smallKnife;
                         envObjectsList.Add(thisItem);
                     }
 
@@ -469,6 +482,28 @@ public class coordinates_generator: MonoBehaviour
         // print list of items
         foreach (SpawnItem item in envObjectsList) {
             Debug.Log("Will spawn a " + item.objectType + " at coordinates " + item.location);
+
+            GameObject toSpawn = null;
+            switch(item.objectType)
+            {
+                case smallKnife:
+                    toSpawn = smallKnifePrefab;
+                    break;
+
+                case chefKnife:
+                    toSpawn = chefKnifePrefab;
+                    break;
+
+                case blender:
+                    toSpawn = blenderPrefab;
+                    break;
+            }
+            if (toSpawn != null)
+                Instantiate(
+                    toSpawn,
+                    new Vector3(item.location.x - gridDimensions.x / 2, 0.5f, item.location.y - gridDimensions.y / 2),
+                    Quaternion.Euler(0, item.orientation, 0)
+                    );
         }
 
         /*
