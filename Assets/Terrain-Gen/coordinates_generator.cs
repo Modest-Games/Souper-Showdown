@@ -1,9 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 using NaughtyAttributes;
 
-public class coordinates_generator: MonoBehaviour
+public class coordinates_generator: NetworkBehaviour
 {
     // required vars
     public Vector2 gridDimensions = new Vector2(60, 40);
@@ -449,42 +450,66 @@ public class coordinates_generator: MonoBehaviour
 
         // print list of items
 
-        foreach (SpawnItem item in envObjectsList) {
-            Debug.Log("Will spawn a " + item.objectType + " at coordinates " + item.location);
-
-            GameObject toSpawn = null;
-            switch(item.objectType)
-            {
-                case smallKnife:
-                    toSpawn = smallKnifePrefab;
-                    break;
-
-                case chefKnife:
-                    toSpawn = chefKnifePrefab;
-                    break;
-
-                case blender:
-                    toSpawn = blenderPrefab;
-                    break;
-            }
-            if (toSpawn != null)
-            {
-                GameObject terrainPiece = Instantiate(toSpawn, new Vector3(item.location.x - (gridDimensions.x / 2), toSpawn.transform.position.y, item.location.y - (gridDimensions.y / 2)), Quaternion.Euler(0, item.orientation, 0));
-                terrainPiece.transform.SetParent(transform);
-            }
+        foreach (SpawnItem item in envObjectsList) 
+        {
+            SpawnTerrain(item.location, item.orientation, item.objectType);
+            SpawnTerrainClientRpc(item.location, item.orientation, item.objectType);
         }
 
-        /*
-            Algorithm returns a list envObjectsList of SpawnItem:
-                (Vector2)location
-                (int)orientation
-                (string)objectType
-        */
-
-
+        PositionTerrain();
+        PositionTerrainClientRpc();
     }
-    // ======================== //
-    //  End of Generate Terrain //
-    // ======================== // 
 
+    private void SpawnTerrain(Vector2 location, int orientation, string type)
+    {
+        GameObject toSpawn = null;
+        switch (type)
+        {
+            case smallKnife:
+                toSpawn = smallKnifePrefab;
+                break;
+
+            case chefKnife:
+                toSpawn = chefKnifePrefab;
+                break;
+
+            case blender:
+                toSpawn = blenderPrefab;
+                break;
+        }
+
+        GameObject terrainPiece = Instantiate(toSpawn, new Vector3(location.x - (gridDimensions.x / 2), toSpawn.transform.position.y, location.y - (gridDimensions.y / 2)), Quaternion.Euler(0, orientation, 0));
+        terrainPiece.transform.SetParent(transform);
+    }
+
+    private void PositionTerrain()
+    {
+        if (gameObject.name == "TerrainLeft")
+        {
+            transform.position = new Vector3(-17.5f, 0f, 0f);
+        }
+
+        else
+        {
+            transform.position = new Vector3(17.5f, 0f, 0f);
+        }
+    }
+
+    [ClientRpc]
+    private void SpawnTerrainClientRpc(Vector2 location, int orientation, string type)
+    {
+        if (IsServer && IsClient)
+            return;
+
+        SpawnTerrain(location, orientation, type);
+    }
+
+    [ClientRpc]
+    private void PositionTerrainClientRpc()
+    {
+        if (IsServer && IsClient)
+            return;
+
+        PositionTerrain();
+    }
 }

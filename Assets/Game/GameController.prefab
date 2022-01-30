@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3569870885152564206}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 4.884, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -52,6 +52,7 @@ MonoBehaviour:
   autoStart: 1
   gameDuration: 180
   gameTimeElapsed: 0
+  TerrainManager: {fileID: 450344431042757987, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
 --- !u!114 &4324836108296228691
 MonoBehaviour:
   m_ObjectHideFlags: 0
