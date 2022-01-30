@@ -16,6 +16,7 @@ public class PlayerController : NetworkBehaviour
         Idle,
         Moving,
         Dashing,
+        Dazed,
         Ungrounded
     }
 
@@ -33,6 +34,7 @@ public class PlayerController : NetworkBehaviour
     public float dashForce;
     public float dashCooldown;
     public float throwForce;
+    public float dazeDuration;
 
     [Header("Character")]
     public Character characterObject;
@@ -57,11 +59,14 @@ public class PlayerController : NetworkBehaviour
     private PlayerControlsMapping controls;
     private Transform debugCanvasObj;
     public bool canMove;
+    private GameObject dazeIndicator;
 
     private GameObject heldObject;
     private bool justThrew;
+    private float timeDazed;
 
     private NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
+    private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
 
     private void Awake()
     {
@@ -77,6 +82,7 @@ public class PlayerController : NetworkBehaviour
         playerState = PlayerState.Idle;
         rb = GetComponent<Rigidbody>();
         holdLocation = transform.Find("HoldLocation");
+        dazeIndicator = transform.Find("DazeIndicator").gameObject;
 
         justThrew = false;
 
@@ -105,6 +111,7 @@ public class PlayerController : NetworkBehaviour
 
         // NETWORKING:
         UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+        UpdatePlayerStateServerRpc(PlayerState.Idle);
     }
 
     void Update()
@@ -142,6 +149,19 @@ public class PlayerController : NetworkBehaviour
         else
         {
             // Carrying Player
+        }
+
+        switch (networkPlayerState.Value)
+        {
+            case PlayerState.Dazed:
+                // show the daze indicator
+                dazeIndicator.SetActive(true);
+                break;
+
+            default:
+                // hide the daze indicator
+                dazeIndicator.SetActive(false);
+                break;
         }
     }
 
@@ -205,9 +225,53 @@ public class PlayerController : NetworkBehaviour
 
                 break;
 
+            case PlayerState.Dazed:
+                // clear rotatitonal velocity
+                rb.angularVelocity = Vector3.zero;
+
+                // check if the daze should be over
+                if (timeDazed >= dazeDuration)
+                {
+                    // end the daze
+                    playerState = PlayerState.Idle;
+                    UpdatePlayerStateServerRpc(PlayerState.Idle);
+                }
+
+                // if the daze is still going
+                else
+                {
+                    // update time dazed
+                    timeDazed += Time.deltaTime;
+                }
+
+                break;
+
             case PlayerState.Ungrounded:
                 // play a flail animation, etc.
                 break;
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // only get booped if not a chef
+        if (IsOwner && !isChef)
+        {
+            switch (collision.gameObject.tag)
+            {
+                case "Player":
+                    // get the other player's PlayerController
+                    PlayerController otherPC = collision.gameObject.GetComponent<PlayerController>();
+
+                    // check if the other player is a chef
+                    if (otherPC.isChef)
+                    {
+                        // get rekt
+                        OnBoop();
+                    }
+
+                    break;
+            }
         }
     }
 
@@ -259,6 +323,25 @@ public class PlayerController : NetworkBehaviour
         transform.Find("ChefHat").gameObject.SetActive(isChef);
 
         newMesh.name = "Character";
+    }
+
+    private void OnBoop()
+    {
+        // make sure the player can be booped
+        bool canGetBooped = (playerState != PlayerState.Dazed) && (playerState != PlayerState.Ungrounded);
+
+        if (canGetBooped)
+        {
+            // reset timeDazed
+            timeDazed = 0f;
+
+            // drop what's being held (if anything)
+            GrabCancelled();
+
+            // update the player state
+            playerState = PlayerState.Dazed;
+            UpdatePlayerStateServerRpc(PlayerState.Dazed);
+        }
     }
 
     [NaughtyAttributes.Button("Refresh Reachable Collectables")]
@@ -488,6 +571,12 @@ public class PlayerController : NetworkBehaviour
     public void UpdatePlayerCarryStateServerRpc(PlayerCarryState newState)
     {
         networkCarryState.Value = newState;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdatePlayerStateServerRpc(PlayerState newState)
+    {
+        networkPlayerState.Value = newState;
     }
 
     public IEnumerator TempDisablePickup()
