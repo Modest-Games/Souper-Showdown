@@ -26,7 +26,7 @@ public class PlayerDebugUI : MonoBehaviour
         transform.rotation = Quaternion.Euler(90, 0, 0);
 
         // update the texts
-        playerStateText.text = playerController.playerState.ToString();
+        playerStateText.text = playerController.networkPlayerState.Value.ToString();
         carryStateText.text = playerController.carryState.ToString();
     }
 }
