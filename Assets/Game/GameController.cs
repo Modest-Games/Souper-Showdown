@@ -34,7 +34,6 @@ public class GameController : NetworkBehaviour
 
     [Header("Game State")]
     public NetworkVariable<GameState> gameState = new NetworkVariable<GameState>(GameState.Unstarted);
-    private GameState lastGameState;
 
     [Header("Game Config")]
     public int numStartingPollutants;
@@ -66,8 +65,6 @@ public class GameController : NetworkBehaviour
 
     void Start()
     {
-        // setup variables
-        lastGameState = GameState.Stopped;
         Debug.Log(gameState.Value);
         //gameState.Value = GameState.Stopped;
         spawner = FindObjectOfType<ObjectSpawner>();
