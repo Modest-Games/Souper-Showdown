@@ -38,7 +38,7 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Character")]
     public Character characterObject;
-    public bool isChef = false;
+    //public bool isChef = false;
 
     [Header("State (ReadOnly)")]
     [SerializeField] [ReadOnly] public PlayerState playerState;
@@ -65,13 +65,18 @@ public class PlayerController : NetworkBehaviour
     private bool justThrew;
     private float timeDazed;
 
+    private NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     private NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     private NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
 
     private void Awake()
     {
         // setup variables
-        isChef = UIManager.Instance.isChefToggle.isOn;
+        if (IsOwner)
+        {
+            networkIsChef.Value = UIManager.Instance.isChefToggle.isOn;
+        }
+
         canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
@@ -255,7 +260,7 @@ public class PlayerController : NetworkBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         // only get booped if not a chef
-        if (IsOwner && !isChef)
+        if (IsOwner && !networkIsChef.Value)
         {
             switch (collision.gameObject.tag)
             {
@@ -264,7 +269,7 @@ public class PlayerController : NetworkBehaviour
                     PlayerController otherPC = collision.gameObject.GetComponent<PlayerController>();
 
                     // check if the other player is a chef
-                    if (otherPC.isChef)
+                    if (otherPC.networkIsChef.Value)
                     {
                         // get rekt
                         OnBoop();
@@ -320,7 +325,7 @@ public class PlayerController : NetworkBehaviour
         GameObject newMesh = Instantiate(characterObject.characterPrefab, transform);
 
         // enable the chef hat if this player is a chef
-        transform.Find("ChefHat").gameObject.SetActive(isChef);
+        transform.Find("ChefHat").gameObject.SetActive(networkIsChef.Value);
 
         newMesh.name = "Character";
     }
@@ -539,6 +544,11 @@ public class PlayerController : NetworkBehaviour
         debugCanvasObj.gameObject.SetActive(false);
     }
 
+    private void OnIsChefChanged(bool oldVal, bool newVal)
+    {
+        RefreshCharacter();
+    }
+
     private void OnEnable()
     {
         // enable controls
@@ -551,6 +561,9 @@ public class PlayerController : NetworkBehaviour
         GameController.GamePaused       += OnGamePaused;
         GameController.GameResumed      += OnGameResumed;
         GameController.GameStopped      += OnGameStopped;
+
+        // setup network event listeners
+        networkIsChef.OnValueChanged += OnIsChefChanged;
     }
 
     private void OnDisable()
@@ -565,6 +578,9 @@ public class PlayerController : NetworkBehaviour
         GameController.GamePaused       -= OnGamePaused;
         GameController.GameResumed      -= OnGameResumed;
         GameController.GameStopped      -= OnGameStopped;
+
+        // clear network event listeners
+        networkIsChef.OnValueChanged -= OnIsChefChanged;
     }
 
     [ServerRpc(RequireOwnership = false)]
