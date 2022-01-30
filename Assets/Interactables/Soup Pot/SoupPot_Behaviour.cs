@@ -21,7 +21,8 @@ public class SoupPot_Behaviour : NetworkBehaviour
                         == PollutantBehaviour.PollutantState.Airborn)
                     {
                         // destroy the trash
-                        Destroy(other.gameObject);
+                        other.gameObject.GetComponent<SphereCollider>().isTrigger = false;
+                        StartCoroutine(OnPollutantEnter(other.gameObject));
 
                         // call the received trash event
                         if (SoupReceivedTrash != null)
@@ -40,5 +41,20 @@ public class SoupPot_Behaviour : NetworkBehaviour
                     break;
             }
         }
+    }
+
+    private IEnumerator OnPollutantEnter(GameObject pollutant)
+    {
+        yield return new WaitForSeconds(0.25f);
+
+        Destroy(pollutant);
+        OnPollutantEnterClientRpc();
+
+    }
+
+    [ClientRpc]
+    private void OnPollutantEnterClientRpc()
+    {
+        GetComponent<ParticleSystem>().Play();
     }
 }
