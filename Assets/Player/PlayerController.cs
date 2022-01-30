@@ -71,40 +71,44 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
-        // setup variables
-        if (IsOwner)
-        {
-            networkIsChef.Value = UIManager.Instance.isChefToggle.isOn;
-        }
-
-        canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
-        aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
-        debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         isAlive = true;
         lookVector = transform.forward;
         timeOfLastDash = 0;
         carryState = PlayerCarryState.Empty;
         playerState = PlayerState.Idle;
-        rb = GetComponent<Rigidbody>();
-        holdLocation = transform.Find("HoldLocation");
-        dazeIndicator = transform.Find("DazeIndicator").gameObject;
-
         justThrew = false;
 
         controls = new PlayerControlsMapping();
-
-        // map control inputs
-        controls.Gameplay.Dash.performed += ctx => DashPerformed();
-        controls.Gameplay.Move.performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
-        controls.Gameplay.Move.canceled += ctx => MoveCancelled();
-        controls.Gameplay.Grab.started += ctx => GrabStarted();
-        controls.Gameplay.Grab.canceled += ctx => GrabCancelled();
-        controls.Gameplay.Throw.canceled += ctx => ThrowPerformed();
-        controls.Gameplay.Throw.started += ctx => ThrowStarted();
     }
 
     private void Start()
     {
+        // setup variables
+        if (IsOwner)
+        {
+            networkIsChef.Value = UIManager.Instance.isChefToggle.isOn;
+        }
+        
+        canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
+        aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
+        debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
+        rb = GetComponent<Rigidbody>();
+        holdLocation = transform.Find("HoldLocation");
+        dazeIndicator = transform.Find("DazeIndicator").gameObject;
+
+        // map control inputs
+        if (IsOwner && IsClient)
+        {
+            controls.Gameplay.Dash.performed += ctx => DashPerformed();
+            controls.Gameplay.Move.performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
+            controls.Gameplay.Move.canceled += ctx => MoveCancelled();
+            controls.Gameplay.Grab.started += ctx => GrabStarted();
+            controls.Gameplay.Grab.canceled += ctx => GrabCancelled();
+            controls.Gameplay.Throw.canceled += ctx => ThrowPerformed();
+            controls.Gameplay.Throw.started += ctx => ThrowStarted();
+        }
+
+        Debug.LogFormat("{0} has IsClient: {1}, IsOwner: {2}", gameObject.name, IsClient, IsOwner);
         // refresh the character
         RefreshCharacter();
 
