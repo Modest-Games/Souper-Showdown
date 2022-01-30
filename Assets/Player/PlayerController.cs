@@ -86,7 +86,8 @@ public class PlayerController : NetworkBehaviour
         // setup variables
         if (IsOwner)
         {
-            networkIsChef.Value = UIManager.Instance.isChefToggle.isOn;
+            // set isChef
+            UpdateIsChef(UIManager.Instance.isChefToggle.isOn);
         }
         
         canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
@@ -597,6 +598,12 @@ public class PlayerController : NetworkBehaviour
     public void UpdatePlayerStateServerRpc(PlayerState newState)
     {
         networkPlayerState.Value = newState;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateIsChef(bool newValue)
+    {
+        networkIsChef.Value = newValue;
     }
 
     public IEnumerator TempDisablePickup()
