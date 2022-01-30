@@ -275,14 +275,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: -4500201671765141090, guid: 60a36376f10936e4481827bc155f643f, type: 3}
-      propertyPath: defaultYValue
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: -4500201671765141090, guid: 60a36376f10936e4481827bc155f643f, type: 3}
-      propertyPath: pollutantPrefab
-      value: 
-      objectReference: {fileID: 5288980905173298321, guid: 440a5ac09cb64e44a8d21b77ae348f52, type: 3}
     - target: {fileID: 817039696896736792, guid: 60a36376f10936e4481827bc155f643f, type: 3}
       propertyPath: m_RootOrder
       value: 9
@@ -1877,6 +1869,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: TerrainManager
       objectReference: {fileID: 0}
+    - target: {fileID: 7603261017696877335, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 3763933277
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
 --- !u!1001 &1487667036683122865
@@ -1936,16 +1932,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.size
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[0].Prefab
-      value: 
-      objectReference: {fileID: 5288980905173298321, guid: 440a5ac09cb64e44a8d21b77ae348f52, type: 3}
-    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
-      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].Prefab
-      value: 
-      objectReference: {fileID: 3569870885152564206, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
 --- !u!1001 &2257501264253505767
@@ -1966,6 +1954,10 @@ PrefabInstance:
     - target: {fileID: 1173977767517443433, guid: 3744d3b19d56e8748aebc1697a210c9e, type: 3}
       propertyPath: m_RootOrder
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1261853850778756590, guid: 3744d3b19d56e8748aebc1697a210c9e, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 2622805324
       objectReference: {fileID: 0}
     - target: {fileID: 2257501263546895705, guid: 3744d3b19d56e8748aebc1697a210c9e, type: 3}
       propertyPath: m_LocalScale.x

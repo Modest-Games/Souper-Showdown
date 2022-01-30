@@ -58,9 +58,6 @@ public class coordinates_generator: MonoBehaviour
     };
 
 
-    [Button]
-
-    // Start is called before the first frame update
     public void GenerateTerrain()
     {
         

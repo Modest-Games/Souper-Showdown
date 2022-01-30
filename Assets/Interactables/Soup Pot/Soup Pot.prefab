@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 410761949884701119}
-  - component: {fileID: 7444320169833281430}
   - component: {fileID: 8314790943262681647}
   m_Layer: 0
   m_Name: Soup Pot
@@ -34,18 +33,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &7444320169833281430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 696197427014834209}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b70857e231925e540ae69498e257b75a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &8314790943262681647
 MonoBehaviour:
   m_ObjectHideFlags: 0

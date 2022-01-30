@@ -2,11 +2,26 @@ using System.Collections;
 using System.Collections.Generic;
 using NaughtyAttributes;
 using UnityEngine;
+using Unity.Netcode;
 
-public class TerrainManager : MonoBehaviour
+public class TerrainManager : NetworkBehaviour
 {
+    public static TerrainManager Instance { get; private set; }
+
     Transform terrainLeft;
     Transform terrainRight;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     private void Start()
     {
@@ -14,7 +29,6 @@ public class TerrainManager : MonoBehaviour
         terrainRight = transform.GetChild(1);
     }
 
-    [Button]
     public void GenerateAllTerrain()
     {
         terrainLeft.gameObject.GetComponent<coordinates_generator>().GenerateTerrain();
@@ -23,5 +37,11 @@ public class TerrainManager : MonoBehaviour
         terrainRight.gameObject.GetComponent<coordinates_generator>().GenerateTerrain();
         terrainRight.position = new Vector3(17.5f, 0f, 0f);
 
+    }
+
+    [ClientRpc]
+    public void GenerateTerrainClientRpc()
+    {
+        GenerateAllTerrain();
     }
 }

@@ -125,7 +125,10 @@ public class GameController : NetworkBehaviour
 
     public void SetupMap()
     {
-        // spawn the starting pollutants
+        // Spawn PCG Obstacles on Clients:
+        TerrainManager.Instance.GenerateTerrainClientRpc();
+
+        // Spawn the starting pollutants:
         spawner.SpawnManyPollutants(numStartingPollutants);
     }
 
