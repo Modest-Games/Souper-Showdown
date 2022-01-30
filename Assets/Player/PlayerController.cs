@@ -221,7 +221,7 @@ public class PlayerController : NetworkBehaviour
                 if ((currentTime - timeOfLastDash) >= dashDuration)
                 {
                     // complete the dash
-                    networkPlayerState.Value = (movement.magnitude == 0) ? PlayerState.Idle : PlayerState.Moving;
+                    UpdatePlayerStateServerRpc((movement.magnitude == 0) ? PlayerState.Idle : PlayerState.Moving);
                 }
 
                 else
@@ -234,7 +234,7 @@ public class PlayerController : NetworkBehaviour
                     rb.AddForce(lookVector * dashForce, ForceMode.Impulse);
                     //rb.velocity = lookVector * dashForce;
 
-                    networkPlayerState.Value = PlayerState.Dashing;
+                    UpdatePlayerStateServerRpc(PlayerState.Dashing);
                 }
 
                 break;
@@ -247,7 +247,6 @@ public class PlayerController : NetworkBehaviour
                 if (timeDazed >= dazeDuration)
                 {
                     // end the daze
-                    networkPlayerState.Value = PlayerState.Idle;
                     UpdatePlayerStateServerRpc(PlayerState.Idle);
                 }
 
@@ -361,7 +360,6 @@ public class PlayerController : NetworkBehaviour
             GrabCancelled();
 
             // update the player state
-            networkPlayerState.Value = PlayerState.Dazed;
             UpdatePlayerStateServerRpc(PlayerState.Dazed);
         }
     }
@@ -388,7 +386,7 @@ public class PlayerController : NetworkBehaviour
 
             // set the playerstate to moving if not dashing
             if (networkPlayerState.Value != PlayerState.Dashing)
-                networkPlayerState.Value = PlayerState.Moving;
+                UpdatePlayerStateServerRpc(PlayerState.Moving);
         }
     }
 
@@ -401,7 +399,7 @@ public class PlayerController : NetworkBehaviour
 
             // set playerstate to idle if not dashing
             if (networkPlayerState.Value != PlayerState.Dashing)
-                networkPlayerState.Value = PlayerState.Idle;
+                UpdatePlayerStateServerRpc(PlayerState.Idle);
         }
     }
 
@@ -419,7 +417,7 @@ public class PlayerController : NetworkBehaviour
                 timeOfLastDash = Time.time;
 
                 // set the playerstate to dashing
-                networkPlayerState.Value = PlayerState.Dashing;
+                UpdatePlayerStateServerRpc(PlayerState.Dashing);
             }
         }
     }
