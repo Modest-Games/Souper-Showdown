@@ -96,10 +96,10 @@ public class PlayerController : NetworkBehaviour
         lookVector = transform.forward;
         timeOfLastDash = 0;
         carryState = PlayerCarryState.Empty;
-        networkPlayerState.Value = PlayerState.Idle;
+        UpdatePlayerStateServerRpc(PlayerState.Idle);
         rb = GetComponent<Rigidbody>();
         holdLocation = transform.Find("HoldLocation");
-        dazeIndicator = transform.Find("DazeIndicator").gameObject;
+        dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
 
         // map control inputs
         if (IsOwner && IsClient)
