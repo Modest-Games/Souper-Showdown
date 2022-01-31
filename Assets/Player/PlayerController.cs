@@ -76,12 +76,13 @@ public class PlayerController : NetworkBehaviour
         timeOfLastDash = 0;
         carryState = PlayerCarryState.Empty;
         justThrew = false;
-
         controls = new PlayerControlsMapping();
     }
 
     private void Start()
     {
+        Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}", IsClient, IsOwner, OwnerClientId);
+
         // setup variables
         if (IsOwner)
         {
@@ -101,9 +102,9 @@ public class PlayerController : NetworkBehaviour
         holdLocation = transform.Find("HoldLocation");
         dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
 
-        // map control inputs
-        if (IsOwner && IsClient)
+        if (IsClient && IsOwner)
         {
+            // map control inputs
             controls.Gameplay.Dash.performed += ctx => DashPerformed();
             controls.Gameplay.Move.performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
             controls.Gameplay.Move.canceled += ctx => MoveCancelled();
@@ -111,21 +112,20 @@ public class PlayerController : NetworkBehaviour
             controls.Gameplay.Grab.canceled += ctx => GrabCancelled();
             controls.Gameplay.Throw.canceled += ctx => ThrowPerformed();
             controls.Gameplay.Throw.started += ctx => ThrowStarted();
+
+            // Spawn the player
+            transform.position = TerrainManager.Instance.GetRandomSpawnLocation(networkIsChef.Value);
+
+            // NETWORKING:
+            UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+            UpdatePlayerStateServerRpc(PlayerState.Idle);
         }
 
-        Debug.LogFormat("{0} has IsClient: {1}, IsOwner: {2}", gameObject.name, IsClient, IsOwner);
         // refresh the character
         RefreshCharacter();
 
         // setup debugging
         debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);
-
-        // Random Spawn Position:
-        transform.position = new Vector3(Random.Range(defaultPositionRange.x, defaultPositionRange.y), 0, Random.Range(defaultPositionRange.x, defaultPositionRange.y));
-
-        // NETWORKING:
-        UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
-        UpdatePlayerStateServerRpc(PlayerState.Idle);
     }
 
     void Update()
@@ -267,8 +267,10 @@ public class PlayerController : NetworkBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        Debug.Log(collision.gameObject.tag);
+
         // only get booped if not a chef
-        if (IsOwner && !networkIsChef.Value)
+        if (IsOwner && IsClient && !networkIsChef.Value)
         {
             switch (collision.gameObject.tag)
             {
@@ -385,7 +387,7 @@ public class PlayerController : NetworkBehaviour
             movement = newMovement;
 
             // set the playerstate to moving if not dashing
-            if (networkPlayerState.Value != PlayerState.Dashing)
+            if (networkPlayerState.Value == PlayerState.Idle || networkPlayerState.Value == PlayerState.Moving)
                 UpdatePlayerStateServerRpc(PlayerState.Moving);
         }
     }
