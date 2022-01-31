@@ -1882,6 +1882,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1487667035890383232, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
+      propertyPath: ConnectAddress
+      value: 192.168.2.145
+      objectReference: {fileID: 0}
     - target: {fileID: 1487667035890383233, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
       propertyPath: m_Name
       value: NetworkManager

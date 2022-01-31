@@ -230,8 +230,8 @@ public class PlayerController : NetworkBehaviour
 
                     // continue performing the dash
                     //transform.Translate(lookVector * dashForce * Time.deltaTime, Space.World);
-                    //rb.MovePosition(rb.position + lookVector * dashForce * Time.deltaTime);
-                    rb.AddForce(lookVector * dashForce, ForceMode.Impulse);
+                    rb.MovePosition(rb.position + lookVector * dashForce * Time.deltaTime);
+                    //rb.AddForce(lookVector * dashForce, ForceMode.Impulse);
                     //rb.velocity = lookVector * dashForce;
 
                     UpdatePlayerStateServerRpc(PlayerState.Dashing);
@@ -381,7 +381,7 @@ public class PlayerController : NetworkBehaviour
 
     private void MovePerformed(Vector2 newMovement)
     {
-        if (Application.isFocused)
+        if (Application.isFocused && IsClient && IsOwner)
         {
             // update the movement vector
             movement = newMovement;
@@ -394,7 +394,7 @@ public class PlayerController : NetworkBehaviour
 
     private void MoveCancelled()
     {
-        if (Application.isFocused)
+        if (Application.isFocused && IsClient && IsOwner)
         {
             // reset the movement vector
             movement = Vector2.zero;
@@ -407,15 +407,17 @@ public class PlayerController : NetworkBehaviour
 
     private void DashPerformed()
     {
-        if (Application.isFocused)
+        if (Application.isFocused && IsClient && IsOwner)
         {
             // calculate the time since the last dash, and if the player can dash
             float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
-            bool canDash = networkPlayerState.Value != PlayerState.Dashing && timeSinceDashCompleted >= dashCooldown;
+            bool canDash = networkPlayerState.Value != PlayerState.Dashing && timeSinceDashCompleted >= dashCooldown
+                && networkCarryState.Value == PlayerCarryState.Empty;
 
             // make sure the player is not already dashing
             if (canDash)
             {
+                Debug.LogFormat("Started dash for {0}s", dashDuration);
                 timeOfLastDash = Time.time;
 
                 // set the playerstate to dashing
