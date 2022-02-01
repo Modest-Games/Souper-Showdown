@@ -238,10 +238,9 @@ public class PlayerController : NetworkBehaviour
 
                 else
                 {
-                    Debug.DrawLine(rb.position, rb.position + (lookVector * 4), Color.red);
 
                     // calculate the dash vector
-                    Vector3 dashVector = rb.position + lookVector * dashForce * deltaTime;
+                    Vector3 dashVector = rb.position + (lookVector * dashForce * deltaTime);
 
                     // TEMP: to cause the network to send a transform update
                     //transform.Translate(transform.forward * 0.01f);
@@ -255,6 +254,8 @@ public class PlayerController : NetworkBehaviour
 
                     // look at direction of motion
                     transform.LookAt(Vector3.Lerp(transform.position + transform.forward, transform.position + lookVector, rotateSpeed * deltaTime));
+
+                    Debug.DrawLine(rb.position, rb.position + (lookVector * 4), Color.red);
 
                     UpdatePlayerStateServerRpc(PlayerState.Dashing);
                 }
