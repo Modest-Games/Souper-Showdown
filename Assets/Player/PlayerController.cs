@@ -395,7 +395,7 @@ public class PlayerController : NetworkBehaviour
             movement = newMovement;
 
             // set the playerstate to moving if not dashing
-            if (networkPlayerState.Value == PlayerState.Idle || networkPlayerState.Value == PlayerState.Moving)
+            if (playerState == PlayerState.Idle || playerState == PlayerState.Moving)
             {
                 UpdatePlayerStateServerRpc(PlayerState.Moving);
                 playerState = PlayerState.Moving;
