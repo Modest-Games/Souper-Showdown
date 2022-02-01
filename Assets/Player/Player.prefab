@@ -711,7 +711,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 3
+  m_CollisionDetection: 0
 --- !u!114 &234562847764672700
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -748,7 +748,6 @@ MonoBehaviour:
   throwForce: 5
   dazeDuration: 5
   characterObject: {fileID: 11400000, guid: 1d85da3e7e51c5d45b26814cd41613cd, type: 2}
-  carryState: 0
   carriedObject: {fileID: 0}
   isAlive: 0
   reachableCollectables: []
@@ -757,6 +756,8 @@ MonoBehaviour:
   timeOfLastDash: 0
   defaultPositionRange: {x: -5, y: 5}
   canMove: 0
+  networkCarryState:
+    m_InternalValue: 0
   networkPlayerState:
     m_InternalValue: 0
 --- !u!114 &7395216321356158848

@@ -65,7 +65,8 @@ public class PlayerController : NetworkBehaviour
     private bool justThrew;
     private float timeDazed;
 
-    public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
+    //public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
+    private NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
 
@@ -81,16 +82,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-        Debug.Log(UIManager.Instance.isChefToggle.isOn);
-
-        // setup variables
-        if (IsClient && IsOwner)
-        {
-            // set isChef
-            UpdateIsChefServerRpc(UIManager.Instance.isChefToggle.isOn);
-            Debug.Log(networkIsChef.Value);
-        }
-        
+        bool isChef = (IsClient && IsOwner) ? UIManager.Instance.isChefToggle.isOn : networkIsChef.Value;
         canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
@@ -99,8 +91,12 @@ public class PlayerController : NetworkBehaviour
         holdLocation = transform.Find("HoldLocation");
         dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
 
+        // setup variables
         if (IsClient && IsOwner)
         {
+            // set isChef
+            UpdateIsChefServerRpc(isChef);
+
             // map control inputs
             controls.Gameplay.Dash.performed += ctx => DashPerformed();
             controls.Gameplay.Move.performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
@@ -111,7 +107,7 @@ public class PlayerController : NetworkBehaviour
             controls.Gameplay.Throw.started += ctx => ThrowStarted();
 
             // Spawn the player
-            rb.position = TerrainManager.Instance.GetRandomSpawnLocation(networkIsChef.Value);
+            rb.position = TerrainManager.Instance.GetRandomSpawnLocation(isChef);
 
             // NETWORKING:
             UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
@@ -119,12 +115,12 @@ public class PlayerController : NetworkBehaviour
         }
 
         // refresh the character
-        RefreshCharacter();
+        RefreshCharacter(isChef);
 
         // setup debugging
         debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);
 
-        Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}, IsChef: {3}", IsClient, IsOwner, OwnerClientId, networkIsChef.Value);
+        Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}, IsChef: {3}", IsClient, IsOwner, OwnerClientId, isChef);
     }
 
     void Update()
@@ -353,7 +349,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     [NaughtyAttributes.Button("Refresh Character", EButtonEnableMode.Editor)]
-    private void RefreshCharacter()
+    private void RefreshCharacter(bool isChef)
     {
         // check if there is an existing mesh
         Transform oldCharacter = transform.Find("Character");
@@ -367,7 +363,7 @@ public class PlayerController : NetworkBehaviour
         GameObject newMesh = Instantiate(characterObject.characterPrefab, transform);
 
         // enable the chef hat if this player is a chef
-        transform.Find("ChefHat").gameObject.SetActive(networkIsChef.Value);
+        transform.Find("ChefHat").gameObject.SetActive(isChef);
 
         newMesh.name = "Character";
     }
@@ -481,7 +477,6 @@ public class PlayerController : NetworkBehaviour
                 reachableCollectables.Remove(nearestReachableCollectable);
 
                 // update the carryState
-                networkCarryState.Value = PlayerCarryState.CarryingObject;
                 UpdatePlayerCarryStateServerRpc(PlayerCarryState.CarryingObject);
             }
         }
@@ -505,7 +500,6 @@ public class PlayerController : NetworkBehaviour
                 heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, transform.forward, playerVelocity, lookVector, throwForce, false);
 
                 // update the carryState
-                networkCarryState.Value = PlayerCarryState.Empty;
                 UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
             }
         }
@@ -545,7 +539,6 @@ public class PlayerController : NetworkBehaviour
                 heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, transform.forward, playerVelocity, lookVector, throwForce, true);
 
                 // set the carry state to empty
-                networkCarryState.Value = PlayerCarryState.Empty;
                 UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
 
                 // hide the aim indicator
@@ -589,7 +582,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnIsChefChanged(bool oldVal, bool newVal)
     {
-        RefreshCharacter();
+        RefreshCharacter(newVal);
     }
 
     private void OnEnable()
