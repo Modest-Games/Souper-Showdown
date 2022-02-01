@@ -396,7 +396,10 @@ public class PlayerController : NetworkBehaviour
 
             // set the playerstate to moving if not dashing
             if (networkPlayerState.Value == PlayerState.Idle || networkPlayerState.Value == PlayerState.Moving)
+            {
                 UpdatePlayerStateServerRpc(PlayerState.Moving);
+                playerState = PlayerState.Moving;
+            }
         }
     }
 
@@ -409,7 +412,10 @@ public class PlayerController : NetworkBehaviour
 
             // set playerstate to idle if not dashing
             if (playerState != PlayerState.Dashing)
+            {
                 UpdatePlayerStateServerRpc(PlayerState.Idle);
+                playerState = PlayerState.Idle;
+            }
         }
     }
 
@@ -430,6 +436,7 @@ public class PlayerController : NetworkBehaviour
 
                 // set the playerstate to dashing
                 UpdatePlayerStateServerRpc(PlayerState.Dashing);
+                playerState = PlayerState.Dashing;
             }
         }
     }
