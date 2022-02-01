@@ -134,7 +134,7 @@ public class PlayerController : NetworkBehaviour
         {
             if (isAlive && canMove)
             {
-                PlayerMovement();
+                //PlayerMovement();
             }
 
             else
@@ -144,6 +144,22 @@ public class PlayerController : NetworkBehaviour
         }
 
         ClientVisuals();
+    }
+
+    private void FixedUpdate()
+    {
+        if (IsClient && IsOwner)
+        {
+            if (isAlive && canMove)
+            {
+                PlayerMovement();
+            }
+
+            else
+            {
+                // do dead things
+            }
+        }
     }
 
     private void ClientVisuals()
@@ -183,6 +199,7 @@ public class PlayerController : NetworkBehaviour
     {
         // calculate useful variables once
         float currentTime = Time.time;
+        float deltaTime = Time.fixedDeltaTime;
 
         // switch on playerstate
         switch (networkPlayerState.Value)
@@ -196,7 +213,7 @@ public class PlayerController : NetworkBehaviour
 
             case PlayerState.Moving:
                 // handle player movement
-                Vector3 movementVec = new Vector3(movement.x, 0, movement.y) * Time.deltaTime * moveSpeed;
+                Vector3 movementVec = new Vector3(movement.x, 0, movement.y) * deltaTime * moveSpeed;
                 //rb.AddForce(movementVec, ForceMode.Impulse);
                 //transform.Translate(movementVec, Space.World);
                 rb.MovePosition(rb.position + movementVec);
@@ -205,7 +222,7 @@ public class PlayerController : NetworkBehaviour
                 lookVector = movementVec.normalized;
                 lookVector.y = 0f; // remove any y angle from the look vector
 
-                transform.LookAt(Vector3.Lerp(transform.position + transform.forward, transform.position + lookVector, rotateSpeed * Time.deltaTime));
+                transform.LookAt(Vector3.Lerp(transform.position + transform.forward, transform.position + lookVector, rotateSpeed * deltaTime));
                 // transform.rotation.SetFromToRotation(transform.rotation.eulerAngles, movementVec);
 
                 // DEBUG:
@@ -228,11 +245,21 @@ public class PlayerController : NetworkBehaviour
                 {
                     Debug.DrawLine(rb.position, rb.position + (lookVector * 4), Color.red);
 
+                    // calculate the dash vector
+                    Vector3 dashVector = rb.position + lookVector * dashForce * deltaTime;
+
+                    // TEMP: to cause the network to send a transform update
+                    //transform.Translate(transform.forward * 0.01f);
+
                     // continue performing the dash
                     //transform.Translate(lookVector * dashForce * Time.deltaTime, Space.World);
-                    rb.MovePosition(rb.position + lookVector * dashForce * Time.deltaTime);
+                    rb.MovePosition(dashVector);
+                    //transform.Translate(dashVector, Space.Self);
                     //rb.AddForce(lookVector * dashForce, ForceMode.Impulse);
                     //rb.velocity = lookVector * dashForce;
+
+                    // look at direction of motion
+                    transform.LookAt(Vector3.Lerp(transform.position + transform.forward, transform.position + lookVector, rotateSpeed * deltaTime));
 
                     UpdatePlayerStateServerRpc(PlayerState.Dashing);
                 }
@@ -254,7 +281,7 @@ public class PlayerController : NetworkBehaviour
                 else
                 {
                     // update time dazed
-                    timeDazed += Time.deltaTime;
+                    timeDazed += deltaTime;
                 }
 
                 break;
