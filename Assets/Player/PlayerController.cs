@@ -256,6 +256,7 @@ public class PlayerController : NetworkBehaviour
                 if (timeDazed >= dazeDuration)
                 {
                     // end the daze
+                    playerState = PlayerState.Idle;
                     UpdatePlayerStateServerRpc(PlayerState.Idle);
                 }
 
@@ -286,8 +287,12 @@ public class PlayerController : NetworkBehaviour
                     // get the other player's PlayerController
                     PlayerController otherPC = collision.gameObject.GetComponent<PlayerController>();
 
+                    // get the other player's state (if they are a local player, then use the appropriate player state)
+                    PlayerState otherPlayerState = (otherPC.IsClient && otherPC.IsOwner)
+                        ? otherPC.playerState : otherPC.networkPlayerState.Value;
+
                     // check if the other player is a chef
-                    if (otherPC.networkIsChef.Value && otherPC.networkPlayerState.Value == PlayerState.Dashing)
+                    if (otherPC.networkIsChef.Value && otherPlayerState == PlayerState.Dashing)
                     {
                         // get rekt
                         OnBoop();
@@ -370,6 +375,7 @@ public class PlayerController : NetworkBehaviour
             GrabCancelled();
 
             // update the player state
+            playerState = PlayerState.Dazed;
             UpdatePlayerStateServerRpc(PlayerState.Dazed);
         }
     }

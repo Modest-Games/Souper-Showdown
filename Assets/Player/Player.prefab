@@ -748,13 +748,13 @@ MonoBehaviour:
   throwForce: 5
   dazeDuration: 5
   characterObject: {fileID: 11400000, guid: 1d85da3e7e51c5d45b26814cd41613cd, type: 2}
+  playerState: 0
   carriedObject: {fileID: 0}
   isAlive: 0
   reachableCollectables: []
   movement: {x: 0, y: 0}
   lookVector: {x: 0, y: 0, z: 0}
   timeOfLastDash: 0
-  defaultPositionRange: {x: -5, y: 5}
   canMove: 0
   networkCarryState:
     m_InternalValue: 0
@@ -798,8 +798,8 @@ SphereCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0.5, z: 0}
+  m_Radius: 0.53128356
+  m_Center: {x: 0, y: 0.53128356, z: 0}
 --- !u!1 &3943127579979100775
 GameObject:
   m_ObjectHideFlags: 0
@@ -1110,8 +1110,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.3
-  m_Center: {x: 0, y: 0.48000002, z: 0.74925756}
+  m_Radius: 1.469893
+  m_Center: {x: 0, y: 0.48000002, z: 0.52406263}
 --- !u!1 &6750361214461499217
 GameObject:
   m_ObjectHideFlags: 0
