@@ -41,7 +41,7 @@ public class PlayerController : NetworkBehaviour
     //public bool isChef = false;
 
     [Header("State (ReadOnly)")]
-    //[SerializeField] [ReadOnly] public PlayerState playerState;
+    [SerializeField] [ReadOnly] public PlayerState playerState;
     //[SerializeField] [ReadOnly] public PlayerCarryState carryState;
     [SerializeField] [ReadOnly] public Pollutant carriedObject;
     [SerializeField] [ReadOnly] public bool isAlive;
@@ -51,7 +51,6 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] [ReadOnly] private Vector2 movement;
     [SerializeField] [ReadOnly] private Vector3 lookVector;
     [SerializeField] [ReadOnly] private float timeOfLastDash;
-    [SerializeField] private Vector2 defaultPositionRange = new Vector2(-5, 5);
 
     private Transform holdLocation;
     private LineRenderer aimIndicator;
@@ -125,20 +124,8 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        if (IsClient && IsOwner)
-        {
-            if (isAlive && canMove)
-            {
-                //PlayerMovement();
-            }
-
-            else
-            {
-                // do dead things
-            }
-        }
-
-        ClientVisuals();
+        // update the player visuals
+        UpdateClientVisuals();
     }
 
     private void FixedUpdate()
@@ -149,34 +136,33 @@ public class PlayerController : NetworkBehaviour
             {
                 PlayerMovement();
             }
-
-            else
-            {
-                // do dead things
-            }
         }
     }
 
-    private void ClientVisuals()
+    private void UpdateClientVisuals()
     {
-        if (networkCarryState.Value == PlayerCarryState.Empty)
+        // get the state values depending on if this is a networked client or a local player
+        PlayerCarryState carryStateVal = networkCarryState.Value;
+        PlayerState playerStateVal = (IsClient && IsOwner) ? playerState : networkPlayerState.Value;
+
+        switch (carryStateVal)
         {
-            // Set "Held Object" to inactive
-            transform.GetChild(1).gameObject.SetActive(false);
+            case PlayerCarryState.Empty:
+                // Set "Held Object" to inactive
+                transform.GetChild(1).gameObject.SetActive(false);
+                break;
+
+            case PlayerCarryState.CarryingObject:
+                // Set "Held Object" to active
+                transform.GetChild(1).gameObject.SetActive(true);
+                break;
+
+            case PlayerCarryState.CarryingPlayer:
+                // Carrying Player
+                break;
         }
 
-        else if (networkCarryState.Value == PlayerCarryState.CarryingObject)
-        {
-            // Set "Held Object" to active
-            transform.GetChild(1).gameObject.SetActive(true);
-        }
-
-        else
-        {
-            // Carrying Player
-        }
-
-        switch (networkPlayerState.Value)
+        switch (playerStateVal)
         {
             case PlayerState.Dazed:
                 // show the daze indicator
@@ -197,13 +183,11 @@ public class PlayerController : NetworkBehaviour
         float deltaTime = Time.fixedDeltaTime;
 
         // switch on playerstate
-        switch (networkPlayerState.Value)
+        switch (playerState)
         {
             case PlayerState.Idle:
                 // clear rotatitonal velocity
                 rb.angularVelocity = Vector3.zero;
-
-                // play idle animation, etc.
                 break;
 
             case PlayerState.Moving:
@@ -232,13 +216,14 @@ public class PlayerController : NetworkBehaviour
                 // check if the dash should be complete
                 if ((currentTime - timeOfLastDash) >= dashDuration)
                 {
-                    // complete the dash
-                    UpdatePlayerStateServerRpc((movement.magnitude == 0) ? PlayerState.Idle : PlayerState.Moving);
+                    // complete the dash and update the player state (depending on if moving or not)
+                    PlayerState newPlayerState = (movement.magnitude == 0) ? PlayerState.Idle : PlayerState.Moving;
+                    UpdatePlayerStateServerRpc(newPlayerState);
+                    playerState = newPlayerState;
                 }
 
                 else
                 {
-
                     // calculate the dash vector
                     Vector3 dashVector = rb.position + (lookVector * dashForce * deltaTime);
 
@@ -257,7 +242,8 @@ public class PlayerController : NetworkBehaviour
 
                     Debug.DrawLine(rb.position, rb.position + (lookVector * 4), Color.red);
 
-                    UpdatePlayerStateServerRpc(PlayerState.Dashing);
+                    // update the player state
+                    //UpdatePlayerStateServerRpc(PlayerState.Dashing);
                 }
 
                 break;
@@ -282,8 +268,7 @@ public class PlayerController : NetworkBehaviour
 
                 break;
 
-            case PlayerState.Ungrounded:
-                // play a flail animation, etc.
+            default:
                 break;
         }
     }
@@ -372,7 +357,7 @@ public class PlayerController : NetworkBehaviour
     private void OnBoop()
     {
         // make sure the player can be booped
-        bool canGetBooped = (networkPlayerState.Value != PlayerState.Dazed) && (networkPlayerState.Value != PlayerState.Ungrounded);
+        bool canGetBooped = (playerState != PlayerState.Dazed) && (playerState != PlayerState.Ungrounded);
 
         if (canGetBooped)
         {
@@ -423,7 +408,7 @@ public class PlayerController : NetworkBehaviour
             movement = Vector2.zero;
 
             // set playerstate to idle if not dashing
-            if (networkPlayerState.Value != PlayerState.Dashing)
+            if (playerState != PlayerState.Dashing)
                 UpdatePlayerStateServerRpc(PlayerState.Idle);
         }
     }
@@ -434,7 +419,7 @@ public class PlayerController : NetworkBehaviour
         {
             // calculate the time since the last dash, and if the player can dash
             float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
-            bool canDash = networkPlayerState.Value != PlayerState.Dashing && timeSinceDashCompleted >= dashCooldown
+            bool canDash = playerState != PlayerState.Dashing && timeSinceDashCompleted >= dashCooldown
                 && networkCarryState.Value == PlayerCarryState.Empty;
 
             // make sure the player is not already dashing
