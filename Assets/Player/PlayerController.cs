@@ -81,11 +81,14 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
+        Debug.Log(UIManager.Instance.isChefToggle.isOn);
+
         // setup variables
         if (IsClient && IsOwner)
         {
             // set isChef
             UpdateIsChefServerRpc(UIManager.Instance.isChefToggle.isOn);
+            Debug.Log(networkIsChef.Value);
         }
         
         canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
@@ -635,7 +638,7 @@ public class PlayerController : NetworkBehaviour
         networkPlayerState.Value = newState;
     }
 
-    [ServerRpc(RequireOwnership = true)]
+    [ServerRpc(RequireOwnership = false)]
     public void UpdateIsChefServerRpc(bool newValue)
     {
         networkIsChef.Value = newValue;
