@@ -2140,6 +2140,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameController
       objectReference: {fileID: 0}
+    - target: {fileID: 3569870885152564207, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
+      propertyPath: gameDuration
+      value: 99999
+      objectReference: {fileID: 0}
     - target: {fileID: 4324836108296228691, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
       propertyPath: GlobalObjectIdHash
       value: 871113769
