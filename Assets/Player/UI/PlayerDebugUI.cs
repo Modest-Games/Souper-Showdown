@@ -37,7 +37,7 @@ public class PlayerDebugUI : MonoBehaviour
 
         // update the texts
         playerStateText.text = playerController.networkPlayerState.Value.ToString();
-        carryStateText.text = playerController.carryState.ToString();
+        carryStateText.text = playerController.networkCarryState.Value.ToString();
         numCarrablesText.text = playerController.reachableCollectables.Count.ToString();
         isAliveText.text = playerController.isAlive.ToString();
         canMoveText.text = playerController.canMove.ToString();

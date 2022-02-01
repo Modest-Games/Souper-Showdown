@@ -54,7 +54,7 @@ public class TerrainManager : NetworkBehaviour
         if (isChef)
         {
             // return a random position from the center using chefSpawnRadius
-            Vector2 randomSpawn2D = Random.insideUnitCircle * chefSpawnRadius;
+            Vector2 randomSpawn2D = Random.insideUnitCircle.normalized * chefSpawnRadius;
             return new Vector3(randomSpawn2D.x, 0f, randomSpawn2D.y);
 
         } else
