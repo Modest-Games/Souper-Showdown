@@ -439,7 +439,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 944673811197469800}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -758,7 +758,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2513465681779345470}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -853,7 +853,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2959935649406249162}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -948,7 +948,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4055239955550977964}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1075,7 +1075,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5096833356543144228}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1170,7 +1170,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5280696850770391604}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1335,7 +1335,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6059029880072012340}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1525,7 +1525,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6481196378577470144}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1715,7 +1715,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6797095027886903497}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1810,7 +1810,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7162733686479941787}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -1939,7 +1939,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7324450927783450721}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -2258,7 +2258,7 @@ BoxCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8235965957370606373}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: ed56a5e7e045f1047a8b2684b25c2748, type: 2}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
@@ -2350,6 +2350,10 @@ PrefabInstance:
     - target: {fileID: 696197427014834209, guid: ee2c41e3b4e7f9048ad419075a78b435, type: 3}
       propertyPath: m_Name
       value: Soup Pot
+      objectReference: {fileID: 0}
+    - target: {fileID: 8314790943262681647, guid: ee2c41e3b4e7f9048ad419075a78b435, type: 3}
+      propertyPath: GlobalObjectIdHash
+      value: 951099334
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ee2c41e3b4e7f9048ad419075a78b435, type: 3}
