@@ -63,6 +63,7 @@ public class ScoreManager : MonoBehaviour
     public GameObject canvas;
 
     public GameObject[] playerscoreGameObject;
+
     public TMPro.TextMeshProUGUI[] playerScoreGUI;
     public ParticleSystem[] playerParticleSystems;
     public bool[] canShrink;
@@ -80,6 +81,13 @@ public class ScoreManager : MonoBehaviour
         timeSinceLast = 0f;
         canShrink = new bool[4];
         playerScore = new PlayerStats[4];
+
+        //playerscoreGameObject = new GameObject[4];
+
+        for (int profile = 0; profile < transform.childCount; profile++)
+        {
+            //playerscoreGameObject[profile] = transform.GetChild(profile).Find("Frame").Find("PlayerScore").gameObject;
+        }
 
         for (int i = 0; i < playerMax; i++)
         {
