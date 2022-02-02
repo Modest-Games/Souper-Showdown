@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using Unity.Netcode;
 
 public class SpoilMeter : NetworkBehaviour
@@ -8,9 +9,13 @@ public class SpoilMeter : NetworkBehaviour
     [SerializeField] private float value;
 
     private RectTransform maskTransform;
+    private Image fillLine;
+
     private float smoothTime;
     private float velocity;
     private float acceptableDifference;
+
+    private Color green;
 
     void Start()
     {
@@ -19,11 +24,14 @@ public class SpoilMeter : NetworkBehaviour
 
         // The transform for the Spoil Meter's mask:
         maskTransform = GetComponent<RectTransform>();
+        fillLine = transform.GetChild(0).gameObject.GetComponent<Image>();
 
         // Variables for smoothing value changes to the Spoil Meter:
         smoothTime = 1.0f;
         velocity = 0.0f;
         acceptableDifference = 0.5f;
+
+        green = new Color(152f/255f, 174f/255f, 81f/255f);
     }
 
     private void ChangeSpoilMeterValue(float pollutantValue)
@@ -61,6 +69,12 @@ public class SpoilMeter : NetworkBehaviour
         // Convert the value change in relation to the Spoil Meter mask's x position:
         var maskTarget = CalculateMaskPosition(maskTransform.anchoredPosition.x, pollutantValue);
         StartCoroutine(SpoilMeterSmoothing(maskTarget));
+
+        // Change Fill Line's color to green: (animate this later)
+        if(value > 66.66f)
+        {
+            fillLine.color = green;
+        }
     }
 
     private void OnSoupReceivedTrash()
