@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb37047bab566ae40ac1f165e2959178, type: 3}
-  m_Name: AlphaCarrotCharacter
+  m_Name: AlphaCarrot_Character
   m_EditorClassIdentifier: 
   characterName: Alpha Carrot
   characterPrefab: {fileID: 3234332731889011418, guid: a50dfeabcc5a29c49aaa6a3477699bec, type: 3}
