@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class ArrowTrapBehaviour : MonoBehaviour
+public class ArrowTrapBehaviour : NetworkBehaviour
 {
     [Header("Config")]
     public GameObject arrowTrapMesh;
@@ -30,16 +31,20 @@ public class ArrowTrapBehaviour : MonoBehaviour
 
     void Update()
     {
-        if (shouldUpdate)
+        if (IsServer)
         {
-            // check if should shoot
-            if (timeSinceLastShot >= timeBetweenShots)
+            if (shouldUpdate)
             {
-                Shoot();
+                // check if should shoot
+                if (timeSinceLastShot >= timeBetweenShots)
+                {
+                    Shoot();
 
-            } else
-            {
-                timeSinceLastShot += Time.deltaTime;
+                }
+                else
+                {
+                    timeSinceLastShot += Time.deltaTime;
+                }
             }
         }
     }
@@ -52,7 +57,9 @@ public class ArrowTrapBehaviour : MonoBehaviour
     public void Shoot()
     {
         // create an arrow
-        GameObject newArrow = Instantiate(arrowPrefab, transform.position, transform.rotation);
+        GameObject newArrow = Instantiate(arrowPrefab, new Vector3(transform.position.x, transform.position.y + 1.0f, transform.position.z), transform.rotation);
+        newArrow.GetComponent<NetworkObject>().Spawn();
+
         ArrowBehaviour newArrowBehaviour = newArrow.GetComponent<ArrowBehaviour>();
 
         // configure the arrow
