@@ -297,35 +297,6 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log(collision.gameObject.tag);
-
-        // only get booped if not a chef
-        if (IsOwner && IsClient && !networkIsChef.Value)
-        {
-            switch (collision.gameObject.tag)
-            {
-                case "Player":
-                    // get the other player's PlayerController
-                    PlayerController otherPC = collision.gameObject.GetComponent<PlayerController>();
-
-                    // get the other player's state (if they are a local player, then use the appropriate player state)
-                    PlayerState otherPlayerState = (otherPC.IsClient && otherPC.IsOwner)
-                        ? otherPC.playerState : otherPC.networkPlayerState.Value;
-
-                    // check if the other player is a chef
-                    if (otherPC.networkIsChef.Value && otherPlayerState == PlayerState.Dashing)
-                    {
-                        // get rekt
-                        OnBoop();
-                    }
-
-                    break;
-            }
-        }
-    }
-
     private void OnTriggerEnter(Collider other)
     {
         if (IsOwner && IsClient)
@@ -341,6 +312,35 @@ public class PlayerController : NetworkBehaviour
                     }
 
                     //Debug.Log("ENTER: " + other.gameObject.GetInstanceID());
+                    break;
+            }
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        Debug.Log(other.gameObject.tag);
+
+        // only get booped if not a chef
+        if (IsOwner && IsClient && !networkIsChef.Value)
+        {
+            switch (other.gameObject.tag)
+            {
+                case "Player":
+                    // get the other player's PlayerController
+                    PlayerController otherPC = other.gameObject.GetComponent<PlayerController>();
+
+                    // get the other player's state (if they are a local player, then use the appropriate player state)
+                    PlayerState otherPlayerState = (otherPC.IsClient && otherPC.IsOwner)
+                        ? otherPC.playerState : otherPC.networkPlayerState.Value;
+
+                    // check if the other player is a chef
+                    if (otherPC.networkIsChef.Value && otherPlayerState == PlayerState.Dashing)
+                    {
+                        // get rekt
+                        OnBoop();
+                    }
+
                     break;
             }
         }
