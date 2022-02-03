@@ -164,6 +164,7 @@ public class PlayerController : NetworkBehaviour
         if (!characterInitialized && characterObject != null)
         {
             RefreshCharacter();
+            characterInitialized = true;
         }
     }
 
