@@ -82,7 +82,7 @@ public class PlayerController : NetworkBehaviour
     private GameObject heldObject;
     private bool justThrew;
     private float timeDazed;
-    private bool needsRefresh;
+    private bool characterInitialized;
 
     //public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     //public NetworkString networkCharacterName = new NetworkString();
@@ -94,7 +94,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
-        needsRefresh = false;
+        characterInitialized = false;
         isAlive = true;
         lookVector = transform.forward;
         timeOfLastDash = 0;
@@ -144,9 +144,6 @@ public class PlayerController : NetworkBehaviour
             UpdatePlayerStateServerRpc(PlayerState.Idle);
         }
 
-        // refresh the character
-        RefreshCharacter(isChef);
-
         // setup debugging
         debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);
 
@@ -162,6 +159,12 @@ public class PlayerController : NetworkBehaviour
     {
         // update the player visuals
         UpdateClientVisuals();
+
+        // check if the character needs to be refreshed
+        if (!characterInitialized && characterObject != null)
+        {
+            RefreshCharacter();
+        }
     }
 
     private void FixedUpdate()
@@ -376,11 +379,10 @@ public class PlayerController : NetworkBehaviour
     }
 
     [NaughtyAttributes.Button("Refresh Character", EButtonEnableMode.Editor)]
-    private void RefreshCharacter(bool isChef)
+    private void RefreshCharacter()
     {
         // check if there is a character mesh ready
-        needsRefresh = characterObject == null;
-        GameObject newCharacterMesh = needsRefresh ?
+        GameObject newCharacterMesh = characterObject == null ?
             CharacterManager.Instance.characterList[0].characterPrefab : characterObject.characterPrefab;
 
         // check if there is an existing mesh
@@ -395,7 +397,7 @@ public class PlayerController : NetworkBehaviour
         GameObject newMesh = Instantiate(newCharacterMesh, transform);
 
         // enable the chef hat if this player is a chef
-        transform.Find("ChefHat").gameObject.SetActive(isChef);
+        transform.Find("ChefHat").gameObject.SetActive(networkIsChef.Value);
 
         newMesh.name = "Character";
     }
@@ -622,7 +624,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnIsChefChanged(bool oldVal, bool newVal)
     {
-        RefreshCharacter(newVal);
+        RefreshCharacter();
     }
 
     private void OnEnable()
