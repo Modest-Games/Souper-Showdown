@@ -47,7 +47,7 @@ MonoBehaviour:
   numStartingPoints: 25
   smallKnifePrefab: {fileID: 2266208039417113898, guid: 4e71bf0bb659eab4d9f305df69da45a1, type: 3}
   chefKnifePrefab: {fileID: 4168886658747441271, guid: 001163f0e4837484c86da6829f0573c1, type: 3}
-  blenderPrefab: {fileID: 2090858559614160968, guid: ed1cb69932fe67340972bb13561aa680, type: 3}
+  blenderPrefab: {fileID: 1802975607863114797, guid: 9f219294e1cdd55488eb3cf3cc1ae91c, type: 3}
 --- !u!1 &450344430848429288
 GameObject:
   m_ObjectHideFlags: 0
@@ -95,7 +95,7 @@ MonoBehaviour:
   numStartingPoints: 25
   smallKnifePrefab: {fileID: 2266208039417113898, guid: 4e71bf0bb659eab4d9f305df69da45a1, type: 3}
   chefKnifePrefab: {fileID: 4168886658747441271, guid: 001163f0e4837484c86da6829f0573c1, type: 3}
-  blenderPrefab: {fileID: 2090858559614160968, guid: ed1cb69932fe67340972bb13561aa680, type: 3}
+  blenderPrefab: {fileID: 1802975607863114797, guid: 9f219294e1cdd55488eb3cf3cc1ae91c, type: 3}
 --- !u!1 &450344431042757987
 GameObject:
   m_ObjectHideFlags: 0
