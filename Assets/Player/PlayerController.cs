@@ -65,7 +65,7 @@ public class PlayerController : NetworkBehaviour
     private float timeDazed;
 
     //public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
-    private NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
+    public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
 
@@ -106,7 +106,7 @@ public class PlayerController : NetworkBehaviour
             controls.Gameplay.Throw.started += ctx => ThrowStarted();
 
             // Spawn the player
-            rb.position = TerrainManager.Instance.GetRandomSpawnLocation(isChef);
+            PlayerRandomSpawnPoint(isChef);
 
             // NETWORKING:
             UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
@@ -120,6 +120,11 @@ public class PlayerController : NetworkBehaviour
         debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);
 
         Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}, IsChef: {3}", IsClient, IsOwner, OwnerClientId, isChef);
+    }
+
+    private void PlayerRandomSpawnPoint(bool isChef)
+    {
+        rb.position = TerrainManager.Instance.GetRandomSpawnLocation(isChef);
     }
 
     void Update()
@@ -618,6 +623,12 @@ public class PlayerController : NetworkBehaviour
         networkIsChef.OnValueChanged -= OnIsChefChanged;
     }
 
+    [ClientRpc]
+    public void KillPlayerClientRpc(ClientRpcParams clientRpcParams = default)
+    {
+        StartCoroutine(RespawnTiming());
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public void UpdatePlayerCarryStateServerRpc(PlayerCarryState newState)
     {
@@ -643,5 +654,19 @@ public class PlayerController : NetworkBehaviour
         yield return new WaitForSeconds(0.50f);
 
         justThrew = false;
+    }
+
+    public IEnumerator RespawnTiming()
+    {
+        GrabCancelled();
+        canMove = false;
+
+        yield return new WaitForSeconds(0.1f);
+
+        PlayerRandomSpawnPoint(false);
+
+        yield return new WaitForSeconds(0.90f);
+
+        canMove = true;
     }
 }

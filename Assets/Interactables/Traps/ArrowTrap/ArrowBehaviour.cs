@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Unity.Netcode;
 
-public class ArrowBehaviour : MonoBehaviour
+public class ArrowBehaviour : NetworkBehaviour
 {
     [Header("Config")]
     public GameObject arrowMesh;
@@ -31,6 +32,8 @@ public class ArrowBehaviour : MonoBehaviour
 
     void Update()
     {
+        if (!IsServer) return;
+
         // make sure the arrow should be updating
         if (shouldUpdate)
         {
@@ -42,12 +45,15 @@ public class ArrowBehaviour : MonoBehaviour
                     //destroy the arrow
                     Destroy(gameObject);
 
-                } else
+                }
+                else
                 {
-                    DoFadeOut();
+                   DoFadeOut();
                 }
 
-            } else
+            }
+                
+            else
             {
                 // check if the arrow has travelled enough
                 if (distanceTravelled >= travelDistance)
@@ -55,7 +61,9 @@ public class ArrowBehaviour : MonoBehaviour
                     // destroy the arrow
                     Destroy(gameObject);
 
-                } else
+                }
+   
+                else
                 {
                     // continue moving forward
                     Move();
@@ -88,10 +96,28 @@ public class ArrowBehaviour : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!IsServer) return;
+
         if (other.CompareTag("Soup Pot") || other.CompareTag("Wall"))
         {
             hasCollided = true;
+        }
 
+        if(other.CompareTag("Player"))
+        {
+            var playerController = other.gameObject.GetComponent<PlayerController>();
+
+            // Don't kill Chef player with it's own trap: 
+            if (playerController.networkIsChef.Value) return;
+
+            // Send message to client that got hit to respawn itself:
+            playerController.KillPlayerClientRpc(new ClientRpcParams
+            {
+                Send = new ClientRpcSendParams
+                {
+                    TargetClientIds = new ulong[] { other.gameObject.GetComponent<NetworkObject>().OwnerClientId }
+                }
+            });
         }
     }
 }
