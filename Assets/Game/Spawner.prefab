@@ -46,7 +46,9 @@ MonoBehaviour:
   pollutantPrefab: {fileID: 5288980905173298321, guid: 440a5ac09cb64e44a8d21b77ae348f52, type: 3}
   pollutants:
   - {fileID: 11400000, guid: 976f6c240026233449c01a57e47e58a8, type: 2}
+  useSquareExclusion: 1
+  squareExclusion: {x: 52, y: 32}
+  roundExclusionRadius: 0
   spawnBounds: {x: 60, y: 40}
-  soupZoneRadius: 12
   defaultYValue: 0.25
   manualPollutantsToSpawn: 0

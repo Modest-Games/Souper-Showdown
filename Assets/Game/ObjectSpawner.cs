@@ -10,8 +10,10 @@ public class ObjectSpawner : NetworkBehaviour
     public Pollutant[] pollutants;
 
     [Header("Config")]
+    public bool useSquareExclusion;
+    public Vector2 squareExclusion;
+    public float roundExclusionRadius;
     public Vector2 spawnBounds;
-    public float soupZoneRadius;
     public float defaultYValue;
 
     [Button("Spawn Pollutant")]
@@ -46,10 +48,23 @@ public class ObjectSpawner : NetworkBehaviour
 
     private Vector3 GetSpawnLocation()
     {
-        float xVal = Random.Range(0f, spawnBounds.x / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
-        float yMin = Mathf.Max(0f, soupZoneRadius - Mathf.Abs(xVal));
-        float yVal = Random.Range(yMin, spawnBounds.y / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
+        Vector3 returnVec;
 
-        return new Vector3(xVal, defaultYValue, yVal);
+        if (useSquareExclusion)
+        {
+            float xVal = Random.Range(squareExclusion.x / 2f, spawnBounds.x / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
+            //float yMin = Mathf.Max(0f, (squareExclusion.y / 2f) - Mathf.Abs(xVal));
+            //float yMin = Mathf.Abs(xVal) > squareExclusion.x / 2f ? 0f : squareExclusion.y / 2f;
+            float yVal = Random.Range(0f, spawnBounds.y / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
+            returnVec = new Vector3(xVal, defaultYValue, yVal);
+        } else
+        {
+            float xVal = Random.Range(0f, spawnBounds.x / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
+            float yMin = Mathf.Max(0f, roundExclusionRadius - Mathf.Abs(xVal));
+            float yVal = Random.Range(yMin, spawnBounds.y / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
+            returnVec = new Vector3(xVal, defaultYValue, yVal);
+        }
+
+        return returnVec;
     }
 }
