@@ -41,14 +41,6 @@ public class UIManager : MonoBehaviour
         }
 
         isChefToggle.isOn = false;
-
-        // setup character selector
-        characterSelector.itemText.text = "Character";
-        foreach (Character character in CharacterManager.Instance.characterList)
-        {
-            characterSelector.options.Add(new Dropdown.OptionData(character.characterName));
-        }
-        
     }
 
     private void Update()
@@ -58,6 +50,13 @@ public class UIManager : MonoBehaviour
 
     private void Start()
     {
+        // setup character selector
+        characterSelector.itemText.text = "Character";
+        foreach (Character character in CharacterManager.Instance.characterList)
+        {
+            characterSelector.options.Add(new Dropdown.OptionData(character.characterName));
+        }
+
         hasServerStarted = false;
 
         startHostButton.onClick.AddListener(() =>
