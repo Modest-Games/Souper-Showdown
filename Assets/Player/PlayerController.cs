@@ -328,7 +328,7 @@ public class PlayerController : NetworkBehaviour
             {
                 case "Player":
                     // get the other player's PlayerController
-                    PlayerController otherPC = other.gameObject.GetComponent<PlayerController>();
+                    PlayerController otherPC = other.GetComponentInParent<PlayerController>();
 
                     // get the other player's state (if they are a local player, then use the appropriate player state)
                     PlayerState otherPlayerState = (otherPC.IsClient && otherPC.IsOwner)
