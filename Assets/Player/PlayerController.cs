@@ -82,6 +82,7 @@ public class PlayerController : NetworkBehaviour
     private GameObject heldObject;
     private bool justThrew;
     private float timeDazed;
+    private bool needsRefresh;
 
     //public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     //public NetworkString networkCharacterName = new NetworkString();
@@ -93,6 +94,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
+        needsRefresh = false;
         isAlive = true;
         lookVector = transform.forward;
         timeOfLastDash = 0;
@@ -376,6 +378,11 @@ public class PlayerController : NetworkBehaviour
     [NaughtyAttributes.Button("Refresh Character", EButtonEnableMode.Editor)]
     private void RefreshCharacter(bool isChef)
     {
+        // check if there is a character mesh ready
+        needsRefresh = characterObject == null;
+        GameObject newCharacterMesh = needsRefresh ?
+            CharacterManager.Instance.characterList[0].characterPrefab : characterObject.characterPrefab;
+
         // check if there is an existing mesh
         Transform oldCharacter = transform.Find("Character");
         if (oldCharacter != null)
@@ -385,7 +392,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         // instantiate the new mesh
-        GameObject newMesh = Instantiate(characterObject.characterPrefab, transform);
+        GameObject newMesh = Instantiate(newCharacterMesh, transform);
 
         // enable the chef hat if this player is a chef
         transform.Find("ChefHat").gameObject.SetActive(isChef);
