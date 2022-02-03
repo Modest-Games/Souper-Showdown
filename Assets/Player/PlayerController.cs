@@ -458,8 +458,8 @@ public class PlayerController : NetworkBehaviour
         {
             // calculate the time since the last dash, and if the player can dash
             float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
-            bool canDash = playerState != PlayerState.Dashing && timeSinceDashCompleted >= dashCooldown
-                && networkCarryState.Value == PlayerCarryState.Empty;
+            bool canDash = (playerState == PlayerState.Idle || playerState == PlayerState.Moving)
+                && timeSinceDashCompleted >= dashCooldown && networkCarryState.Value == PlayerCarryState.Empty;
 
             // make sure the player is not already dashing
             if (canDash)
