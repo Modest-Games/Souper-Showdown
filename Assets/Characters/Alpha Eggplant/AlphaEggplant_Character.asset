@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: AlphaEggplant_Character
   m_EditorClassIdentifier: 
   characterName: Alpha Eggplant
-  characterPrefab: {fileID: 0}
+  characterPrefab: {fileID: 3234332731889011418, guid: 433345c5dea81e5498bbba1a7707c508, type: 3}
