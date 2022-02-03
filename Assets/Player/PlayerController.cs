@@ -12,23 +12,6 @@ using NaughtyAttributes;
 [RequireComponent(typeof(ClientNetworkTransform))]
 public class PlayerController : NetworkBehaviour
 {
-    struct NetworkCharacterName : INetworkSerializable
-    {
-        public string CharacterName;
-
-        // INetworkSerializable
-        void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
-        {
-            serializer.SerializeValue(ref CharacterName);
-        }
-
-        void INetworkSerializable.NetworkSerialize<T>(BufferSerializer<T> serializer)
-        {
-            throw new System.NotImplementedException();
-        }
-        // ~INetworkSerializable
-    }
-
     public enum PlayerState
     {
         Idle,
@@ -628,6 +611,13 @@ public class PlayerController : NetworkBehaviour
         RefreshCharacter();
     }
 
+    private void OnCharacterNameChanged(
+        Unity.Collections.FixedString64Bytes oldVal, Unity.Collections.FixedString64Bytes newVal)
+    {
+        characterObject = CharacterManager.Instance.GetCharacter(newVal.ToString());
+        RefreshCharacter();
+    }
+
     private void OnEnable()
     {
         // enable controls
@@ -643,6 +633,7 @@ public class PlayerController : NetworkBehaviour
 
         // setup network event listeners
         networkIsChef.OnValueChanged += OnIsChefChanged;
+        networkCharacterName.OnValueChanged += OnCharacterNameChanged;
     }
 
     private void OnDisable()
@@ -660,6 +651,7 @@ public class PlayerController : NetworkBehaviour
 
         // clear network event listeners
         networkIsChef.OnValueChanged -= OnIsChefChanged;
+        networkCharacterName.OnValueChanged += OnCharacterNameChanged;
     }
 
     [ClientRpc]
