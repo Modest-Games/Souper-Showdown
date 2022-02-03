@@ -7,10 +7,28 @@ using Unity.Netcode;
 using Unity.Netcode.Samples;
 using NaughtyAttributes;
 
+
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(ClientNetworkTransform))]
 public class PlayerController : NetworkBehaviour
 {
+    struct NetworkCharacterName : INetworkSerializable
+    {
+        public string CharacterName;
+
+        // INetworkSerializable
+        void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+        {
+            serializer.SerializeValue(ref CharacterName);
+        }
+
+        void INetworkSerializable.NetworkSerialize<T>(BufferSerializer<T> serializer)
+        {
+            throw new System.NotImplementedException();
+        }
+        // ~INetworkSerializable
+    }
+
     public enum PlayerState
     {
         Idle,
@@ -26,6 +44,7 @@ public class PlayerController : NetworkBehaviour
         CarryingObject,
         CarryingPlayer
     }
+
 
     [Header("Config")]
     public float moveSpeed;
@@ -65,7 +84,9 @@ public class PlayerController : NetworkBehaviour
     private float timeDazed;
 
     //public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
-    public NetworkVariable<NetworkString> networkCharacterName = new NetworkVariable<NetworkString>();
+    //public NetworkString networkCharacterName = new NetworkString();
+    //public NetworkVariable<char> networkCharacterName = new NetworkVariable<char>();
+    public NetworkVariable<Unity.Collections.FixedString64Bytes> networkCharacterName = new NetworkVariable<Unity.Collections.FixedString64Bytes>();
     public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
@@ -84,8 +105,8 @@ public class PlayerController : NetworkBehaviour
     {
         bool isChef = (IsClient && IsOwner) ? UIManager.Instance.isChefToggle.isOn : networkIsChef.Value;
         characterObject = (IsClient && IsOwner) ?
-            CharacterManager.Instance.GetCharacterByName(UIManager.Instance.characterSelector.itemText.text) :
-            CharacterManager.Instance.GetCharacterByName(networkCharacterName.Value);
+            CharacterManager.Instance.GetCharacter(UIManager.Instance.chosenCharacterIndex) :
+            CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
         canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
@@ -101,6 +122,7 @@ public class PlayerController : NetworkBehaviour
             UpdateIsChefServerRpc(isChef);
 
             // set character name
+            Debug.Log(characterObject.characterName);
             UpdateCharacterNameServerRpc(characterObject.characterName);
 
             // map control inputs

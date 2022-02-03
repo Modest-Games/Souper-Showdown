@@ -20,8 +20,21 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
-    public Character GetCharacterByName(string name)
+    public Character GetCharacter(int index)
     {
-        return characterList.Find(x => x.characterName.ToLower() == name.ToLower());
+        return characterList[index];
+    }
+    public Character GetCharacter(string name, bool doLog)
+    {
+        Character foundCharacter = characterList.Find(x => x.characterName == name);
+
+        if (doLog)
+            Debug.LogFormat("Name: {0}, Found character: {1}", name, foundCharacter);
+
+        return foundCharacter;
+    }
+    public Character GetCharacter(string name)
+    {
+        return GetCharacter(name, false);
     }
 }

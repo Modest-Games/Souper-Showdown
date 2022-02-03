@@ -19,9 +19,11 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Button startGameButton;
 
-    [SerializeField] public Dropdown characterSelector;
+    [SerializeField] private Dropdown characterSelector;
 
     public Toggle isChefToggle;
+    public string chosenCharacterName;
+    public int chosenCharacterIndex;
 
     private bool hasServerStarted;
 
@@ -51,11 +53,18 @@ public class UIManager : MonoBehaviour
     private void Start()
     {
         // setup character selector
-        characterSelector.itemText.text = "Character";
         foreach (Character character in CharacterManager.Instance.characterList)
         {
             characterSelector.options.Add(new Dropdown.OptionData(character.characterName));
         }
+        characterSelector.RefreshShownValue();
+
+        characterSelector.onValueChanged.AddListener((chosen) =>
+        {
+            //Debug.Log(characterSelector.options[chosen].text);
+            chosenCharacterName = characterSelector.options[chosen].text;
+            chosenCharacterIndex = chosen;
+        });
 
         hasServerStarted = false;
 
