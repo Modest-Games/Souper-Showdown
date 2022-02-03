@@ -6,7 +6,7 @@ public class CharacterManager : MonoBehaviour
 {
     public static CharacterManager Instance;
 
-    public Character[] characterList;
+    public List<Character> characterList;
 
     private void Awake()
     {
@@ -18,5 +18,10 @@ public class CharacterManager : MonoBehaviour
         {
             Instance = this;
         }
+    }
+
+    public Character GetCharacterByName(string name)
+    {
+        return characterList.Find(x => x.characterName.ToLower() == name.ToLower());
     }
 }

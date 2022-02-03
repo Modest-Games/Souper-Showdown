@@ -65,6 +65,7 @@ public class PlayerController : NetworkBehaviour
     private float timeDazed;
 
     //public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
+    public NetworkVariable<NetworkString> networkCharacterName = new NetworkVariable<NetworkString>();
     public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
@@ -82,6 +83,9 @@ public class PlayerController : NetworkBehaviour
     private void Start()
     {
         bool isChef = (IsClient && IsOwner) ? UIManager.Instance.isChefToggle.isOn : networkIsChef.Value;
+        characterObject = (IsClient && IsOwner) ?
+            CharacterManager.Instance.GetCharacterByName(UIManager.Instance.characterSelector.itemText.text) :
+            CharacterManager.Instance.GetCharacterByName(networkCharacterName.Value);
         canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
@@ -95,6 +99,9 @@ public class PlayerController : NetworkBehaviour
         {
             // set isChef
             UpdateIsChefServerRpc(isChef);
+
+            // set character name
+            UpdateCharacterNameServerRpc(characterObject.characterName);
 
             // map control inputs
             controls.Gameplay.Dash.performed += ctx => DashPerformed();
@@ -645,6 +652,12 @@ public class PlayerController : NetworkBehaviour
     public void UpdateIsChefServerRpc(bool newValue)
     {
         networkIsChef.Value = newValue;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void UpdateCharacterNameServerRpc(string newName)
+    {
+        networkCharacterName.Value = newName;
     }
 
     public IEnumerator TempDisablePickup()

@@ -19,6 +19,8 @@ public class UIManager : MonoBehaviour
 
     [SerializeField] private Button startGameButton;
 
+    [SerializeField] public Dropdown characterSelector;
+
     public Toggle isChefToggle;
 
     private bool hasServerStarted;
@@ -39,6 +41,14 @@ public class UIManager : MonoBehaviour
         }
 
         isChefToggle.isOn = false;
+
+        // setup character selector
+        characterSelector.itemText.text = "Character";
+        foreach (Character character in CharacterManager.Instance.characterList)
+        {
+            characterSelector.options.Add(new Dropdown.OptionData(character.characterName));
+        }
+        
     }
 
     private void Update()
