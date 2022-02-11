@@ -2875,7 +2875,7 @@
     "overrideHLSLDeclaration": false,
     "hlslDeclarationOverride": 0,
     "m_Hidden": false,
-    "m_Value": 1.0,
+    "m_Value": 0.25,
     "m_FloatType": 1,
     "m_RangeValues": {
         "x": 0.0,
@@ -5558,7 +5558,7 @@
             "referenceName": "MANUAL"
         }
     ],
-    "m_Value": 0,
+    "m_Value": 2,
     "m_IsEditable": true
 }
 
