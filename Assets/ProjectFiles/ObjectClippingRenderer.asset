@@ -15,9 +15,9 @@ MonoBehaviour:
   m_Active: 1
   settings:
     passTag: CharacterBehind
-    Event: 500
+    Event: 300
     filterSettings:
-      RenderQueueType: 1
+      RenderQueueType: 0
       LayerMask:
         serializedVersion: 2
         m_Bits: 512
@@ -69,7 +69,7 @@ MonoBehaviour:
     materialErrorPS: {fileID: 4800000, guid: 5fd9a8feb75a4b5894c241777f519d4e, type: 3}
   m_OpaqueLayerMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 503
   m_TransparentLayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -80,7 +80,7 @@ MonoBehaviour:
     passOperation: 2
     failOperation: 0
     zFailOperation: 0
-  m_ShadowTransparentReceive: 1
+  m_ShadowTransparentReceive: 0
   m_RenderingMode: 0
   m_AccurateGbufferNormals: 0
 --- !u!114 &6537368622735815199
@@ -98,9 +98,9 @@ MonoBehaviour:
   m_Active: 1
   settings:
     passTag: Character
-    Event: 500
+    Event: 300
     filterSettings:
-      RenderQueueType: 1
+      RenderQueueType: 0
       LayerMask:
         serializedVersion: 2
         m_Bits: 512

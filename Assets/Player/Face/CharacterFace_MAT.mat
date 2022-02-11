@@ -151,7 +151,7 @@ Material:
     - _DstBlend: 0
     - _EMMISSIONTYPE: 0
     - _EmmissionClampMax: 1
-    - _EmmissionClampMin: 0.1
+    - _EmmissionClampMin: 0.151
     - _EmmissionStrength: 0.5
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
