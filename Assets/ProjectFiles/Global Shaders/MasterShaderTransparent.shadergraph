@@ -4886,7 +4886,7 @@
     },
     "m_Name": "NormalStrength",
     "m_DefaultReferenceName": "Vector1_b4ce2690effa497891389d56af5b3461",
-    "m_OverrideReferenceName": "",
+    "m_OverrideReferenceName": "_NormalStrength",
     "m_GeneratePropertyBlock": true,
     "m_Precision": 0,
     "overrideHLSLDeclaration": false,
