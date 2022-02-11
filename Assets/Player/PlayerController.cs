@@ -12,6 +12,12 @@ using NaughtyAttributes;
 [RequireComponent(typeof(ClientNetworkTransform))]
 public class PlayerController : NetworkBehaviour
 {
+    public enum ArmState
+    {
+        Stiff,
+        Loose
+    }
+
     public enum PlayerState
     {
         Idle,
@@ -53,6 +59,10 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] [ReadOnly] private Vector2 movement;
     [SerializeField] [ReadOnly] private Vector3 lookVector;
     [SerializeField] [ReadOnly] private float timeOfLastDash;
+
+
+    private GameObject looseArms;
+    private GameObject stiffArms;
 
     private Transform holdLocation;
     private LineRenderer aimIndicator;
@@ -100,6 +110,12 @@ public class PlayerController : NetworkBehaviour
         holdLocation = transform.Find("HoldLocation");
         dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
 
+        //looseArms = ;
+        //stiffArms = null;
+
+        //looseArms = characterObject.characterPrefab.transform.Find("Flaccid").gameObject;
+        //stiffArms = characterObject.characterPrefab.transform.Find("Stiff").gameObject;
+
         // setup variables
         if (IsClient && IsOwner)
         {
@@ -131,6 +147,30 @@ public class PlayerController : NetworkBehaviour
         debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);
 
         Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}, IsChef: {3}", IsClient, IsOwner, OwnerClientId, isChef);
+    }
+
+    private void toggleState()
+    {
+        PlayerCarryState carryStateVal = networkCarryState.Value;
+
+        if(looseArms != null && stiffArms != null)
+        {
+            looseArms = transform.Find("Character").Find("Flaccid").gameObject;
+            stiffArms = transform.Find("Character").Find("Stiff").gameObject;
+
+            if (carryStateVal == PlayerCarryState.Empty)
+            {
+                Debug.Log("Loose arms engaged");
+                looseArms.SetActive(true);
+                stiffArms.SetActive(false);
+            }
+            else
+            {
+                Debug.Log("Stiff arms engaged");
+                stiffArms.SetActive(true);
+                looseArms.SetActive(false);
+            }
+        }
     }
 
     private void PlayerRandomSpawnPoint(bool isChef)
@@ -168,6 +208,7 @@ public class PlayerController : NetworkBehaviour
         PlayerCarryState carryStateVal = networkCarryState.Value;
         PlayerState playerStateVal = (IsClient && IsOwner) ? playerState : networkPlayerState.Value;
 
+        toggleState();
         switch (carryStateVal)
         {
             case PlayerCarryState.Empty:
@@ -182,6 +223,7 @@ public class PlayerController : NetworkBehaviour
 
             case PlayerCarryState.CarryingPlayer:
                 // Carrying Player
+                
                 break;
         }
 
@@ -319,7 +361,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        Debug.Log(other.gameObject.tag);
+        //Debug.Log(other.gameObject.tag); //TEMP UNDO
 
         // only get booped if not a chef
         if (IsOwner && IsClient && !networkIsChef.Value)
@@ -368,7 +410,7 @@ public class PlayerController : NetworkBehaviour
         // check if there is a character mesh ready
         GameObject newCharacterMesh = characterObject == null ?
             CharacterManager.Instance.characterList[0].characterPrefab : characterObject.characterPrefab;
-
+        
         // check if there is an existing mesh
         Transform oldCharacter = transform.Find("Character");
         if (oldCharacter != null)
@@ -384,6 +426,10 @@ public class PlayerController : NetworkBehaviour
         transform.Find("ChefHat").gameObject.SetActive(networkIsChef.Value);
 
         newMesh.name = "Character";
+
+        looseArms = characterObject.characterPrefab.transform.Find("Flaccid").gameObject;
+        stiffArms = characterObject.characterPrefab.transform.Find("Stiff").gameObject;
+
     }
 
     private void OnBoop()
