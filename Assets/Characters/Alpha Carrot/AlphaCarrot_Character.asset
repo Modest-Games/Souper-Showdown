@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Alpha Carrot
   characterPrefab: {fileID: 3234332731889011418, guid: a50dfeabcc5a29c49aaa6a3477699bec, type: 3}
+  primaryColour: {r: 1, g: 0.5254902, b: 0.06666667, a: 1}

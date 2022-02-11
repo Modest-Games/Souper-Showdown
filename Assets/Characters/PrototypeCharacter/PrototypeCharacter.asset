@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Prototype Character
   characterPrefab: {fileID: 3234332731889011418, guid: 030f1106d9b2c924c9c6fccb247ae161, type: 3}
+  primaryColour: {r: 0.043137256, g: 0.4039216, b: 0.1137255, a: 0}
