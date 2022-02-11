@@ -9,6 +9,7 @@ TagManager:
   - Soup Pot
   - Wall
   - Projectile
+  - CamTargetCroup
   layers:
   - Default
   - TransparentFX
