@@ -832,7 +832,7 @@ MonoBehaviour:
     m_ActionName: Debug/ToggleDebug[/Keyboard/shift,/Keyboard/d]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
-  m_DefaultActionMap: ba15d570-7a8e-4ff3-8774-78c9272c0659
+  m_DefaultActionMap: Gameplay
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
 --- !u!114 &3164488357604530773

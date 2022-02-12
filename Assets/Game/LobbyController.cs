@@ -25,7 +25,7 @@ public class LobbyController : NetworkBehaviour
 
     void Start()
     {
-        NetworkManager.Singleton.StartHost();
+        //NetworkManager.Singleton.StartHost();
     }
 
     void Update()

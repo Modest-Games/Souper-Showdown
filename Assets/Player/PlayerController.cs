@@ -84,6 +84,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
+        GetComponent<NetworkObject>().Spawn();
         bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
         characterObject = (IsClient && IsOwner) ?
             CharacterManager.Instance.GetRandomCharacter() :
