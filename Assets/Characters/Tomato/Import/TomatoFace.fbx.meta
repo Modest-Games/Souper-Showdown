@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 51be6ffe7c151954abe06581fbe6a803
+guid: 27701da148b567b4c811b1c02bf6feaa
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Onion.002
-    second: {fileID: 2100000, guid: e8e9e491d3977aa4b970d6002cad5d4f, type: 2}
+      name: TomatoFace
+    second: {fileID: 2100000, guid: 9b86d876b52934048ad60936350c3052, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f6880c706b2b4b745954d4b6f23e0b1b
+guid: 65831021ecce89a418b6c09ed6ce54ec
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
@@ -7,8 +7,8 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: lambert1
-    second: {fileID: 2100000, guid: d0594662d59db3a4fab87f91b4d3aa8a, type: 2}
+      name: CarrotFace
+    second: {fileID: 2100000, guid: 9b86d876b52934048ad60936350c3052, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -78,7 +78,7 @@ ModelImporter:
     blendShapeNormalImportMode: 1
     normalSmoothingSource: 0
   referencedClips: []
-  importAnimation: 0
+  importAnimation: 1
   humanDescription:
     serializedVersion: 3
     human: []
