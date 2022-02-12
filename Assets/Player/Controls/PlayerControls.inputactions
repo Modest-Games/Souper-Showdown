@@ -2,6 +2,67 @@
     "name": "PlayerControls",
     "maps": [
         {
+            "name": "Lobby",
+            "id": "3a5dca83-b622-460c-ac91-677d7a484a2b",
+            "actions": [
+                {
+                    "name": "Join",
+                    "type": "Button",
+                    "id": "63e1c404-b2b5-4558-ad92-a89dc457db0f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "One Modifier",
+                    "id": "6da3c44a-b737-46b4-8fee-d4fe4f88e2eb",
+                    "path": "OneModifier",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Join",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "modifier",
+                    "id": "8787a7c1-fbe7-45a8-b4e1-64b02b21d2fb",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Join",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "binding",
+                    "id": "07dc1ab0-24e0-405d-90ce-1a18ec4f68f7",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Join",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "e7cd208c-3bd4-4886-be98-b29717c432d4",
+                    "path": "<Keyboard>/enter",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Join",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        },
+        {
             "name": "Gameplay",
             "id": "ba15d570-7a8e-4ff3-8774-78c9272c0659",
             "actions": [
@@ -11,7 +72,8 @@
                     "id": "645b5dbc-e952-4917-8d5c-b0b2b8715e00",
                     "expectedControlType": "Axis",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Dash",
@@ -19,7 +81,8 @@
                     "id": "966a436e-e468-40c8-949f-c209dbcea380",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 },
                 {
                     "name": "Grab",
@@ -27,7 +90,8 @@
                     "id": "359a7af9-4dd3-41d9-9ff9-fa1e91d0c348",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": true
                 },
                 {
                     "name": "Throw",
@@ -35,7 +99,8 @@
                     "id": "bfcde326-2e4b-4fb6-acb7-ec55c9560fc2",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -95,7 +160,8 @@
                     "id": "438b220c-9aba-46f4-953e-ad7bd385cd43",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [

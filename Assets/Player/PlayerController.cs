@@ -10,6 +10,7 @@ using NaughtyAttributes;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(ClientNetworkTransform))]
+[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
     public enum PlayerState
@@ -27,7 +28,6 @@ public class PlayerController : NetworkBehaviour
         CarryingObject,
         CarryingPlayer
     }
-
 
     [Header("Config")]
     public float moveSpeed;
@@ -57,7 +57,7 @@ public class PlayerController : NetworkBehaviour
     private Transform holdLocation;
     private LineRenderer aimIndicator;
     private Rigidbody rb;
-    private PlayerControlsMapping controls;
+    private PlayerInput playerInput;
     private Transform debugCanvasObj;
     public bool canMove;
     private GameObject dazeIndicator;
@@ -67,9 +67,6 @@ public class PlayerController : NetworkBehaviour
     private float timeDazed;
     private bool characterInitialized;
 
-    //public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
-    //public NetworkString networkCharacterName = new NetworkString();
-    //public NetworkVariable<char> networkCharacterName = new NetworkVariable<char>();
     public NetworkVariable<Unity.Collections.FixedString64Bytes> networkCharacterName = new NetworkVariable<Unity.Collections.FixedString64Bytes>();
     public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
@@ -83,16 +80,15 @@ public class PlayerController : NetworkBehaviour
         timeOfLastDash = 0;
         //carryState = PlayerCarryState.Empty;
         justThrew = false;
-        controls = new PlayerControlsMapping();
     }
 
     private void Start()
     {
-        bool isChef = (IsClient && IsOwner) ? UIManager.Instance.isChefToggle.isOn : networkIsChef.Value;
+        bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
         characterObject = (IsClient && IsOwner) ?
-            CharacterManager.Instance.GetCharacter(UIManager.Instance.chosenCharacterIndex) :
+            CharacterManager.Instance.GetRandomCharacter() :
             CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
-        canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
+        canMove = true;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         //carryState = PlayerCarryState.Empty;
@@ -110,17 +106,18 @@ public class PlayerController : NetworkBehaviour
             Debug.Log(characterObject.characterName);
             UpdateCharacterNameServerRpc(characterObject.characterName);
 
+            playerInput = GetComponent<PlayerInput>();
             // map control inputs
-            controls.Gameplay.Dash.performed += ctx => DashPerformed();
-            controls.Gameplay.Move.performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
-            controls.Gameplay.Move.canceled += ctx => MoveCancelled();
-            controls.Gameplay.Grab.started += ctx => GrabStarted();
-            controls.Gameplay.Grab.canceled += ctx => GrabCancelled();
-            controls.Gameplay.Throw.canceled += ctx => ThrowPerformed();
-            controls.Gameplay.Throw.started += ctx => ThrowStarted();
+            playerInput.actions["Dash"].performed += ctx => DashPerformed();
+            playerInput.actions["Move"].performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
+            playerInput.actions["Move"].canceled += ctx => MoveCancelled();
+            playerInput.actions["Grab"].started += ctx => GrabStarted();
+            playerInput.actions["Grab"].canceled += ctx => GrabCancelled();
+            playerInput.actions["Throw"].canceled += ctx => ThrowPerformed();
+            playerInput.actions["Throw"].started += ctx => ThrowStarted();
 
             // Spawn the player
-            PlayerRandomSpawnPoint(isChef);
+            //PlayerRandomSpawnPoint(isChef);
 
             // NETWORKING:
             UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
@@ -128,7 +125,7 @@ public class PlayerController : NetworkBehaviour
         }
 
         // setup debugging
-        debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);
+        debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
 
         Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}, IsChef: {3}", IsClient, IsOwner, OwnerClientId, isChef);
     }
@@ -319,7 +316,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        Debug.Log(other.gameObject.tag);
+        //Debug.Log(other.gameObject.tag);
 
         // only get booped if not a chef
         if (IsOwner && IsClient && !networkIsChef.Value)
@@ -420,7 +417,7 @@ public class PlayerController : NetworkBehaviour
         Debug.Log(reachableCollectables);
     }
 
-    private void MovePerformed(Vector2 newMovement)
+    public void MovePerformed(Vector2 newMovement)
     {
         if (Application.isFocused && IsClient && IsOwner)
         {
@@ -436,7 +433,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void MoveCancelled()
+    public void MoveCancelled()
     {
         if (Application.isFocused && IsClient && IsOwner)
         {
@@ -452,7 +449,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void DashPerformed()
+    public void DashPerformed()
     {
         if (Application.isFocused && IsClient && IsOwner)
         {
@@ -474,7 +471,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void GrabStarted()
+    public void GrabStarted()
     {
         if (IsClient && IsOwner)
         {
@@ -508,7 +505,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void GrabCancelled()
+    public void GrabCancelled()
     {
         if (IsClient && IsOwner)
         {
@@ -531,7 +528,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void ThrowStarted()
+    public void ThrowStarted()
     {
         if (IsClient && IsOwner)
         {
@@ -548,7 +545,7 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    private void ThrowPerformed()
+    public void ThrowPerformed()
     {
         if (IsClient && IsOwner)
         {
@@ -621,7 +618,7 @@ public class PlayerController : NetworkBehaviour
     private void OnEnable()
     {
         // enable controls
-        controls.Gameplay.Enable();
+        //controls.Gameplay.Enable();
 
         // setup event listeners
         GameController.DebugEnabled     += OnDebugEnabled;
@@ -639,7 +636,7 @@ public class PlayerController : NetworkBehaviour
     private void OnDisable()
     {
         // disable controls
-        controls.Gameplay.Disable();
+        //controls.Gameplay.Disable();
 
         // clear event listeners
         GameController.DebugEnabled     -= OnDebugEnabled;
