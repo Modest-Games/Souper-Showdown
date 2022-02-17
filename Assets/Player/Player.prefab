@@ -740,21 +740,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9316de02a5f182b49b75737b4e133c6b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  holdPosition: {x: 0, y: 0, z: 0}
+  throwForce: 5
   moveSpeed: 4
   rotateSpeed: 15
   dashDuration: 0.3
   dashForce: 10
   dashCooldown: 0.9
-  throwForce: 5
   dazeDuration: 5
   characterObject: {fileID: 11400000, guid: 1d85da3e7e51c5d45b26814cd41613cd, type: 2}
   playerState: 0
-  carriedObject: {fileID: 0}
   isAlive: 0
   reachableCollectables: []
   movement: {x: 0, y: 0}
   lookVector: {x: 0, y: 0, z: 0}
   timeOfLastDash: 0
+  throwable: {fileID: 5288980905173298321, guid: 440a5ac09cb64e44a8d21b77ae348f52, type: 3}
   canMove: 0
   networkCharacterName:
     m_InternalValue:
@@ -1588,7 +1589,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &8838624970897362122
 Transform:
   m_ObjectHideFlags: 0
@@ -1597,7 +1598,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8838624970897362123}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 2.5, z: 0.5}
+  m_LocalPosition: {x: 0, y: 2, z: 1}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 6132070154987969668}

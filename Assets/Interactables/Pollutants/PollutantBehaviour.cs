@@ -15,6 +15,7 @@ public class PollutantBehaviour : NetworkBehaviour
     }
 
     public Pollutant pollutantObject;
+
     [ReadOnly] public PollutantState state;
 
     private TrailRenderer trail;
@@ -62,12 +63,6 @@ public class PollutantBehaviour : NetworkBehaviour
         newMesh.name = "Mesh";
     }
 
-    public void Pickup()
-    {
-        // destroy the gameobject
-        Destroy(gameObject);
-    }
-
     private void OnCollisionEnter(Collision collision)
     {
         // switch on other tag
@@ -82,49 +77,6 @@ public class PollutantBehaviour : NetworkBehaviour
         }
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void OnPickupServerRpc()
-    {
-        transform.position = new Vector3(0, -100, 0);
-
-        // Position of throwable is always determined by the server, this means physics properties should be changed
-        // by the server as well:
-        rb.useGravity = false;
-        rb.isKinematic = true;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void OnDropServerRpc(Vector3 playerPos, Vector3 playerForward, Vector3 playerVelocity, Vector3 lookVector, float throwForce, bool isThrown)
-    {
-        // Position of throwable is always determined by the server, this means physics properties should be changed
-        // by the server as well:
-        rb.useGravity = true;
-        rb.isKinematic = false;
-
-        var dropPosition = new Vector3(playerPos.x, playerPos.y + 2.5f, playerPos.z);
-        dropPosition += (playerForward * 0.50f);
-
-        var obj = Instantiate(gameObject, dropPosition, Quaternion.identity);
-        obj.GetComponent<NetworkObject>().Spawn();
-
-        var newThrowable = obj.GetComponent<PollutantBehaviour>();
-        newThrowable.state = PollutantState.Airborn;
-
-        if (isThrown)
-        {
-            newThrowable.rb.AddForce((playerForward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);
-            newThrowable.OnThrowClientRpc();
-        }
-
-        else
-        {
-            newThrowable.rb.velocity = playerVelocity;
-        }
-
-        Destroy(gameObject);
-    }
-
-
     [ClientRpc]
     public void OnThrowClientRpc()
     {
@@ -133,7 +85,7 @@ public class PollutantBehaviour : NetworkBehaviour
 
     public IEnumerator ThrowEffectsDelay()
     {
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSeconds(0.1f);
 
         trail.emitting = true;
         state = PollutantState.Airborn;
