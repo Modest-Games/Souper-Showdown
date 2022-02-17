@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6563020625674801748}
   - component: {fileID: 7834948240438435313}
   - component: {fileID: 5431240683723123003}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: ChefHat
   m_TagString: Untagged
   m_Icon: {fileID: 0}

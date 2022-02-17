@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2883814082962554680}
   - component: {fileID: 6525856762100061627}
   - component: {fileID: 5973077462970773141}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Cylinder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -471,7 +471,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9015389793990811168}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Mesh
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -505,7 +505,7 @@ GameObject:
   - component: {fileID: 8785493792243460365}
   - component: {fileID: 2390800890673310674}
   - component: {fileID: 2518120068157417422}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Capsule
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -880,7 +880,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 877386315217165426}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: DazeIndicatorHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1751,6 +1751,58 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 877386315217165426}
     m_Modifications:
+    - target: {fileID: 408906030728117383, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 778386364924167331, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1617446736841381489, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1806938117216398933, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 1910960325208571959, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2063733593002808541, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3739457278969110979, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3874215100078814505, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4708572723862573182, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4813966606965931548, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5151827151661106324, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5196921868773850288, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 5636798547458025562, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 6357289951651637570, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -1807,6 +1859,18 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6805383674168634574, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7892636748449123074, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8158119219194141136, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8577200541842552115, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -1814,6 +1878,10 @@ PrefabInstance:
     - target: {fileID: 8591514666444076517, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
       propertyPath: m_Name
       value: DazeIndicator
+      objectReference: {fileID: 0}
+    - target: {fileID: 8591514666444076517, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a7b79018ce88b104a85a0c8283f8deb0, type: 3}
