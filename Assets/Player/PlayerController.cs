@@ -72,6 +72,7 @@ public class PlayerController : NetworkBehaviour
     private Transform debugCanvasObj;
     public bool canMove;
     private GameObject dazeIndicator;
+    private CharacterBehaviour characterBehaviour;
 
     private GameObject heldObject;
     private bool justThrew;
@@ -109,6 +110,7 @@ public class PlayerController : NetworkBehaviour
         canMove = GameController.Instance.gameState.Value == GameController.GameState.Running;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
+        characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
         //carryState = PlayerCarryState.Empty;
         lastKnownState = networkCarryState.Value;
         rb = GetComponent<Rigidbody>();
@@ -154,30 +156,6 @@ public class PlayerController : NetworkBehaviour
         Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}, IsChef: {3}", IsClient, IsOwner, OwnerClientId, isChef);
     }
 
-    private void toggleState()
-    {
-        PlayerCarryState carryStateVal = networkCarryState.Value;
-
-        if(looseArms != null && stiffArms != null)
-        {
-            looseArms = transform.Find("Character").Find("Arms").Find("Flaccid").gameObject;
-            stiffArms = transform.Find("Character").Find("Arms").Find("Stiff").gameObject;
-
-            if (carryStateVal == PlayerCarryState.Empty)
-            {
-                Debug.Log("Loose arms engaged");
-                looseArms.SetActive(true);
-                stiffArms.SetActive(false);
-            }
-            else
-            {
-                Debug.Log("Stiff arms engaged");
-                stiffArms.SetActive(true);
-                looseArms.SetActive(false);
-            }
-        }
-    }
-
     private void PlayerRandomSpawnPoint(bool isChef)
     {
         rb.position = TerrainManager.Instance.GetRandomSpawnLocation(isChef);
@@ -185,14 +163,15 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        // update the player visuals
-        UpdateClientVisuals();
-
         // check if the character needs to be refreshed
         if (!characterInitialized && characterObject != null)
         {
             RefreshCharacter();
             characterInitialized = true;
+        } else
+        {
+            // update the player visuals
+            UpdateClientVisuals();
         }
     }
 
@@ -216,10 +195,13 @@ public class PlayerController : NetworkBehaviour
 
         if (lastKnownState != carryStateVal)
         {
-            toggleState();
+            // update the arms on the character
+            characterBehaviour.UpdateArms(carryStateVal);
+
+            // update last state
+            lastKnownState = carryStateVal;
         }
 
-        lastKnownState = carryStateVal;
 
         switch (carryStateVal)
         {
@@ -438,10 +420,7 @@ public class PlayerController : NetworkBehaviour
         transform.Find("ChefHat").gameObject.SetActive(networkIsChef.Value);
 
         newMesh.name = "Character";
-
-        looseArms = characterObject.characterPrefab.transform.Find("Arms").Find("Flaccid").gameObject;
-        stiffArms = characterObject.characterPrefab.transform.Find("Arms").Find("Stiff").gameObject;
-
+        characterBehaviour = newMesh.GetComponent<CharacterBehaviour>();
     }
 
     private void OnBoop()
