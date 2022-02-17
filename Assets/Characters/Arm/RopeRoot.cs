@@ -6,7 +6,7 @@ using UnityEngine;
 public class RopeRoot : MonoBehaviour
 {
 
-    public float RigidbodyMass = 1f;
+    public float RigidbodyMass = 0f;
     public float ColliderRadius = 0.1f;
     public float JointSpring = 0.1f;
     public float JointDamper = 5f;
@@ -43,10 +43,12 @@ public class RopeRoot : MonoBehaviour
             childRigidbody.freezeRotation = true;
             childRigidbody.mass = RigidbodyMass;
 
+
             //collider
             var collider = representative.gameObject.AddComponent<SphereCollider>();
             collider.center = Vector3.zero;
             collider.radius = ColliderRadius;
+            representative.layer = 10;
 
             //DistanceJoint
             var joint = representative.gameObject.AddComponent<DistanceJoint3D>();

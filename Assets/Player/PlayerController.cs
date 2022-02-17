@@ -51,6 +51,7 @@ public class PlayerController : NetworkBehaviour
     [Header("State (ReadOnly)")]
     [SerializeField] [ReadOnly] public PlayerState playerState;
     //[SerializeField] [ReadOnly] public PlayerCarryState carryState;
+    [SerializeField] [ReadOnly] public PlayerCarryState lastKnownState;
     [SerializeField] [ReadOnly] public Pollutant carriedObject;
     [SerializeField] [ReadOnly] public bool isAlive;
 
@@ -98,6 +99,9 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
+
+        //Physics.IgnoreLayerCollision(7, 10);
+
         bool isChef = (IsClient && IsOwner) ? UIManager.Instance.isChefToggle.isOn : networkIsChef.Value;
         characterObject = (IsClient && IsOwner) ?
             CharacterManager.Instance.GetCharacter(UIManager.Instance.chosenCharacterIndex) :
@@ -106,6 +110,7 @@ public class PlayerController : NetworkBehaviour
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         //carryState = PlayerCarryState.Empty;
+        lastKnownState = networkCarryState.Value;
         rb = GetComponent<Rigidbody>();
         holdLocation = transform.Find("HoldLocation");
         dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
@@ -155,8 +160,8 @@ public class PlayerController : NetworkBehaviour
 
         if(looseArms != null && stiffArms != null)
         {
-            looseArms = transform.Find("Character").Find("Flaccid").gameObject;
-            stiffArms = transform.Find("Character").Find("Stiff").gameObject;
+            looseArms = transform.Find("Character").Find("Arms").Find("Flaccid").gameObject;
+            stiffArms = transform.Find("Character").Find("Arms").Find("Stiff").gameObject;
 
             if (carryStateVal == PlayerCarryState.Empty)
             {
@@ -208,7 +213,14 @@ public class PlayerController : NetworkBehaviour
         PlayerCarryState carryStateVal = networkCarryState.Value;
         PlayerState playerStateVal = (IsClient && IsOwner) ? playerState : networkPlayerState.Value;
 
-        toggleState();
+
+        if (lastKnownState != carryStateVal)
+        {
+            toggleState();
+        }
+
+        lastKnownState = carryStateVal;
+
         switch (carryStateVal)
         {
             case PlayerCarryState.Empty:
@@ -427,8 +439,8 @@ public class PlayerController : NetworkBehaviour
 
         newMesh.name = "Character";
 
-        looseArms = characterObject.characterPrefab.transform.Find("Flaccid").gameObject;
-        stiffArms = characterObject.characterPrefab.transform.Find("Stiff").gameObject;
+        looseArms = characterObject.characterPrefab.transform.Find("Arms").Find("Flaccid").gameObject;
+        stiffArms = characterObject.characterPrefab.transform.Find("Arms").Find("Stiff").gameObject;
 
     }
 
