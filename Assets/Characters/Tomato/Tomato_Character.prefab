@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7702728563083819830}
+  - component: {fileID: 41318658679676270}
   m_Layer: 9
   m_Name: Tomato_Character
   m_TagString: Untagged
@@ -33,6 +34,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &41318658679676270
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3234332731889011418}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 279bc023d7047804b82e978a53a62269, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  looseArms: {fileID: 5694495305075157090}
+  stiffArms: {fileID: 4199840980691906240}
 --- !u!1001 &509789034920500598
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -154,7 +169,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5727149900867649100, guid: 63dc8662372581845a507f02df2432dc, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6690205161550948602, guid: 63dc8662372581845a507f02df2432dc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -165,6 +180,16 @@ PrefabInstance:
 --- !u!4 &3078269840205020008 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3290746428772886046, guid: 63dc8662372581845a507f02df2432dc, type: 3}
+  m_PrefabInstance: {fileID: 509789034920500598}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &5694495305075157090 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5194281092314641684, guid: 63dc8662372581845a507f02df2432dc, type: 3}
+  m_PrefabInstance: {fileID: 509789034920500598}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4199840980691906240 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4421399536373052342, guid: 63dc8662372581845a507f02df2432dc, type: 3}
   m_PrefabInstance: {fileID: 509789034920500598}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3186265651700171390
