@@ -24,7 +24,6 @@ public class GetPlayersOnStart : MonoBehaviour
         // add them to the cineCam target group target list
         foreach(GameObject player in players) {
             camTargetGroup.AddMember(player.transform, 1f, 0f);
-            Debug.Log("Start players " + player);
         }
 
     }
@@ -34,20 +33,4 @@ public class GetPlayersOnStart : MonoBehaviour
         GameController.GameStarted      -= OnGameStarted;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        // 
-        //CinemachineTargetGroup cinemachineTargetGroup
-
-        //GameObject camTargetGroup = GameObject.Find("CM vcam1").GetComponent<CinemachineTargetGroup>();
-
-        //Debug.Log(camTargetGroup);
-    }
 }
