@@ -1582,11 +1582,11 @@ MonoBehaviour:
   m_BiasY: 0
   m_CenterOnActivate: 1
   m_GroupFramingMode: 2
-  m_AdjustmentMode: 2
-  m_GroupFramingSize: 0.8
+  m_AdjustmentMode: 1
+  m_GroupFramingSize: 0.6
   m_MaxDollyIn: 5000
   m_MaxDollyOut: 5000
-  m_MinimumDistance: 1
+  m_MinimumDistance: 30
   m_MaximumDistance: 5000
   m_MinimumFOV: 3
   m_MaximumFOV: 60
