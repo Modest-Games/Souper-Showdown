@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 5105179897798084645}
   - component: {fileID: -6327144893204572983}
   m_Layer: 8
-  m_Name: NetworkPollutant
+  m_Name: ThrowableCube
   m_TagString: Pollutant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -299,7 +299,7 @@ MonoBehaviour:
   GlobalObjectIdHash: 951099334
   AlwaysReplicateAsRoot: 0
   DontDestroyWithOwner: 0
-  AutoObjectParentSync: 0
+  AutoObjectParentSync: 1
 --- !u!114 &5105179897798084645
 MonoBehaviour:
   m_ObjectHideFlags: 0

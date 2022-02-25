@@ -108,7 +108,7 @@ public class ArrowBehaviour : NetworkBehaviour
             var playerController = other.gameObject.GetComponent<PlayerController>();
 
             // Don't kill Chef player with it's own trap: 
-            if (playerController.networkIsChef.Value == true) return;
+            if (playerController == null || playerController.networkIsChef.Value == true) return;
 
             // Send message to client that got hit to respawn itself:
             playerController.KillPlayerClientRpc(new ClientRpcParams
