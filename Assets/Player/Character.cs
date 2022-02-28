@@ -7,4 +7,6 @@ public class Character : ScriptableObject
 {
     public string characterName;
     public GameObject characterPrefab;
+    public GameObject deadMesh;
+    public Color primaryColour;
 }

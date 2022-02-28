@@ -1254,7 +1254,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 2
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -1297,7 +1297,7 @@ Light:
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
-  m_ShadowAngle: 0
+  m_ShadowAngle: 1.4
 --- !u!4 &705507995
 Transform:
   m_ObjectHideFlags: 0
@@ -1874,11 +1874,12 @@ MonoBehaviour:
   m_RequiresOpaqueTextureOption: 2
   m_CameraType: 0
   m_Cameras: []
-  m_RendererIndex: -1
+  m_RendererIndex: 0
   m_VolumeLayerMask:
     serializedVersion: 2
     m_Bits: 1
   m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
   m_RenderPostProcessing: 0
   m_Antialiasing: 0
   m_AntialiasingQuality: 2
@@ -4276,10 +4277,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1487667035890383232, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
-      propertyPath: ConnectAddress
-      value: 172.24.174.244
-      objectReference: {fileID: 0}
     - target: {fileID: 1487667035890383233, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
       propertyPath: m_Name
       value: NetworkManager
@@ -4328,6 +4325,26 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[1].Prefab
+      value: 
+      objectReference: {fileID: 696197427014834209, guid: ee2c41e3b4e7f9048ad419075a78b435, type: 3}
+    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[2].Prefab
+      value: 
+      objectReference: {fileID: 2512757752469678952, guid: 91311204b2f7b0143ab11bbb81b5b434, type: 3}
+    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[3].Prefab
+      value: 
+      objectReference: {fileID: 8165926038113286375, guid: 0f3817dbba257a94fa06a313c8be5f18, type: 3}
+    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[4].Prefab
+      value: 
+      objectReference: {fileID: 8165926038113286375, guid: 0f3817dbba257a94fa06a313c8be5f18, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
 --- !u!1001 &2257501264253505767
