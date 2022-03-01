@@ -51,7 +51,8 @@ public class PlayerController : NetworkBehaviour
     [Header("State (ReadOnly)")]
     [SerializeField] [ReadOnly] public PlayerState playerState;
     //[SerializeField] [ReadOnly] public PlayerCarryState carryState;
-    [SerializeField] [ReadOnly] public PlayerCarryState lastKnownState;
+    [SerializeField] [ReadOnly] public PlayerCarryState lastKnownCarryState;
+    [SerializeField] [ReadOnly] public PlayerState lastKnownMovementState;
     [SerializeField] [ReadOnly] public Pollutant carriedObject;
     [SerializeField] [ReadOnly] public bool isAlive;
 
@@ -112,7 +113,8 @@ public class PlayerController : NetworkBehaviour
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
         //carryState = PlayerCarryState.Empty;
-        lastKnownState = networkCarryState.Value;
+        lastKnownCarryState = networkCarryState.Value;
+        lastKnownMovementState = playerState;
         rb = GetComponent<Rigidbody>();
         holdLocation = transform.Find("HoldLocation");
         dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
@@ -193,13 +195,13 @@ public class PlayerController : NetworkBehaviour
         PlayerState playerStateVal = (IsClient && IsOwner) ? playerState : networkPlayerState.Value;
 
 
-        if (lastKnownState != carryStateVal)
+        if (lastKnownCarryState != carryStateVal)
         {
             // update the arms on the character
             characterBehaviour.UpdateArms(carryStateVal);
 
             // update last state
-            lastKnownState = carryStateVal;
+            lastKnownCarryState = carryStateVal;
         }
 
 
@@ -241,12 +243,21 @@ public class PlayerController : NetworkBehaviour
         float currentTime = Time.time;
         float deltaTime = Time.fixedDeltaTime;
 
+        if (lastKnownMovementState != playerState)
+        {
+            // update the legs on the character
+            characterBehaviour.UpdateLegs(playerState);
+            // update last state
+            lastKnownMovementState = playerState;
+        }
+
         // switch on playerstate
         switch (playerState)
         {
             case PlayerState.Idle:
                 // clear rotatitonal velocity
                 rb.angularVelocity = Vector3.zero;
+
                 break;
 
             case PlayerState.Moving:

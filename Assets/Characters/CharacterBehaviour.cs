@@ -6,6 +6,26 @@ public class CharacterBehaviour : MonoBehaviour
 {
     public Transform looseArms;
     public Transform stiffArms;
+    public Transform legs;
+    public Animator animator;
+
+    public void UpdateLegs(PlayerController.PlayerState carryState)
+    {
+        switch (carryState)
+        {
+            case PlayerController.PlayerState.Idle:
+                animator.StartPlayback();
+                break;
+            case PlayerController.PlayerState.Dazed:
+                animator.StopPlayback();
+                break;
+            case PlayerController.PlayerState.Moving:
+                animator.StopPlayback();
+                break;
+            default:
+                break;
+        }
+    }
 
     public void UpdateArms(PlayerController.PlayerCarryState carryState)
     {
