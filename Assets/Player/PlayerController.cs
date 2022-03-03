@@ -122,15 +122,10 @@ public class PlayerController : NetworkBehaviour
         Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}, IsChef: {3}", IsClient, IsOwner, OwnerClientId, isChef);
     }
 
-    public void BindControls(int newPlayerIndex)
+    public void BindControls()
     {
-        if (IsOwner && !controlsBound)
+        if (IsClient && IsOwner)
         {
-            controlsBound = true;
-            playerIndex = newPlayerIndex;
-
-            Debug.Log("Binding controls to client " + OwnerClientId + " on playerIndex: " + playerIndex);
-
             playerInput = LocalPlayerManager.Instance.inputPlayers.Find(
                 p => p.playerIndex == playerIndex);
 
@@ -142,6 +137,9 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Grab"].canceled += ctx => GrabCancelled();
             playerInput.actions["Throw"].canceled += ctx => ThrowPerformed();
             playerInput.actions["Throw"].started += ctx => ThrowStarted();
+
+            Debug.Log("Binding controls to client " + OwnerClientId + " on playerIndex: " + playerIndex);
+            controlsBound = true;
         }
     }
 
@@ -160,6 +158,12 @@ public class PlayerController : NetworkBehaviour
         {
             RefreshCharacter();
             characterInitialized = true;
+        }
+
+        // check if the controls need to be bound
+        if (!controlsBound)
+        {
+            BindControls();
         }
     }
 
