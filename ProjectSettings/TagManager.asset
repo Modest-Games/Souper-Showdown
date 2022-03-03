@@ -10,7 +10,6 @@ TagManager:
   - Wall
   - Projectile
   - CamTargetCroup
-  - CineMachineVCam
   layers:
   - Default
   - TransparentFX
