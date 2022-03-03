@@ -10,7 +10,6 @@ using NaughtyAttributes;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(ClientNetworkTransform))]
-[RequireComponent(typeof(PlayerInput))]
 public class PlayerController : NetworkBehaviour
 {
     public enum PlayerState
@@ -61,6 +60,7 @@ public class PlayerController : NetworkBehaviour
     private Transform debugCanvasObj;
     public bool canMove;
     private GameObject dazeIndicator;
+    public int playerIndex;
 
     private GameObject heldObject;
     private bool justThrew;
@@ -84,7 +84,6 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-        GetComponent<NetworkObject>().Spawn();
         bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
         characterObject = (IsClient && IsOwner) ?
             CharacterManager.Instance.GetRandomCharacter() :
@@ -107,7 +106,9 @@ public class PlayerController : NetworkBehaviour
             Debug.Log(characterObject.characterName);
             UpdateCharacterNameServerRpc(characterObject.characterName);
 
-            playerInput = GetComponent<PlayerInput>();
+            playerInput = LocalPlayerManager.Instance.inputPlayers.Find(
+                p => p.playerIndex == playerIndex);
+
             // map control inputs
             playerInput.actions["Dash"].performed += ctx => DashPerformed();
             playerInput.actions["Move"].performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
