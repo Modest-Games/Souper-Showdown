@@ -10,6 +10,7 @@ TagManager:
   - Wall
   - Projectile
   - CamTargetCroup
+  - Canvas
   layers:
   - Default
   - TransparentFX

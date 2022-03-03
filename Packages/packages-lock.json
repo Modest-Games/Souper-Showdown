@@ -1,5 +1,11 @@
 {
   "dependencies": {
+    "com.coffee.ui-particle": {
+      "version": "file:ParticleEffectForUGUI-3.3.10",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.burst": {
       "version": "1.5.4",
       "depth": 2,
@@ -17,7 +23,7 @@
       "url": "https://packages.unity.com"
     },
     "com.unity.collab-proxy": {
-      "version": "1.15.7",
+      "version": "1.13.5",
       "depth": 0,
       "source": "registry",
       "dependencies": {
