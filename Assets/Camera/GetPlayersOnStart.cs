@@ -16,7 +16,7 @@ public class GetPlayersOnStart : MonoBehaviour
     private void OnGameStarted()
     {   
         // get camera target struct
-        CinemachineTargetGroup camTargetGroup = GameObject.Find("CamTargetGroup").GetComponent<CinemachineTargetGroup>();
+        CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
 
         // when the game starts, get all players 
         players = GameObject.FindGameObjectsWithTag("Player");
