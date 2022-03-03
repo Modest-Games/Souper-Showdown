@@ -22,7 +22,7 @@ public class PlayerCard
 
     public void setPosition(Vector3 p)
     {
-        Debug.Log("position should be: " + p);
+        //Debug.Log("position should be: " + p);
         Card.transform.position = p;
     }
 
@@ -60,20 +60,20 @@ public class ScoreManager : MonoBehaviour
     {
         if (playerCards.Count == 1)
         {
-            Debug.Log("Arranging one card!");
+           // Debug.Log("Arranging one card!");
             float centerPos = leftPoint.position.x + ((rightPoint.position.x - leftPoint.position.x) / 2.0f);
             Vector3 position = new Vector3(centerPos, leftPoint.position.y, leftPoint.position.z);
             playerCards[0].setPosition(position);
         }
         else if (playerCards.Count == 2)
         {
-            Debug.Log("Arranging two cards!");
+            //Debug.Log("Arranging two cards!");
             playerCards[0].setPosition(leftPoint.position);
             playerCards[1].setPosition(rightPoint.position);
         }
         else
         {
-            Debug.Log("Arranging two+ cards!");
+            //Debug.Log("Arranging two+ cards!");
             float spacing = (rightPoint.position.x - leftPoint.position.x) / totalSpoilerCount;
             for (int i = 0; i < playerCards.Count; i++)
             {
@@ -111,7 +111,6 @@ public class ScoreManager : MonoBehaviour
 
         GameObject card = Instantiate(newCard.Card, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
         playerCards.Add(newCard);
-        Debug.Log("index: " + index);
         playerCards[index].Card = card;
 
         card.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform, false);
