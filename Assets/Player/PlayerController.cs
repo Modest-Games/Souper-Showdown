@@ -60,7 +60,6 @@ public class PlayerController : NetworkBehaviour
     private Transform debugCanvasObj;
     public bool canMove;
     private GameObject dazeIndicator;
-    public int playerIndex;
 
     private GameObject heldObject;
     private bool justThrew;
@@ -68,6 +67,7 @@ public class PlayerController : NetworkBehaviour
     private bool characterInitialized;
     private bool controlsBound;
 
+    public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
     public NetworkVariable<Unity.Collections.FixedString64Bytes> networkCharacterName = new NetworkVariable<Unity.Collections.FixedString64Bytes>();
     public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
@@ -127,7 +127,7 @@ public class PlayerController : NetworkBehaviour
         if (IsClient && IsOwner)
         {
             playerInput = LocalPlayerManager.Instance.inputPlayers.Find(
-                p => p.playerIndex == playerIndex);
+                p => p.playerIndex == playerIndex.Value);
 
             // map control inputs
             playerInput.actions["Dash"].performed += ctx => DashPerformed();
