@@ -20,6 +20,11 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
+    public Character GetRandomCharacter()
+    {
+        return GetCharacter(Random.Range(0, characterList.Count));
+    }
+
     public Character GetCharacter(int index)
     {
         return characterList[index];

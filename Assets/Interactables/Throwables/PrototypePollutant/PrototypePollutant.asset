@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: PrototypePollutant
   m_EditorClassIdentifier: 
   effectAmount: -5
-  mesh: {fileID: 6530077904516032847, guid: 0383b895d7468f244bfd86a8541cffca, type: 3}
+  mesh: {fileID: 6530077904516032847, guid: 48a7d15740fd44fadabc3cce9971cb5e, type: 3}

@@ -24,6 +24,67 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
     ""name"": ""PlayerControls"",
     ""maps"": [
         {
+            ""name"": ""Lobby"",
+            ""id"": ""3a5dca83-b622-460c-ac91-677d7a484a2b"",
+            ""actions"": [
+                {
+                    ""name"": ""Join"",
+                    ""type"": ""Button"",
+                    ""id"": ""63e1c404-b2b5-4558-ad92-a89dc457db0f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": ""One Modifier"",
+                    ""id"": ""6da3c44a-b737-46b4-8fee-d4fe4f88e2eb"",
+                    ""path"": ""OneModifier"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Join"",
+                    ""isComposite"": true,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": ""modifier"",
+                    ""id"": ""8787a7c1-fbe7-45a8-b4e1-64b02b21d2fb"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Join"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": ""binding"",
+                    ""id"": ""07dc1ab0-24e0-405d-90ce-1a18ec4f68f7"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Join"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e7cd208c-3bd4-4886-be98-b29717c432d4"",
+                    ""path"": ""<Keyboard>/enter"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Join"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
             ""name"": ""Gameplay"",
             ""id"": ""ba15d570-7a8e-4ff3-8774-78c9272c0659"",
             ""actions"": [
@@ -164,6 +225,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
     ],
     ""controlSchemes"": []
 }");
+        // Lobby
+        m_Lobby = asset.FindActionMap("Lobby", throwIfNotFound: true);
+        m_Lobby_Join = m_Lobby.FindAction("Join", throwIfNotFound: true);
         // Gameplay
         m_Gameplay = asset.FindActionMap("Gameplay", throwIfNotFound: true);
         m_Gameplay_Move = m_Gameplay.FindAction("Move", throwIfNotFound: true);
@@ -228,6 +292,39 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
     {
         return asset.FindBinding(bindingMask, out action);
     }
+
+    // Lobby
+    private readonly InputActionMap m_Lobby;
+    private ILobbyActions m_LobbyActionsCallbackInterface;
+    private readonly InputAction m_Lobby_Join;
+    public struct LobbyActions
+    {
+        private @PlayerControlsMapping m_Wrapper;
+        public LobbyActions(@PlayerControlsMapping wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Join => m_Wrapper.m_Lobby_Join;
+        public InputActionMap Get() { return m_Wrapper.m_Lobby; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(LobbyActions set) { return set.Get(); }
+        public void SetCallbacks(ILobbyActions instance)
+        {
+            if (m_Wrapper.m_LobbyActionsCallbackInterface != null)
+            {
+                @Join.started -= m_Wrapper.m_LobbyActionsCallbackInterface.OnJoin;
+                @Join.performed -= m_Wrapper.m_LobbyActionsCallbackInterface.OnJoin;
+                @Join.canceled -= m_Wrapper.m_LobbyActionsCallbackInterface.OnJoin;
+            }
+            m_Wrapper.m_LobbyActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Join.started += instance.OnJoin;
+                @Join.performed += instance.OnJoin;
+                @Join.canceled += instance.OnJoin;
+            }
+        }
+    }
+    public LobbyActions @Lobby => new LobbyActions(this);
 
     // Gameplay
     private readonly InputActionMap m_Gameplay;
@@ -318,6 +415,10 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         }
     }
     public DebugActions @Debug => new DebugActions(this);
+    public interface ILobbyActions
+    {
+        void OnJoin(InputAction.CallbackContext context);
+    }
     public interface IGameplayActions
     {
         void OnMove(InputAction.CallbackContext context);
