@@ -7,7 +7,8 @@ using Cinemachine;
 public class GetPlayersOnStart : MonoBehaviour
 {
     private GameObject[] players;
-    public CinemachineVirtualCamera VCam;
+    private CinemachineVirtualCamera VCam;
+    private GameObject camObj;
 
     private void OnEnable()
     {
@@ -28,7 +29,11 @@ public class GetPlayersOnStart : MonoBehaviour
         }
 
         // update camera settings to center on characters
-        //CinemachineVirtualCamera CineMachine = GameObject.Find("CineMachine VCam");
+        camObj = GameObject.Find("CineMachine VCam");
+        VCam = camObj.GetComponent<CinemachineVirtualCamera>();
+        VCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 900;
+        VCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_ScreenX = 0.5f;
+        VCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_ScreenY = 0.5f;
 
     }
 
