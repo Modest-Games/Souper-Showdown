@@ -16,7 +16,7 @@ public class PlayerTokenBehaviour : MonoBehaviour
     void Start()
     {
         PlayersManager.Instance.RequestPlayerServerRpc(
-            playerInput.playerIndex, LocalPlayerManager.Instance.GetComponent<NetworkObject>().OwnerClientId);
+            playerInput.playerIndex, LocalPlayerManager.Instance.thisClientId);
     }
 
     private void OnEnable()

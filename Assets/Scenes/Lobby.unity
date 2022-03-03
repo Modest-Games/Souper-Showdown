@@ -3416,7 +3416,7 @@ PrefabInstance:
     - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
       propertyPath: NetworkConfig.PlayerPrefab
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 8762603722751848709, guid: ef0ee8ee46c709f4780a0efa9f5c0a64, type: 3}
     - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.size
       value: 5
@@ -3424,7 +3424,7 @@ PrefabInstance:
     - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.data[5].Prefab
       value: 
-      objectReference: {fileID: 8957078185520989064, guid: 8baa2c0391151f547894eccc9be842c4, type: 3}
+      objectReference: {fileID: 8762603722751848709, guid: ef0ee8ee46c709f4780a0efa9f5c0a64, type: 3}
     - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
       propertyPath: NetworkConfig.NetworkPrefabs.Array.data[0].Override
       value: 0

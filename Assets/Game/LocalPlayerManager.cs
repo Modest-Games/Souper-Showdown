@@ -9,6 +9,8 @@ public class LocalPlayerManager : MonoBehaviour
 
     public List<PlayerInput> inputPlayers = new List<PlayerInput>();
 
+    public ulong thisClientId;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)

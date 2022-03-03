@@ -63,8 +63,7 @@ public class PlayersManager : NetworkBehaviour
         PlayerController newPlayerController = newPlayerObj.GetComponent<PlayerController>();
         NetworkObject newPlayerNetworkObj = newPlayerObj.GetComponent<NetworkObject>();
 
-        newPlayerNetworkObj.SpawnWithOwnership(clientId);
-        newPlayerNetworkObj.ChangeOwnership(clientId);
+        newPlayerNetworkObj.SpawnAsPlayerObject(clientId);
         newPlayerController.playerIndex = playerIndex;
     }
 }
