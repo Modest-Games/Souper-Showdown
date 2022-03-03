@@ -77,9 +77,9 @@ public class SpoilMeter : NetworkBehaviour
         }
     }
 
-    private void OnSoupReceivedTrash()
+    private void OnSoupReceivedTrash(float influence)
     {
-        ChangeSpoilMeterValue(10f);
+        ChangeSpoilMeterValue(influence);
     }
 
     private void OnEnable()

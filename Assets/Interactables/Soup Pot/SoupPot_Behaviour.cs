@@ -5,7 +5,7 @@ using Unity.Netcode;
 
 public class SoupPot_Behaviour : NetworkBehaviour
 {
-    public delegate void SoupPotDelegate();
+    public delegate void SoupPotDelegate(float influence);
     public static event SoupPotDelegate SoupReceivedTrash;
     public static event SoupPotDelegate SoupReceivedPlayer;
 
@@ -25,16 +25,7 @@ public class SoupPot_Behaviour : NetworkBehaviour
 
                         // call the received trash event
                         if (SoupReceivedTrash != null)
-                            SoupReceivedTrash();
-
-                    break;
-
-                case "Character":
-                    // kill the player
-
-                    // call the received player event
-                    if (SoupReceivedPlayer != null)
-                        SoupReceivedPlayer();
+                            SoupReceivedTrash(other.gameObject.GetComponent<PollutantBehaviour>().pollutantObject.effectAmount);
 
                     break;
             }
