@@ -44,8 +44,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pollutantPrefab: {fileID: 5288980905173298321, guid: 440a5ac09cb64e44a8d21b77ae348f52, type: 3}
-  pollutants:
+  pollutantList:
   - {fileID: 11400000, guid: 976f6c240026233449c01a57e47e58a8, type: 2}
+  - {fileID: 11400000, guid: b51137145c7a671498ba416297403e9b, type: 2}
+  deadBodyList:
+  - {fileID: 11400000, guid: 1c3d3bf3f86b3cf40be5d3e0bfe639f1, type: 2}
   useSquareExclusion: 1
   squareExclusion: {x: 52, y: 32}
   roundExclusionRadius: 0

@@ -17,9 +17,6 @@ public class SoupPot_Behaviour : NetworkBehaviour
             {
                 case "Pollutant":
                     // make sure the pollutant is airborn
-                    if (other.gameObject.GetComponent<PollutantBehaviour>().state
-                        == PollutantBehaviour.PollutantState.Airborn)
-                    {
                         // destroy the trash
                         other.gameObject.GetComponent<SphereCollider>().isTrigger = false;
                         StartCoroutine(OnPollutantEnter(other.gameObject));
@@ -27,7 +24,6 @@ public class SoupPot_Behaviour : NetworkBehaviour
                         // call the received trash event
                         if (SoupReceivedTrash != null)
                             SoupReceivedTrash();
-                    }
 
                     break;
 

@@ -112,7 +112,7 @@ GameObject:
   - component: {fileID: 5105179897798084645}
   - component: {fileID: -6327144893204572983}
   m_Layer: 8
-  m_Name: ThrowableCube
+  m_Name: PollutantPrefab
   m_TagString: Pollutant
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -145,7 +145,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12e6a55f693dcd342bea651ec084d0b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pollutantObject: {fileID: 11400000, guid: 976f6c240026233449c01a57e47e58a8, type: 2}
+  pollutantObject: {fileID: 0}
+  meshInitialized: 0
   state: 0
   rb: {fileID: 0}
 --- !u!135 &6332544153703697550
@@ -159,7 +160,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.7
+  m_Radius: 1
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &7763781007705533016
 Rigidbody:

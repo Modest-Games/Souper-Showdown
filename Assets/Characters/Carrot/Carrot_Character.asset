@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Carrot
   characterPrefab: {fileID: 3234332731889011418, guid: a50dfeabcc5a29c49aaa6a3477699bec, type: 3}
-  deadMesh: {fileID: 503103582350038634, guid: 021d72169b1a9414a815e3589a51fd54, type: 3}
+  deadCharacter: {fileID: 11400000, guid: 1c3d3bf3f86b3cf40be5d3e0bfe639f1, type: 2}
   primaryColour: {r: 1, g: 0.5254902, b: 0.06666667, a: 1}
