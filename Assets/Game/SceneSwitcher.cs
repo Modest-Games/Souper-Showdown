@@ -28,11 +28,11 @@ public class SceneSwitcher : NetworkBehaviour
             switch (SceneManager.GetActiveScene().name)
             {
                 case "Lobby":
-                    SceneManager.LoadScene("InGame");
+                    NetworkManager.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
                     break;
 
                 case "InGame":
-                    SceneManager.LoadScene("Lobby");
+                    NetworkManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
                     break;
             }
         }

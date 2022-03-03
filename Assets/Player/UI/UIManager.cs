@@ -54,17 +54,11 @@ public class UIManager : MonoBehaviour
     private void OnEnable()
     {
         // setup event listeners
-        SceneManager.sceneLoaded += OnSceneChanged;
-    }
-
-    private void OnDisable()
-    {
-        // clear event listeners
-        SceneManager.sceneLoaded -= OnSceneChanged;
+        NetworkManager.Singleton.SceneManager.OnLoad += OnSceneChanged; ;
     }
 
     // called when the scene changes
-    private void OnSceneChanged(Scene newScene, LoadSceneMode loadSceneMode)
+    private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
     {
         // rebind the UI buttons
         BindUI();
