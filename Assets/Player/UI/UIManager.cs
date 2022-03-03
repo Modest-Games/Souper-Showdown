@@ -4,9 +4,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
+    public delegate void UIDelegate();
+    public static event UIDelegate SceneSwitchRequested;
+
     public static UIManager Instance { get; private set; }
 
     [SerializeField] private Button startHostButton;
@@ -18,6 +22,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI connectedPlayersText;
 
     [SerializeField] private Button startGameButton;
+
+    [SerializeField] private Button switchSceneButton;
 
     [SerializeField] private Dropdown characterSelector;
 
@@ -45,28 +51,38 @@ public class UIManager : MonoBehaviour
         isChefToggle.isOn = false;
     }
 
-    private void Update()
+    private void OnEnable()
     {
-        connectedPlayersText.text = $"Players in game: {PlayersManager.Instance.ConnectedPlayers}";
+        // setup event listeners
+        SceneManager.sceneLoaded += OnSceneChanged;
     }
 
-    private void Start()
+    private void OnDisable()
     {
-        // setup character selector
-        foreach (Character character in CharacterManager.Instance.characterList)
-        {
-            characterSelector.options.Add(new Dropdown.OptionData(character.characterName));
-        }
-        characterSelector.RefreshShownValue();
+        // clear event listeners
+        SceneManager.sceneLoaded -= OnSceneChanged;
+    }
 
-        characterSelector.onValueChanged.AddListener((chosen) =>
-        {
-            //Debug.Log(characterSelector.options[chosen].text);
-            chosenCharacterName = characterSelector.options[chosen].text;
-            chosenCharacterIndex = chosen;
-        });
+    // called when the scene changes
+    private void OnSceneChanged(Scene newScene, LoadSceneMode loadSceneMode)
+    {
+        // rebind the UI buttons
+        BindUI();
+    }
 
-        hasServerStarted = false;
+    private void BindUI()
+    {
+        // get the network UI canvas
+        Transform networkUICanvas = GameObject.Find("NetworkUI").transform;     // probably bad
+
+        // bind buttons
+        startHostButton = networkUICanvas.Find("Start Host").GetComponentInChildren<Button>();
+        startServerButton = networkUICanvas.Find("Start Server").GetComponentInChildren<Button>();
+        startClientButton = networkUICanvas.Find("Start Client").GetComponentInChildren<Button>();
+        connectedPlayersText = networkUICanvas.Find("Players").GetComponent<TextMeshProUGUI>();
+        startGameButton = networkUICanvas.Find("Start Game").GetComponentInChildren<Button>();
+        switchSceneButton = networkUICanvas.Find("Switch Scene").GetComponentInChildren<Button>();
+        characterSelector = networkUICanvas.Find("CharacterSelect").GetComponentInChildren<Dropdown>();
 
         startHostButton.onClick.AddListener(() =>
         {
@@ -112,10 +128,43 @@ public class UIManager : MonoBehaviour
             hasServerStarted = true;
         };
 
+        switchSceneButton.onClick.AddListener(() =>
+        {
+            // invoke the sceneswitchtriggered event
+            if (SceneSwitchRequested != null)
+                SceneSwitchRequested();
+        });
+
         startGameButton.onClick.AddListener(() =>
         {
             if (!hasServerStarted) return;
             GameController.Instance.InitializeGame();
         });
+    }
+
+    private void Update()
+    {
+        connectedPlayersText.text = $"Players in game: {PlayersManager.Instance.ConnectedPlayers}";
+    }
+
+    private void Start()
+    {
+        // setup character selector
+        foreach (Character character in CharacterManager.Instance.characterList)
+        {
+            characterSelector.options.Add(new Dropdown.OptionData(character.characterName));
+        }
+        characterSelector.RefreshShownValue();
+
+        characterSelector.onValueChanged.AddListener((chosen) =>
+        {
+            //Debug.Log(characterSelector.options[chosen].text);
+            chosenCharacterName = characterSelector.options[chosen].text;
+            chosenCharacterIndex = chosen;
+        });
+
+        hasServerStarted = false;
+
+        BindUI();
     }
 }
