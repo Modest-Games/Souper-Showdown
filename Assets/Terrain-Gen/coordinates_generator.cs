@@ -30,6 +30,11 @@ public class coordinates_generator: NetworkBehaviour
     public GameObject chefKnifePrefab;
     public GameObject blenderPrefab;
 
+    // Object spawning sensitivies
+    public int blenderRate;
+    public int chefKnifeRate;
+    public int saltPepperRate;
+
     public struct Coords 
     {
         public bool aliveBool;
@@ -150,7 +155,7 @@ public class coordinates_generator: NetworkBehaviour
                     }
 
                     // spawn in a blender if there is an appropriate amount of empty cells as well as starting points in the 3x3 area
-                    if (numStartPoints >= 4 && numEmptyTiles == 8) {
+                    if (numStartPoints >= blenderRate && numEmptyTiles == 8) {
 
                         // update grid coordinates array
                         // set each neighbour's cell to alive and blender
@@ -244,7 +249,7 @@ public class coordinates_generator: NetworkBehaviour
                     //Debug.Log(numStartPoints);
 
                     // if there are two starting points in the 3x3 area, check if they are colinear
-                    if (numStartPoints == 2)
+                    if (numStartPoints == chefKnifeRate)
                     {
 
                         // add the current coords to be checked if they are colinear
@@ -386,7 +391,7 @@ public class coordinates_generator: NetworkBehaviour
                         }
                     }
 
-                    if (numStartPoints == 1)
+                    if (numStartPoints == saltPepperRate)
                     {  
                         // get the orientation of the object
                         int orientation;
