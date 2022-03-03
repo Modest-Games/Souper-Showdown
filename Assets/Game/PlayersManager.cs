@@ -58,7 +58,7 @@ public class PlayersManager : NetworkBehaviour
     {
         // instantiate a new player
         GameObject newPlayerObj = Instantiate(playerPrefab);
-        Debug.Log("INSTANTIATED NEW PLAYER FROM PLAYERSMANAGER");
+        Debug.LogFormat("Spawning a new player object for client: {0}, playerIndex: {1}", clientId, playerIndex);
         
         PlayerController newPlayerController = newPlayerObj.GetComponent<PlayerController>();
         NetworkObject newPlayerNetworkObj = newPlayerObj.GetComponent<NetworkObject>();

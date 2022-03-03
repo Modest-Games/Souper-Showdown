@@ -124,7 +124,7 @@ public class PlayerController : NetworkBehaviour
 
     public void BindControls(int newPlayerIndex)
     {
-        if (IsClient && IsOwner && !controlsBound)
+        if (IsOwner && !controlsBound)
         {
             controlsBound = true;
             playerIndex = newPlayerIndex;
