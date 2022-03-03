@@ -9,6 +9,8 @@ public class SoupPot_Behaviour : NetworkBehaviour
     public static event SoupPotDelegate SoupReceivedTrash;
     public static event SoupPotDelegate SoupReceivedPlayer;
 
+    public ParticleSystem ps;
+
     private void OnTriggerEnter(Collider other)
     {
         if(IsServer)
@@ -17,9 +19,6 @@ public class SoupPot_Behaviour : NetworkBehaviour
             {
                 case "Pollutant":
                     // make sure the pollutant is airborn
-                    if (other.gameObject.GetComponent<PollutantBehaviour>().state
-                        == PollutantBehaviour.PollutantState.Airborn)
-                    {
                         // destroy the trash
                         other.gameObject.GetComponent<SphereCollider>().isTrigger = false;
                         StartCoroutine(OnPollutantEnter(other.gameObject));
@@ -27,7 +26,6 @@ public class SoupPot_Behaviour : NetworkBehaviour
                         // call the received trash event
                         if (SoupReceivedTrash != null)
                             SoupReceivedTrash();
-                    }
 
                     break;
 
@@ -55,6 +53,6 @@ public class SoupPot_Behaviour : NetworkBehaviour
     [ClientRpc]
     private void OnPollutantEnterClientRpc()
     {
-        GetComponent<ParticleSystem>().Play();
+        ps.Play();
     }
 }

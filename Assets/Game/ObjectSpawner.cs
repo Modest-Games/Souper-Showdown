@@ -6,8 +6,11 @@ using Unity.Netcode;
 
 public class ObjectSpawner : NetworkBehaviour
 {
+    public static ObjectSpawner Instance;
+
     public GameObject pollutantPrefab;
-    public Pollutant[] pollutants;
+    public List<Pollutant> pollutantList;
+    public List<Pollutant> deadBodyList;
 
     [Header("Config")]
     public bool useSquareExclusion;
@@ -15,6 +18,18 @@ public class ObjectSpawner : NetworkBehaviour
     public float roundExclusionRadius;
     public Vector2 spawnBounds;
     public float defaultYValue;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     [Button("Spawn Pollutant")]
     public void SpawnPollutant()
@@ -24,10 +39,10 @@ public class ObjectSpawner : NetworkBehaviour
         // spawn the new pollutant
         GameObject newPollutant = Instantiate(pollutantPrefab, spawnLocation, Quaternion.identity);
 
-        newPollutant.GetComponent<PollutantBehaviour>().pollutantObject = pollutants[Random.Range(0, pollutants.Length - 1)];
-        newPollutant.GetComponent<NetworkObject>().Spawn();
+        var pollutantIndex = Random.Range(0, pollutantList.Count);
+        newPollutant.GetComponent<PollutantBehaviour>().pollutantObject = pollutantList[pollutantIndex];
 
-        Debug.Log("Spawned pollutant at " + spawnLocation);
+        newPollutant.GetComponent<NetworkObject>().Spawn();
     }
 
     [Header("Testing")]

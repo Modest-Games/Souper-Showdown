@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 8314790943262681647}
   - component: {fileID: 3248281095464908923}
   - component: {fileID: 8474506124266242749}
-  - component: {fileID: 1525156558267512568}
   - component: {fileID: 8108877143035559674}
   m_Layer: 0
   m_Name: Soup Pot
@@ -4825,18 +4824,6 @@ ParticleSystemRenderer:
   m_Mesh2: {fileID: 0}
   m_Mesh3: {fileID: 0}
   m_MaskInteraction: 0
---- !u!114 &1525156558267512568
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 696197427014834209}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b70857e231925e540ae69498e257b75a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &8108877143035559674
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -4993,7 +4980,7 @@ Transform:
   m_GameObject: {fileID: 5350111214530225473}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1.16, z: 0}
-  m_LocalScale: {x: 7.088791, y: 1.1610731, z: 6.9216166}
+  m_LocalScale: {x: 7.7267823, y: 1.2655697, z: 7.5445623}
   m_Children: []
   m_Father: {fileID: 7918164385764392994}
   m_RootOrder: 0
@@ -5009,7 +4996,7 @@ MeshCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
-  m_Convex: 0
+  m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!1 &7446496970168946508
@@ -5022,6 +5009,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1067547281013169243}
   - component: {fileID: 4749378310460389150}
+  - component: {fileID: 2057299846401957999}
   m_Layer: 0
   m_Name: Trigger Collider
   m_TagString: Untagged
@@ -5038,7 +5026,7 @@ Transform:
   m_GameObject: {fileID: 7446496970168946508}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 1.99, z: 0}
-  m_LocalScale: {x: 5.9876, y: 0.49495956, z: 5.9876}
+  m_LocalScale: {x: 5.2195106, y: 0.43146616, z: 5.2195106}
   m_Children: []
   m_Father: {fileID: 410761949884701119}
   m_RootOrder: 0
@@ -5057,6 +5045,19 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 10206, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &2057299846401957999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7446496970168946508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b70857e231925e540ae69498e257b75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ps: {fileID: 3248281095464908923}
 --- !u!1 &8286991279480090662
 GameObject:
   m_ObjectHideFlags: 0

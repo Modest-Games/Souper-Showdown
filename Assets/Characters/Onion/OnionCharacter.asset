@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb37047bab566ae40ac1f165e2959178, type: 3}
-  m_Name: Carrot_Character
+  m_Name: OnionCharacter
   m_EditorClassIdentifier: 
-  characterName: Carrot
-  characterPrefab: {fileID: 3234332731889011418, guid: a50dfeabcc5a29c49aaa6a3477699bec, type: 3}
-  deadMesh: {fileID: 503103582350038634, guid: 021d72169b1a9414a815e3589a51fd54, type: 3}
-  primaryColour: {r: 1, g: 0.5254902, b: 0.06666667, a: 1}
+  characterName: Onion
+  characterPrefab: {fileID: 3234332731889011418, guid: 8a33be64857fbf54cb1fc0d9b2fd0dfd, type: 3}
+  deadCharacter: {fileID: 11400000, guid: 1db6680c571b85145b9c85a37f452ae2, type: 2}
+  primaryColour: {r: 0.532, g: 0.27233332, b: 0.1488333, a: 0}

@@ -60,7 +60,7 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] [ReadOnly] private Vector3 lookVector;
     [SerializeField] [ReadOnly] private float timeOfLastDash;
 
-    [SerializeField] private GameObject throwable;
+    [SerializeField] private GameObject pollutantPrefab;
 
     private LineRenderer aimIndicator;
     private Rigidbody rb;
@@ -77,7 +77,7 @@ public class PlayerController : NetworkBehaviour
 
     public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
     private GameObject heldObject;
-    private GameObject heldMesh;
+    private Pollutant currentlyHeld;
 
     //public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     //public NetworkString networkCharacterName = new NetworkString();
@@ -233,6 +233,7 @@ public class PlayerController : NetworkBehaviour
             case PlayerCarryState.CarryingObject:
                 // Set "Held Object" to active
                 heldObject.SetActive(true);
+                heldObject.transform.localRotation = Quaternion.Euler(0, 0, 90);
                 break;
 
             case PlayerCarryState.CarryingPlayer:
@@ -701,18 +702,46 @@ public class PlayerController : NetworkBehaviour
         networkCharacterName.OnValueChanged += OnCharacterNameChanged;
     }
 
+    private Pollutant GetPollutantObject(string type)
+    {
+        var pollutantObject = ObjectSpawner.Instance.pollutantList.Find(x => x.type == type);
+
+        if (pollutantObject == null)
+        {
+            pollutantObject = ObjectSpawner.Instance.deadBodyList.Find(x => x.type == type);
+        }
+
+        return pollutantObject;
+    }
+
     [ServerRpc(RequireOwnership = false)]
     private void OnGrabServerRpc(ulong objToPickupID)
     {
         NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(objToPickupID, out var objToPickup);
         if (objToPickup == null || objToPickup.transform.parent != null) return;
 
-        Destroy(heldObject.transform.GetChild(0).gameObject);
-        heldMesh = Instantiate(objToPickup.transform.GetChild(0), heldObject.transform).gameObject;
-        heldMesh.transform.localRotation = Quaternion.Euler(0, 0, 90);
+        string pollutantType = objToPickup.GetComponent<PollutantBehaviour>().pollutantObject.type;
+        currentlyHeld = GetPollutantObject(pollutantType);
 
+        var heldObjectBehaviour = heldObject.GetComponent<HeldObject>();
+        heldObjectBehaviour.heldObject = currentlyHeld.mesh;
+        heldObjectBehaviour.meshInitialized = false;
+
+        // Repeat logic on client-side:
+        SetHeldObjectClientRpc(pollutantType);
+        
         Destroy(objToPickup.gameObject);
         networkCarryState.Value = PlayerCarryState.CarryingObject;
+    }
+
+    [ClientRpc]
+    public void SetHeldObjectClientRpc(string pollutantType)
+    {
+        currentlyHeld = GetPollutantObject(pollutantType);
+
+        var heldObjectBehaviour = heldObject.GetComponent<HeldObject>();
+        heldObjectBehaviour.heldObject = currentlyHeld.mesh;
+        heldObjectBehaviour.meshInitialized = false;
     }
 
     [ServerRpc(RequireOwnership = false)]
@@ -724,10 +753,10 @@ public class PlayerController : NetworkBehaviour
         dropPos.y += 2f;
         dropPos += (transform.forward);
 
-        var droppedObj = Instantiate(throwable, dropPos, transform.rotation);
-
-        Destroy(droppedObj.transform.GetChild(0).gameObject);
-        Instantiate(heldMesh, droppedObj.transform, false);
+        var droppedObj = Instantiate(pollutantPrefab, dropPos, Quaternion.Euler(0, transform.localEulerAngles.y, 90));
+        var droppedObjBehaviour = droppedObj.GetComponent<PollutantBehaviour>();
+        droppedObjBehaviour.pollutantObject = currentlyHeld;
+        droppedObjBehaviour.meshInitialized = false;
 
         droppedObj.GetComponent<NetworkObject>().Spawn();
         droppedObj.GetComponent<Rigidbody>().velocity = playerVelocity;
@@ -751,15 +780,15 @@ public class PlayerController : NetworkBehaviour
 
         throwPos += (transform.forward) * forwardOffset;
 
-        var thrownObj = Instantiate(throwable, throwPos, transform.rotation);
-
-        Destroy(thrownObj.transform.GetChild(0).gameObject);
-        Instantiate(heldMesh, thrownObj.transform, false);
+        var thrownObj = Instantiate(pollutantPrefab, throwPos, Quaternion.Euler(0, transform.localEulerAngles.y, 90));
+        var thrownObjBehaviour = thrownObj.GetComponent<PollutantBehaviour>();
+        thrownObjBehaviour.pollutantObject = currentlyHeld;
+        thrownObjBehaviour.meshInitialized = false;
 
         thrownObj.GetComponent<NetworkObject>().Spawn();
-
         thrownObj.GetComponent<Rigidbody>().AddForce((transform.forward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);
-        thrownObj.GetComponent<PollutantBehaviour>().OnThrowClientRpc();
+        
+        thrownObjBehaviour.OnThrowClientRpc();
 
         networkCarryState.Value = PlayerCarryState.Empty;
     }
@@ -767,9 +796,10 @@ public class PlayerController : NetworkBehaviour
     [ServerRpc(RequireOwnership = false)]
     public void SpawnBodyServerRpc()
     {
-        var deadBody = Instantiate(throwable, new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z), transform.rotation);
-        Destroy(deadBody.transform.GetChild(0).gameObject);
-        Instantiate(characterObject.deadMesh, deadBody.transform);
+        var deadBody = Instantiate(pollutantPrefab, new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z), transform.rotation);
+        var deadBodyBehaviour = deadBody.GetComponent<PollutantBehaviour>();
+        deadBodyBehaviour.pollutantObject = characterObject.deadCharacter;
+        deadBodyBehaviour.meshInitialized = false;
 
         deadBody.GetComponent<NetworkObject>().Spawn();
     }
