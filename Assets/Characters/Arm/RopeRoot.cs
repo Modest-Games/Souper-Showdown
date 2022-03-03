@@ -22,6 +22,8 @@ public class RopeRoot : MonoBehaviour
         if (RigidBodyContainer == null)
             RigidBodyContainer = new GameObject("RopeRigidbodyContainer");
 
+        DontDestroyOnLoad(RigidBodyContainer);
+
         CopySource = new List<Transform>();
         CopyDestination = new List<Transform>();
 
@@ -43,6 +45,9 @@ public class RopeRoot : MonoBehaviour
             childRigidbody.freezeRotation = true;
             childRigidbody.mass = RigidbodyMass;
 
+            // dont destroy on load
+            DontDestroyOnLoad(representative);
+            DontDestroyOnLoad(child.gameObject);
 
             //collider
             var collider = representative.gameObject.AddComponent<SphereCollider>();
