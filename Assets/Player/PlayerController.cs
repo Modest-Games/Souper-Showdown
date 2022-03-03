@@ -6,12 +6,18 @@ using System.Linq;
 using Unity.Netcode;
 using Unity.Netcode.Samples;
 using NaughtyAttributes;
-
+using Unity.Netcode.Components;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(ClientNetworkTransform))]
 public class PlayerController : NetworkBehaviour
 {
+    public enum ArmState
+    {
+        Stiff,
+        Loose
+    }
+
     public enum PlayerState
     {
         Idle,
@@ -29,12 +35,13 @@ public class PlayerController : NetworkBehaviour
     }
 
     [Header("Config")]
+    public Vector3 holdPosition;
+    public float throwForce;
     public float moveSpeed;
     public float rotateSpeed;
     public float dashDuration;
     public float dashForce;
     public float dashCooldown;
-    public float throwForce;
     public float dazeDuration;
 
     [Header("Character")]
@@ -44,7 +51,7 @@ public class PlayerController : NetworkBehaviour
     [Header("State (ReadOnly)")]
     [SerializeField] [ReadOnly] public PlayerState playerState;
     //[SerializeField] [ReadOnly] public PlayerCarryState carryState;
-    [SerializeField] [ReadOnly] public Pollutant carriedObject;
+    [SerializeField] [ReadOnly] public PlayerCarryState lastKnownState;
     [SerializeField] [ReadOnly] public bool isAlive;
 
     [Header("Variables (ReadOnly)")]
@@ -53,21 +60,29 @@ public class PlayerController : NetworkBehaviour
     [SerializeField] [ReadOnly] private Vector3 lookVector;
     [SerializeField] [ReadOnly] private float timeOfLastDash;
 
-    private Transform holdLocation;
+    [SerializeField] private GameObject throwable;
+
     private LineRenderer aimIndicator;
     private Rigidbody rb;
     private PlayerInput playerInput;
     private Transform debugCanvasObj;
     public bool canMove;
     private GameObject dazeIndicator;
+    private CharacterBehaviour characterBehaviour;
 
-    private GameObject heldObject;
     private bool justThrew;
     private float timeDazed;
     private bool characterInitialized;
     private bool controlsBound;
 
     public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
+    private GameObject heldObject;
+    private GameObject heldMesh;
+
+    //public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
+    //public NetworkString networkCharacterName = new NetworkString();
+    //public NetworkVariable<char> networkCharacterName = new NetworkVariable<char>();
+
     public NetworkVariable<Unity.Collections.FixedString64Bytes> networkCharacterName = new NetworkVariable<Unity.Collections.FixedString64Bytes>();
     public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
@@ -79,7 +94,6 @@ public class PlayerController : NetworkBehaviour
         isAlive = true;
         lookVector = transform.forward;
         timeOfLastDash = 0;
-        //carryState = PlayerCarryState.Empty;
         justThrew = false;
         controlsBound = false;
     }
@@ -87,16 +101,27 @@ public class PlayerController : NetworkBehaviour
     private void Start()
     {
         bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
+
+        //Physics.IgnoreLayerCollision(7, 10);
+
         characterObject = (IsClient && IsOwner) ?
             CharacterManager.Instance.GetRandomCharacter() :
             CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
         canMove = true;
         aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
+        characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
         //carryState = PlayerCarryState.Empty;
+        lastKnownState = networkCarryState.Value;
         rb = GetComponent<Rigidbody>();
-        holdLocation = transform.Find("HoldLocation");
         dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
+        heldObject = transform.Find("Held Object").gameObject;
+
+        //looseArms = ;
+        //stiffArms = null;
+
+        //looseArms = characterObject.characterPrefab.transform.Find("Flaccid").gameObject;
+        //stiffArms = characterObject.characterPrefab.transform.Find("Stiff").gameObject;
 
         // setup variables
         if (IsClient && IsOwner)
@@ -107,7 +132,7 @@ public class PlayerController : NetworkBehaviour
             // set character name
             Debug.Log(characterObject.characterName);
             UpdateCharacterNameServerRpc(characterObject.characterName);
-            
+
             // NETWORKING:
             UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
             UpdatePlayerStateServerRpc(PlayerState.Idle);
@@ -150,14 +175,17 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        // update the player visuals
-        UpdateClientVisuals();
-
         // check if the character needs to be refreshed
         if (!characterInitialized && characterObject != null)
         {
             RefreshCharacter();
             characterInitialized = true;
+        }
+
+        else
+        {
+            // update the player visuals
+            UpdateClientVisuals();
         }
 
         // check if the controls need to be bound
@@ -184,20 +212,32 @@ public class PlayerController : NetworkBehaviour
         PlayerCarryState carryStateVal = networkCarryState.Value;
         PlayerState playerStateVal = (IsClient && IsOwner) ? playerState : networkPlayerState.Value;
 
+
+        if (lastKnownState != carryStateVal)
+        {
+            // update the arms on the character
+            characterBehaviour.UpdateArms(carryStateVal);
+
+            // update last state
+            lastKnownState = carryStateVal;
+        }
+
+
         switch (carryStateVal)
         {
             case PlayerCarryState.Empty:
                 // Set "Held Object" to inactive
-                transform.GetChild(1).gameObject.SetActive(false);
+                heldObject.SetActive(false);
                 break;
 
             case PlayerCarryState.CarryingObject:
                 // Set "Held Object" to active
-                transform.GetChild(1).gameObject.SetActive(true);
+                heldObject.SetActive(true);
                 break;
 
             case PlayerCarryState.CarryingPlayer:
                 // Carrying Player
+
                 break;
         }
 
@@ -335,7 +375,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        //Debug.Log(other.gameObject.tag);
+        //Debug.Log(other.gameObject.tag); //TEMP UNDO
 
         // only get booped if not a chef
         if (IsOwner && IsClient && !networkIsChef.Value)
@@ -400,6 +440,7 @@ public class PlayerController : NetworkBehaviour
         transform.Find("ChefHat").gameObject.SetActive(networkIsChef.Value);
 
         newMesh.name = "Character";
+        characterBehaviour = newMesh.GetComponent<CharacterBehaviour>();
     }
 
     private void OnBoop()
@@ -510,16 +551,11 @@ public class PlayerController : NetworkBehaviour
                 // get the nearest reachable collectable
                 GameObject nearestReachableCollectable = reachableCollectables[0];
 
-                // Store the nearest reachable collectable for dropping purposes:
-                heldObject = nearestReachableCollectable;
-
-                // Call OnPickup ServerRpc:
-                nearestReachableCollectable.GetComponent<PollutantBehaviour>().OnPickupServerRpc();
-
                 reachableCollectables.Remove(nearestReachableCollectable);
+                var netObj = nearestReachableCollectable.GetComponent<NetworkObject>();
 
-                // update the carryState
-                UpdatePlayerCarryStateServerRpc(PlayerCarryState.CarryingObject);
+                // Spawn new pollutant:
+                OnGrabServerRpc(netObj.NetworkObjectId);
             }
         }
     }
@@ -538,11 +574,9 @@ public class PlayerController : NetworkBehaviour
                 aimIndicator.gameObject.SetActive(false);
 
                 StartCoroutine(TempDisablePickup());
-                var playerVelocity = 2f * new Vector3(movement.x, 0, movement.y);
-                heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, transform.forward, playerVelocity, lookVector, throwForce, false);
 
-                // update the carryState
-                UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+                Vector3 playerVelocity = 2f * new Vector3(movement.x, 0, movement.y);
+                OnDropServerRpc(playerVelocity);
             }
         }
     }
@@ -568,23 +602,20 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            // determine if can throw
             bool canThrow =
             (networkPlayerState.Value == PlayerState.Idle || networkPlayerState.Value == PlayerState.Moving) &&
             (networkCarryState.Value == PlayerCarryState.CarryingObject || networkCarryState.Value == PlayerCarryState.CarryingPlayer);
 
-            // if the player can throw
             if (canThrow)
             {
-                StartCoroutine(TempDisablePickup());
-                var playerVelocity = 2f * new Vector3(movement.x, 0, movement.y);
-                heldObject.GetComponent<PollutantBehaviour>().OnDropServerRpc(transform.position, transform.forward, playerVelocity, lookVector, throwForce, true);
-
-                // set the carry state to empty
-                UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
-
-                // hide the aim indicator
                 aimIndicator.gameObject.SetActive(false);
+
+                // Play a throwing animation:
+                // ...
+
+                StartCoroutine(TempDisablePickup());
+                StartCoroutine(TempDisableMovement());
+                OnThrowServerRpc();
             }
         }
     }
@@ -670,6 +701,79 @@ public class PlayerController : NetworkBehaviour
         networkCharacterName.OnValueChanged += OnCharacterNameChanged;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    private void OnGrabServerRpc(ulong objToPickupID)
+    {
+        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(objToPickupID, out var objToPickup);
+        if (objToPickup == null || objToPickup.transform.parent != null) return;
+
+        Destroy(heldObject.transform.GetChild(0).gameObject);
+        heldMesh = Instantiate(objToPickup.transform.GetChild(0), heldObject.transform).gameObject;
+        heldMesh.transform.localRotation = Quaternion.Euler(0, 0, 90);
+
+        Destroy(objToPickup.gameObject);
+        networkCarryState.Value = PlayerCarryState.CarryingObject;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void OnDropServerRpc(Vector3 playerVelocity)
+    {
+        if (networkCarryState.Value == PlayerCarryState.Empty) return;
+
+        Vector3 dropPos = transform.position;
+        dropPos.y += 2f;
+        dropPos += (transform.forward);
+
+        var droppedObj = Instantiate(throwable, dropPos, transform.rotation);
+
+        Destroy(droppedObj.transform.GetChild(0).gameObject);
+        Instantiate(heldMesh, droppedObj.transform, false);
+
+        droppedObj.GetComponent<NetworkObject>().Spawn();
+        droppedObj.GetComponent<Rigidbody>().velocity = playerVelocity;
+
+        networkCarryState.Value = PlayerCarryState.Empty;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void OnThrowServerRpc()
+    {
+        if (networkCarryState.Value == PlayerCarryState.Empty) return;
+
+        Vector3 throwPos = transform.position;
+        throwPos.y += 2f;
+
+        var forwardOffset = 1.05f;
+        if (networkPlayerState.Value == PlayerState.Moving)
+        {
+            forwardOffset = 1.55f;
+        }
+
+        throwPos += (transform.forward) * forwardOffset;
+
+        var thrownObj = Instantiate(throwable, throwPos, transform.rotation);
+
+        Destroy(thrownObj.transform.GetChild(0).gameObject);
+        Instantiate(heldMesh, thrownObj.transform, false);
+
+        thrownObj.GetComponent<NetworkObject>().Spawn();
+
+        thrownObj.GetComponent<Rigidbody>().AddForce((transform.forward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);
+        thrownObj.GetComponent<PollutantBehaviour>().OnThrowClientRpc();
+
+        networkCarryState.Value = PlayerCarryState.Empty;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SpawnBodyServerRpc()
+    {
+        var deadBody = Instantiate(throwable, new Vector3(transform.position.x, transform.position.y + 0.1f, transform.position.z), transform.rotation);
+        Destroy(deadBody.transform.GetChild(0).gameObject);
+        Instantiate(characterObject.deadMesh, deadBody.transform);
+
+        deadBody.GetComponent<NetworkObject>().Spawn();
+    }
+
     [ClientRpc]
     public void KillPlayerClientRpc(ClientRpcParams clientRpcParams = default)
     {
@@ -709,6 +813,16 @@ public class PlayerController : NetworkBehaviour
         justThrew = false;
     }
 
+    public IEnumerator TempDisableMovement()
+    {
+        canMove = false;
+
+        yield return new WaitForSeconds(0.50f);
+
+        canMove = true;
+    }
+
+
     public IEnumerator RespawnTiming()
     {
         GrabCancelled();
@@ -716,6 +830,7 @@ public class PlayerController : NetworkBehaviour
 
         yield return new WaitForSeconds(0.1f);
 
+        SpawnBodyServerRpc();
         PlayerRandomSpawnPoint(false);
 
         yield return new WaitForSeconds(0.90f);

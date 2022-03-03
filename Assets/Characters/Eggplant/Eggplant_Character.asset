@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb37047bab566ae40ac1f165e2959178, type: 3}
   m_Name: Eggplant_Character
   m_EditorClassIdentifier: 
-  characterName: Alpha Eggplant
+  characterName: Eggplant
   characterPrefab: {fileID: 3234332731889011418, guid: 433345c5dea81e5498bbba1a7707c508, type: 3}
   primaryColour: {r: 0.38823533, g: 0.18039216, b: 0.6313726, a: 0}

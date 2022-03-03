@@ -9,6 +9,7 @@ TagManager:
   - Soup Pot
   - Wall
   - Projectile
+  - CamTargetCroup
   layers:
   - Default
   - TransparentFX
@@ -20,7 +21,7 @@ TagManager:
   - Player
   - Pollutants
   - Character
-  - 
+  - Arms
   - 
   - 
   - 
