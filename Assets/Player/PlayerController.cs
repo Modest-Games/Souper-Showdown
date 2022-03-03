@@ -66,6 +66,7 @@ public class PlayerController : NetworkBehaviour
     private bool justThrew;
     private float timeDazed;
     private bool characterInitialized;
+    private bool controlsBound;
 
     public NetworkVariable<Unity.Collections.FixedString64Bytes> networkCharacterName = new NetworkVariable<Unity.Collections.FixedString64Bytes>();
     public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
@@ -80,6 +81,7 @@ public class PlayerController : NetworkBehaviour
         timeOfLastDash = 0;
         //carryState = PlayerCarryState.Empty;
         justThrew = false;
+        controlsBound = false;
     }
 
     private void Start()
@@ -105,6 +107,29 @@ public class PlayerController : NetworkBehaviour
             // set character name
             Debug.Log(characterObject.characterName);
             UpdateCharacterNameServerRpc(characterObject.characterName);
+            
+            // NETWORKING:
+            UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+            UpdatePlayerStateServerRpc(PlayerState.Idle);
+
+            // Spawn the player
+            //PlayerRandomSpawnPoint(isChef);
+        }
+
+        // setup debugging
+        debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
+
+        Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}, IsChef: {3}", IsClient, IsOwner, OwnerClientId, isChef);
+    }
+
+    public void BindControls(int newPlayerIndex)
+    {
+        if (IsClient && IsOwner && !controlsBound)
+        {
+            controlsBound = true;
+            playerIndex = newPlayerIndex;
+
+            Debug.Log("Binding controls to client " + OwnerClientId + " on playerIndex: " + playerIndex);
 
             playerInput = LocalPlayerManager.Instance.inputPlayers.Find(
                 p => p.playerIndex == playerIndex);
@@ -117,19 +142,7 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Grab"].canceled += ctx => GrabCancelled();
             playerInput.actions["Throw"].canceled += ctx => ThrowPerformed();
             playerInput.actions["Throw"].started += ctx => ThrowStarted();
-
-            // Spawn the player
-            //PlayerRandomSpawnPoint(isChef);
-
-            // NETWORKING:
-            UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
-            UpdatePlayerStateServerRpc(PlayerState.Idle);
         }
-
-        // setup debugging
-        debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
-
-        Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}, IsChef: {3}", IsClient, IsOwner, OwnerClientId, isChef);
     }
 
     private void PlayerRandomSpawnPoint(bool isChef)
