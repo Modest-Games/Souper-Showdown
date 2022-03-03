@@ -49,6 +49,9 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b51137145c7a671498ba416297403e9b, type: 2}
   deadBodyList:
   - {fileID: 11400000, guid: 1c3d3bf3f86b3cf40be5d3e0bfe639f1, type: 2}
+  - {fileID: 11400000, guid: acd783fcf176aa0468655ace68d00853, type: 2}
+  - {fileID: 11400000, guid: 1db6680c571b85145b9c85a37f452ae2, type: 2}
+  - {fileID: 11400000, guid: 0bd5b5723cc1b5242a8c898d59de45a9, type: 2}
   useSquareExclusion: 1
   squareExclusion: {x: 52, y: 32}
   roundExclusionRadius: 0

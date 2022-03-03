@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bb37047bab566ae40ac1f165e2959178, type: 3}
-  m_Name: Eggplant_Character
+  m_Name: CarrotCharacter
   m_EditorClassIdentifier: 
-  characterName: Eggplant
-  characterPrefab: {fileID: 3234332731889011418, guid: 433345c5dea81e5498bbba1a7707c508, type: 3}
-  deadCharacter: {fileID: 11400000, guid: acd783fcf176aa0468655ace68d00853, type: 2}
-  primaryColour: {r: 0.38823533, g: 0.18039216, b: 0.6313726, a: 0}
+  characterName: Carrot
+  characterPrefab: {fileID: 3234332731889011418, guid: a50dfeabcc5a29c49aaa6a3477699bec, type: 3}
+  deadCharacter: {fileID: 11400000, guid: 1c3d3bf3f86b3cf40be5d3e0bfe639f1, type: 2}
+  primaryColour: {r: 1, g: 0.5254902, b: 0.06666667, a: 1}

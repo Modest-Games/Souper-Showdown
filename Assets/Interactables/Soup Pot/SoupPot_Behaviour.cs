@@ -9,6 +9,8 @@ public class SoupPot_Behaviour : NetworkBehaviour
     public static event SoupPotDelegate SoupReceivedTrash;
     public static event SoupPotDelegate SoupReceivedPlayer;
 
+    public ParticleSystem ps;
+
     private void OnTriggerEnter(Collider other)
     {
         if(IsServer)
@@ -51,6 +53,6 @@ public class SoupPot_Behaviour : NetworkBehaviour
     [ClientRpc]
     private void OnPollutantEnterClientRpc()
     {
-        GetComponent<ParticleSystem>().Play();
+        ps.Play();
     }
 }
