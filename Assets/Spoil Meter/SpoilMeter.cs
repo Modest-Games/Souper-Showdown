@@ -37,7 +37,7 @@ public class SpoilMeter : NetworkBehaviour
     private void ChangeSpoilMeterValue(float pollutantValue)
     {
         // Should be turned in to a network variable:
-        value += pollutantValue;
+        value = Mathf.Clamp(value + pollutantValue, 0f, 100f);
 
         // Change Spoil Meter for all clients:
         ChangeSpoilMeterClientRpc(pollutantValue);
