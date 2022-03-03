@@ -29,10 +29,12 @@ public class SceneSwitcher : NetworkBehaviour
             {
                 case "Lobby":
                     NetworkManager.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
+                    Debug.Log("Switching to InGame scene");
                     break;
 
                 case "InGame":
                     NetworkManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+                    Debug.Log("Switching to Lobby scene");
                     break;
             }
         }

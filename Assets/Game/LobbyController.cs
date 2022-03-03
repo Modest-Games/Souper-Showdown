@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 
-[RequireComponent(typeof(NetworkObject))]
 public class LobbyController : NetworkBehaviour
 {
     // singleton class
