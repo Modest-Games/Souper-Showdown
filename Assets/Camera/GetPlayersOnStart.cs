@@ -7,6 +7,7 @@ using Cinemachine;
 public class GetPlayersOnStart : MonoBehaviour
 {
     private GameObject[] players;
+    public CinemachineVirtualCamera VCam;
 
     private void OnEnable()
     {
@@ -25,6 +26,9 @@ public class GetPlayersOnStart : MonoBehaviour
         foreach(GameObject player in players) {
             camTargetGroup.AddMember(player.transform, 1f, 0f);
         }
+
+        // update camera settings to center on characters
+        //CinemachineVirtualCamera CineMachine = GameObject.Find("CineMachine VCam");
 
     }
 
