@@ -78,6 +78,8 @@ public class PlayerController : NetworkBehaviour
     private float timeDazed;
     private bool characterInitialized;
     private bool controlsBound;
+    private bool isRefreshingCharacter;
+    private bool justSwitchedCharacters;
 
     public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
     private GameObject heldObject;
@@ -100,6 +102,7 @@ public class PlayerController : NetworkBehaviour
         timeOfLastDash = 0;
         justThrew = false;
         controlsBound = false;
+        justSwitchedCharacters = false;
     }
 
     private void Start()
@@ -130,9 +133,6 @@ public class PlayerController : NetworkBehaviour
         // setup variables
         if (IsClient && IsOwner)
         {
-            // set isChef
-            UpdateIsChefServerRpc(isChef);
-
             // set character name
             Debug.Log(characterObject.characterName);
             UpdateCharacterNameServerRpc(characterObject.characterName);
@@ -457,6 +457,7 @@ public class PlayerController : NetworkBehaviour
     [NaughtyAttributes.Button("Refresh Character", EButtonEnableMode.Editor)]
     private void RefreshCharacter()
     {
+        isRefreshingCharacter = true;
         Debug.Log("REFRESH CHARACTER CALLED");
 
         // check if there is a character mesh ready
@@ -474,6 +475,7 @@ public class PlayerController : NetworkBehaviour
 
         newMesh.name = "Character";
         characterBehaviour = newMesh.GetComponent<CharacterBehaviour>();
+        isRefreshingCharacter = false;
     }
 
     private void OnBoop()
@@ -655,17 +657,19 @@ public class PlayerController : NetworkBehaviour
 
     public void NextCharacterPerformed()
     {
-        if (IsClient && IsOwner && SceneManager.GetActiveScene().name == "Lobby")
+        if (IsClient && IsOwner && !isRefreshingCharacter && !justSwitchedCharacters && SceneManager.GetActiveScene().name == "Lobby")
         {
             UpdateCharacterNameServerRpc(CharacterManager.Instance.GetNextCharacter(characterObject.characterName).characterName);
+            StartCoroutine(TempDisableCharacterSwitch());
         }
     }
 
     public void PreviousCharacterPerformed()
     {
-        if (IsClient && IsOwner && SceneManager.GetActiveScene().name == "Lobby")
+        if (IsClient && IsOwner && !isRefreshingCharacter && !justSwitchedCharacters && SceneManager.GetActiveScene().name == "Lobby")
         {
             UpdateCharacterNameServerRpc(CharacterManager.Instance.GetNextCharacter(characterObject.characterName).characterName);
+            StartCoroutine(TempDisableCharacterSwitch());
         }
     }
 
@@ -704,7 +708,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnIsChefChanged(bool oldVal, bool newVal)
     {
-        if (characterInitialized)
+        if (characterInitialized && !isRefreshingCharacter)
             RefreshCharacter();
     }
 
@@ -714,7 +718,7 @@ public class PlayerController : NetworkBehaviour
         characterObject = CharacterManager.Instance.GetCharacter(newVal.ToString());
         
         
-        if (characterInitialized)
+        if (characterInitialized && !isRefreshingCharacter)
             RefreshCharacter();
     }
 
@@ -918,5 +922,14 @@ public class PlayerController : NetworkBehaviour
         yield return new WaitForSeconds(0.90f);
 
         canMove = true;
+    }
+
+    public IEnumerator TempDisableCharacterSwitch()
+    {
+        justSwitchedCharacters = true;
+
+        yield return new WaitForSeconds(0.50f);
+
+        justSwitchedCharacters = false;
     }
 }
