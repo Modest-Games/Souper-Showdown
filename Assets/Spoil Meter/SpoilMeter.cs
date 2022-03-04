@@ -82,7 +82,7 @@ public class SpoilMeter : NetworkBehaviour
     private void ChangeSpoilMeterClientRpc(float pollutantValue)
     {
         // Convert the value change in relation to the Spoil Meter mask's x position:
-        var maskTarget = CalculateMaskPosition(maskTransform.anchoredPosition.x, pollutantValue);
+        var maskTarget = Mathf.Clamp(CalculateMaskPosition(maskTransform.anchoredPosition.x, pollutantValue), 150f, 1800f);
         StartCoroutine(SpoilMeterSmoothing(maskTarget));
 
         // Change Fill Line's color to green: (animate this later)
