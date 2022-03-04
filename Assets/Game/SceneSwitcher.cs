@@ -22,21 +22,18 @@ public class SceneSwitcher : NetworkBehaviour
 
     private void OnSceneSwitchRequested()
     {
-        if (IsServer)
+        // do scene switching
+        switch (SceneManager.GetActiveScene().name)
         {
-            // do scene switching
-            switch (SceneManager.GetActiveScene().name)
-            {
-                case "Lobby":
-                    NetworkManager.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
-                    Debug.Log("Switching to InGame scene");
-                    break;
+            case "Lobby":
+                NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
+                Debug.Log("Switching to InGame scene");
+                break;
 
-                case "InGame":
-                    NetworkManager.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
-                    Debug.Log("Switching to Lobby scene");
-                    break;
-            }
+            case "InGame":
+                NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+                Debug.Log("Switching to Lobby scene");
+                break;
         }
     }
 

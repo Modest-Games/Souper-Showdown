@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6b4c18a914c68249a2c1bf3cac5dddf, type: 3}
   m_Name: PrototypePollutant
   m_EditorClassIdentifier: 
-  effectAmount: -5
-  mesh: {fileID: 6530077904516032847, guid: 48a7d15740fd44fadabc3cce9971cb5e, type: 3}
+  type: 
+  mesh: {fileID: 6579928382457461011, guid: 98fbcafc560acbd44bbd68d33116c18f, type: 3}
+  effectAmount: 5

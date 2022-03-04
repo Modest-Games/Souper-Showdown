@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bb37047bab566ae40ac1f165e2959178, type: 3}
-  m_Name: Onion_Character
+  m_Script: {fileID: 11500000, guid: c6b4c18a914c68249a2c1bf3cac5dddf, type: 3}
+  m_Name: OnionPollutant
   m_EditorClassIdentifier: 
-  characterName: Onion
-  characterPrefab: {fileID: 3234332731889011418, guid: 8a33be64857fbf54cb1fc0d9b2fd0dfd, type: 3}
-  primaryColour: {r: 0.532, g: 0.27233332, b: 0.1488333, a: 0}
+  type: Onion
+  mesh: {fileID: 4205050009867024792, guid: 83dc4e0be7f0f00499de6965601f2d5a, type: 3}
+  effectAmount: -10

@@ -43,28 +43,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 593a2fe42fa9d37498c96f9a383b6521, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   DontDestroy: 1
   RunInBackground: 1
   LogLevel: 1
   NetworkConfig:
     ProtocolVersion: 0
     NetworkTransport: {fileID: 1487667035890383232}
-    PlayerPrefab: {fileID: 8957078185520989064, guid: 8baa2c0391151f547894eccc9be842c4, type: 3}
+    PlayerPrefab: {fileID: 8762603722751848709, guid: ef0ee8ee46c709f4780a0efa9f5c0a64, type: 3}
     NetworkPrefabs:
     - Override: 0
       Prefab: {fileID: 3608877965232234398, guid: 9692a75be07aac74c9e58aaccb697d36, type: 3}
-      SourcePrefabToOverride: {fileID: 0}
-      SourceHashToOverride: 0
-      OverridingTargetPrefab: {fileID: 0}
-    - Override: 0
-      Prefab: {fileID: 5288980905173298321, guid: 440a5ac09cb64e44a8d21b77ae348f52, type: 3}
-      SourcePrefabToOverride: {fileID: 0}
-      SourceHashToOverride: 0
-      OverridingTargetPrefab: {fileID: 0}
-    - Override: 0
-      Prefab: {fileID: 3249974561791828394, guid: 5e655ffb9bdbd5843a42c6d641a258c3, type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
@@ -79,6 +69,16 @@ MonoBehaviour:
       SourceHashToOverride: 0
       OverridingTargetPrefab: {fileID: 0}
     - Override: 0
+      Prefab: {fileID: 8165926038113286375, guid: 0f3817dbba257a94fa06a313c8be5f18, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
+      Prefab: {fileID: 5288980905173298321, guid: 440a5ac09cb64e44a8d21b77ae348f52, type: 3}
+      SourcePrefabToOverride: {fileID: 0}
+      SourceHashToOverride: 0
+      OverridingTargetPrefab: {fileID: 0}
+    - Override: 0
       Prefab: {fileID: 2690284212263728919, guid: 4874d39b58bbda142972b0381c92a226, type: 3}
       SourcePrefabToOverride: {fileID: 0}
       SourceHashToOverride: 0
@@ -86,7 +86,7 @@ MonoBehaviour:
     TickRate: 64
     ClientConnectionBufferTimeout: 10
     ConnectionApproval: 0
-    ConnectionData: 
+    ConnectionData:
     EnableTimeResync: 0
     TimeResyncInterval: 30
     EnsureNetworkVariableLengthSafety: 0
@@ -108,8 +108,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b84c2d8dfe509a34fb59e2b81f8e1319, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:
   MessageBufferSize: 5120
   MaxConnections: 100
   MaxSentMessageQueueSize: 128
@@ -127,5 +127,5 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 24364db7e9669ed438e802b130c147f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  m_Name:
+  m_EditorClassIdentifier:

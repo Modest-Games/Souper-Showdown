@@ -29,6 +29,7 @@ public class CharacterManager : MonoBehaviour
     {
         return characterList[index];
     }
+
     public Character GetCharacter(string name, bool doLog)
     {
         Character foundCharacter = characterList.Find(x => x.characterName == name);
@@ -38,6 +39,7 @@ public class CharacterManager : MonoBehaviour
 
         return foundCharacter;
     }
+
     public Character GetCharacter(string name)
     {
         return GetCharacter(name, false);

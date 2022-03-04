@@ -16,13 +16,13 @@ public class GetPlayersOnStart : MonoBehaviour
     }
 
     private void OnGameStarted()
-    {   
+    {
         // get camera target struct
         CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
 
-        // when the game starts, get all players 
+        // when the game starts, get all players
         players = GameObject.FindGameObjectsWithTag("Player");
-        
+
         // add them to the cineCam target group target list
         foreach(GameObject player in players) {
             camTargetGroup.AddMember(player.transform, 1f, 0f);
@@ -34,10 +34,9 @@ public class GetPlayersOnStart : MonoBehaviour
         VCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_CameraDistance = 900;
         VCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_ScreenX = 0.5f;
         VCam.GetCinemachineComponent<CinemachineFramingTransposer>().m_ScreenY = 0.5f;
-
     }
 
-    private void OnDisable() 
+    private void OnDisable()
     {
         GameController.GameStarted      -= OnGameStarted;
     }
