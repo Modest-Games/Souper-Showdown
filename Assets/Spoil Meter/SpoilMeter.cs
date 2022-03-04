@@ -47,9 +47,15 @@ public class SpoilMeter : NetworkBehaviour
         ChangeSpoilMeterClientRpc(pollutantValue);
 
         // handle the soup being spoiled (avengers end game)
-        if (value >= maxValue && SoupSpoiled != null)
-            SoupSpoiled();
+        if (value >= maxValue)
+        {
+            // end the game for clients
+            EndGameClientRpc();
 
+            // end the game for server
+            if (SoupSpoiled != null)
+                SoupSpoiled();
+        }
     }
 
     private IEnumerator SpoilMeterSmoothing(float target)
@@ -84,6 +90,13 @@ public class SpoilMeter : NetworkBehaviour
         {
             fillLine.color = green;
         }
+    }
+
+    [ClientRpc]
+    private void EndGameClientRpc()
+    {
+        if (SoupSpoiled != null)
+            SoupSpoiled();
     }
 
     private void OnSoupReceivedTrash(float influence)

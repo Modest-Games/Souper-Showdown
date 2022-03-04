@@ -699,10 +699,13 @@ public class PlayerController : NetworkBehaviour
 
     private void OnGameStopped()
     {
-        // stop moving
-        rb.velocity = Vector3.zero;
+        if (IsClient && IsOwner)
+        {
+            // stop moving
+            rb.velocity = Vector3.zero;
 
-        canMove = false;
+            canMove = false;
+        }
     }
 
     private void OnDebugEnabled()
