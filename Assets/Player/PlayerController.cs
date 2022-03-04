@@ -7,6 +7,7 @@ using Unity.Netcode;
 using Unity.Netcode.Samples;
 using NaughtyAttributes;
 using Unity.Netcode.Components;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(ClientNetworkTransform))]
@@ -625,14 +626,20 @@ public class PlayerController : NetworkBehaviour
 
     public void NextCharacterPerformed()
     {
-        characterObject = CharacterManager.Instance.GetNextCharacter(characterObject.characterName);
-        RefreshCharacter();
+        if (IsClient && IsOwner && SceneManager.GetActiveScene().name == "Lobby")
+        {
+            characterObject = CharacterManager.Instance.GetNextCharacter(characterObject.characterName);
+            RefreshCharacter();
+        }
     }
 
     public void PreviousCharacterPerformed()
     {
-        characterObject = CharacterManager.Instance.GetPreviousCharacter(characterObject.characterName);
-        RefreshCharacter();
+        if (IsClient && IsOwner && SceneManager.GetActiveScene().name == "Lobby")
+        {
+            characterObject = CharacterManager.Instance.GetPreviousCharacter(characterObject.characterName);
+            RefreshCharacter();
+        }
     }
 
     private void OnGameStarted()
