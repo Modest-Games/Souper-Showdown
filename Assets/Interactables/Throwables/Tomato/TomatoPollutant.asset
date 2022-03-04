@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: Tomato
   mesh: {fileID: 8810611233430608641, guid: 3a18a8a2cae2650459add588d15438eb, type: 3}
-  effectAmount: -10
+  effectAmount: -30

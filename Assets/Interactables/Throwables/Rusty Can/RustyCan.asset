@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: Can
   mesh: {fileID: 8942720635596149187, guid: 4ba19c20deb7c624c8f6fa1886b4bc1d, type: 3}
-  effectAmount: 5
+  effectAmount: 10

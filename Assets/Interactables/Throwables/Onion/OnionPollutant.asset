@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: Onion
   mesh: {fileID: 4205050009867024792, guid: 83dc4e0be7f0f00499de6965601f2d5a, type: 3}
-  effectAmount: -10
+  effectAmount: -30

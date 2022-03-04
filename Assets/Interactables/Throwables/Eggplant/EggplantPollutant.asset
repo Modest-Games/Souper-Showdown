@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: Eggplant
   mesh: {fileID: 4861736065662793443, guid: 0ce20fea9fc94a54fb91fdccb14aab32, type: 3}
-  effectAmount: -10
+  effectAmount: -30

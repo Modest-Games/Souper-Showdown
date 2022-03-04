@@ -6,7 +6,11 @@ using Unity.Netcode;
 
 public class SpoilMeter : NetworkBehaviour
 {
+    public delegate void SpoilMeterDelegate();
+    public static event SpoilMeterDelegate SoupSpoiled;
+
     [SerializeField] private float value;
+    public float maxValue;
 
     private RectTransform maskTransform;
     private Image fillLine;
@@ -37,10 +41,15 @@ public class SpoilMeter : NetworkBehaviour
     private void ChangeSpoilMeterValue(float pollutantValue)
     {
         // Should be turned in to a network variable:
-        value = Mathf.Clamp(value + pollutantValue, 0f, 100f);
+        value = Mathf.Clamp(value + pollutantValue, 0f, maxValue);
 
         // Change Spoil Meter for all clients:
         ChangeSpoilMeterClientRpc(pollutantValue);
+
+        // handle the soup being spoiled (avengers end game)
+        if (value >= maxValue && SoupSpoiled != null)
+            SoupSpoiled();
+
     }
 
     private IEnumerator SpoilMeterSmoothing(float target)

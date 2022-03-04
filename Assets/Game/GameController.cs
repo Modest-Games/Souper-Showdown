@@ -226,10 +226,16 @@ public class GameController : NetworkBehaviour
         }
     }
 
+    private void OnSoupSpoiled()
+    {
+        StopGame();
+    }
+
     private void OnEnable()
     {
         // setup event listeners
         SoupPot_Behaviour.SoupReceivedTrash += OnSoupReceivedTrash;
+        SpoilMeter.SoupSpoiled += OnSoupSpoiled;
 
         // setup network variable listeners
         gameState.OnValueChanged += OnGameStateChanged;
@@ -242,6 +248,7 @@ public class GameController : NetworkBehaviour
     {
         // clear event listeners
         SoupPot_Behaviour.SoupReceivedTrash -= OnSoupReceivedTrash;
+        SpoilMeter.SoupSpoiled -= OnSoupSpoiled;
 
         // clear network variable listeners
         gameState.OnValueChanged += OnGameStateChanged;

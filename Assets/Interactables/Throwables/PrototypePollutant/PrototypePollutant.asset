@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   type: 
   mesh: {fileID: 6579928382457461011, guid: 98fbcafc560acbd44bbd68d33116c18f, type: 3}
-  effectAmount: 5
+  effectAmount: 20
