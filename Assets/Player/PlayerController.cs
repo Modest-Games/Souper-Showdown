@@ -381,6 +381,19 @@ public class PlayerController : NetworkBehaviour
                     break;
             }
         }
+
+        if (IsServer)
+        {
+            switch (other.tag)
+            {
+                case "ChefZone":
+                    if (networkIsChef.Value == false)
+                    {
+                        networkIsChef.Value = true;
+                    }
+                    break;
+            }
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -426,22 +439,32 @@ public class PlayerController : NetworkBehaviour
                     break;
             }
         }
+
+        if (IsServer)
+        {
+            switch (other.tag)
+            {
+                case "ChefZone":
+                    if (networkIsChef.Value == true)
+                    {
+                        networkIsChef.Value = false;
+                    }
+                    break;
+            }
+        }
     }
 
     [NaughtyAttributes.Button("Refresh Character", EButtonEnableMode.Editor)]
     private void RefreshCharacter()
     {
+        Debug.Log("REFRESH CHARACTER CALLED");
+
         // check if there is a character mesh ready
         GameObject newCharacterMesh = characterObject == null ?
-            CharacterManager.Instance.characterList[0].characterPrefab : characterObject.characterPrefab;
+            CharacterManager.Instance.GetCharacter(0).characterPrefab : characterObject.characterPrefab;
 
-        // check if there is an existing mesh
-        Transform oldCharacter = transform.Find("Character");
-        if (oldCharacter != null)
-        {
-            // remove the old mesh
-            DestroyImmediate(oldCharacter.gameObject);
-        }
+        // remove the old mesh
+        Destroy(transform.Find("Character").gameObject);
 
         // instantiate the new mesh
         GameObject newMesh = Instantiate(newCharacterMesh, transform);
@@ -681,14 +704,18 @@ public class PlayerController : NetworkBehaviour
 
     private void OnIsChefChanged(bool oldVal, bool newVal)
     {
-        RefreshCharacter();
+        if (characterInitialized)
+            RefreshCharacter();
     }
 
     private void OnCharacterNameChanged(
         Unity.Collections.FixedString64Bytes oldVal, Unity.Collections.FixedString64Bytes newVal)
     {
         characterObject = CharacterManager.Instance.GetCharacter(newVal.ToString());
-        RefreshCharacter();
+        
+        
+        if (characterInitialized)
+            RefreshCharacter();
     }
 
     private void OnEnable()

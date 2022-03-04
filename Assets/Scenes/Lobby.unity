@@ -3797,10 +3797,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1487667035890383232, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
-      propertyPath: ConnectAddress
-      value: 192.168.2.145
-      objectReference: {fileID: 0}
     - target: {fileID: 1487667035890383233, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
       propertyPath: m_Name
       value: NetworkManager
@@ -3850,9 +3846,13 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
-      propertyPath: NetworkConfig.PlayerPrefab
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.size
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
+      propertyPath: NetworkConfig.NetworkPrefabs.Array.data[5].Prefab
       value: 
-      objectReference: {fileID: 8762603722751848709, guid: ef0ee8ee46c709f4780a0efa9f5c0a64, type: 3}
+      objectReference: {fileID: 7074134074574618778, guid: d246ca50e156a1345934394411994998, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
 --- !u!1001 &7074134074923405437
@@ -3864,7 +3864,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 7074134074574618772, guid: d246ca50e156a1345934394411994998, type: 3}
       propertyPath: GlobalObjectIdHash
-      value: 2857303303
+      value: 1515168855
       objectReference: {fileID: 0}
     - target: {fileID: 7074134074574618773, guid: d246ca50e156a1345934394411994998, type: 3}
       propertyPath: m_RootOrder
@@ -3910,10 +3910,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7074134074574618775, guid: d246ca50e156a1345934394411994998, type: 3}
-      propertyPath: playerPrefab
-      value: 
-      objectReference: {fileID: 3608877965232234398, guid: 9692a75be07aac74c9e58aaccb697d36, type: 3}
     - target: {fileID: 7074134074574618778, guid: d246ca50e156a1345934394411994998, type: 3}
       propertyPath: m_Name
       value: PlayersManager
