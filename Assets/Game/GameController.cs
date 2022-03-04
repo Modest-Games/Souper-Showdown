@@ -69,6 +69,7 @@ public class GameController : NetworkBehaviour
         if (GameCreated != null)
             GameCreated();
 
+
         Debug.Log(gameState.Value);
         //gameState.Value = GameState.Stopped;
         spawner = FindObjectOfType<ObjectSpawner>();
@@ -86,6 +87,9 @@ public class GameController : NetworkBehaviour
             if (DebugDisabled != null)
                 DebugDisabled();
         }
+
+        // start the game after 3 seconds
+        StartCoroutine(GameStartDelay());
     }
 
     public void InitializeGame()
@@ -244,5 +248,12 @@ public class GameController : NetworkBehaviour
 
         // disable controls
         controls.Debug.Disable();
+    }
+
+    public IEnumerator GameStartDelay()
+    {
+        yield return new WaitForSeconds(3f);
+
+        InitializeGame();
     }
 }
