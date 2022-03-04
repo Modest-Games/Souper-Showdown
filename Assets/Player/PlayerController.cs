@@ -162,6 +162,8 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Grab"].canceled += ctx => GrabCancelled();
             playerInput.actions["Throw"].canceled += ctx => ThrowPerformed();
             playerInput.actions["Throw"].started += ctx => ThrowStarted();
+            playerInput.actions["Next Character"].performed += ctx => NextCharacterPerformed();
+            playerInput.actions["Previous Character"].performed += ctx => PreviousCharacterPerformed();
 
             Debug.Log("Binding controls to client " + OwnerClientId + " on playerIndex: " + playerIndex);
             controlsBound = true;
@@ -619,6 +621,18 @@ public class PlayerController : NetworkBehaviour
                 OnThrowServerRpc();
             }
         }
+    }
+
+    public void NextCharacterPerformed()
+    {
+        characterObject = CharacterManager.Instance.GetNextCharacter(characterObject.characterName);
+        RefreshCharacter();
+    }
+
+    public void PreviousCharacterPerformed()
+    {
+        characterObject = CharacterManager.Instance.GetPreviousCharacter(characterObject.characterName);
+        RefreshCharacter();
     }
 
     private void OnGameStarted()
