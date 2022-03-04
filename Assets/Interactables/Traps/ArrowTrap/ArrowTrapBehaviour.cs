@@ -24,9 +24,6 @@ public class ArrowTrapBehaviour : NetworkBehaviour
         shouldUpdate = true; // TEMP
         timeSinceLastShot = timeBetweenShots;
         meshHolder = transform.Find("Mesh");
-
-        // refresh the mesh
-        RefreshMesh();
     }
 
     void Update()
@@ -47,11 +44,6 @@ public class ArrowTrapBehaviour : NetworkBehaviour
                 }
             }
         }
-    }
-
-    public void RefreshMesh()
-    {
-
     }
 
     public void Shoot()

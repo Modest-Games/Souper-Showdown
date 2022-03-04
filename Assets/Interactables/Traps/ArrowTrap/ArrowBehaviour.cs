@@ -8,7 +8,7 @@ public class ArrowBehaviour : NetworkBehaviour
     [Header("Config")]
     public GameObject arrowMesh;
     public float travelDistance = 5f;
-    public float travelSpeed = 1f;
+    public float travelSpeed = 1.5f;
     [Tooltip("How long the arrow should be visible after colliding")]
     public float expireTime = 0.5f;
 
