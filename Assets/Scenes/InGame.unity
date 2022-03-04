@@ -1266,6 +1266,22 @@ PrefabInstance:
       propertyPath: GlobalObjectIdHash
       value: 2554672315
       objectReference: {fileID: 0}
+    - target: {fileID: 450344430088371965, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
+      propertyPath: gridDimensions.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 450344430088371965, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
+      propertyPath: gridDimensions.y
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 450344430848429289, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
+      propertyPath: gridDimensions.x
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 450344430848429289, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
+      propertyPath: gridDimensions.y
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 450344431042757985, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
       propertyPath: m_RootOrder
       value: 14
@@ -3232,7 +3248,7 @@ GameObject:
   - component: {fileID: 1755693975}
   - component: {fileID: 1755693974}
   m_Layer: 0
-  m_Name: CM vcam1
+  m_Name: CineMachine VCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3552,7 +3568,7 @@ GameObject:
   - component: {fileID: 2034375725}
   - component: {fileID: 2034375724}
   m_Layer: 0
-  m_Name: CamTargetGroup
+  m_Name: CineMachine Target Group
   m_TagString: CamTargetCroup
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
