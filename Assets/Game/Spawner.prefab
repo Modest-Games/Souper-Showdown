@@ -53,6 +53,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: acd783fcf176aa0468655ace68d00853, type: 2}
   - {fileID: 11400000, guid: 1db6680c571b85145b9c85a37f452ae2, type: 2}
   - {fileID: 11400000, guid: 0bd5b5723cc1b5242a8c898d59de45a9, type: 2}
+  dumpster: {fileID: 5483482860161301140, guid: 97bfbbd5cdf56684d9d78eab5eab2596, type: 3}
   useSquareExclusion: 1
   squareExclusion: {x: 52, y: 32}
   roundExclusionRadius: 0

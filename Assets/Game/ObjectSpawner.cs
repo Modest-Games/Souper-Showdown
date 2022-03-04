@@ -11,6 +11,7 @@ public class ObjectSpawner : NetworkBehaviour
     public GameObject pollutantPrefab;
     public List<Pollutant> pollutantList;
     public List<Pollutant> deadBodyList;
+    public Dumpster[] dumpsters = new Dumpster[4];
 
     [Header("Config")]
     public bool useSquareExclusion;
@@ -34,52 +35,25 @@ public class ObjectSpawner : NetworkBehaviour
     [Button("Spawn Pollutant")]
     public void SpawnPollutant()
     {
-        Vector3 spawnLocation = GetSpawnLocation();
-
-        // spawn the new pollutant
-        GameObject newPollutant = Instantiate(pollutantPrefab, spawnLocation, Quaternion.identity);
-
         var pollutantIndex = Random.Range(0, pollutantList.Count);
-        newPollutant.GetComponent<PollutantBehaviour>().pollutantObject = pollutantList[pollutantIndex];
-
-        newPollutant.GetComponent<NetworkObject>().Spawn();
-    }
-
-    [Header("Testing")]
-    [SerializeField] private int manualPollutantsToSpawn;
-    [Button("Spawn Multiple Pollutants")]
-    private void ManualSpawnManyPollutants()
-    {
-        SpawnManyPollutants(manualPollutantsToSpawn);
+        dumpsters[Random.Range(0, 4)].SpawnPoulltant(pollutantList[pollutantIndex]);
     }
 
     public void SpawnManyPollutants(int numPollutants)
     {
-        for (int i = 0; i < numPollutants; i++)
-        {
-            SpawnPollutant();
-        }
+        StartCoroutine(CycleDumpsters());
     }
 
-    private Vector3 GetSpawnLocation()
+    public IEnumerator CycleDumpsters()
     {
-        Vector3 returnVec;
+        var numPollutants = 0;
 
-        if (useSquareExclusion)
+        while (numPollutants < 4)
         {
-            float xVal = Random.Range(squareExclusion.x / 2f, spawnBounds.x / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
-            //float yMin = Mathf.Max(0f, (squareExclusion.y / 2f) - Mathf.Abs(xVal));
-            //float yMin = Mathf.Abs(xVal) > squareExclusion.x / 2f ? 0f : squareExclusion.y / 2f;
-            float yVal = Random.Range(0f, spawnBounds.y / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
-            returnVec = new Vector3(xVal, defaultYValue, yVal);
-        } else
-        {
-            float xVal = Random.Range(0f, spawnBounds.x / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
-            float yMin = Mathf.Max(0f, roundExclusionRadius - Mathf.Abs(xVal));
-            float yVal = Random.Range(yMin, spawnBounds.y / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
-            returnVec = new Vector3(xVal, defaultYValue, yVal);
+            SpawnPollutant();
+            yield return new WaitForSeconds(1.00f);
+            numPollutants++;
         }
-
-        return returnVec;
+        
     }
 }
