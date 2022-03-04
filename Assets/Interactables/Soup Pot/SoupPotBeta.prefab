@@ -87,6 +87,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: de9450844391a114a96dfa1b8e6bc615, type: 2}
+    - target: {fileID: -2829861646394407652, guid: baa712c8db9620b409988c4e9579a99c, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: de9450844391a114a96dfa1b8e6bc615, type: 2}
     - target: {fileID: 919132149155446097, guid: baa712c8db9620b409988c4e9579a99c, type: 3}
       propertyPath: m_Name
       value: SoupPotBeta
