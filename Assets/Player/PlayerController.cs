@@ -630,6 +630,7 @@ public class PlayerController : NetworkBehaviour
         {
             characterObject = CharacterManager.Instance.GetNextCharacter(characterObject.characterName);
             RefreshCharacter();
+            UpdateClientVisuals();
         }
     }
 
@@ -639,6 +640,7 @@ public class PlayerController : NetworkBehaviour
         {
             characterObject = CharacterManager.Instance.GetPreviousCharacter(characterObject.characterName);
             RefreshCharacter();
+            UpdateClientVisuals();
         }
     }
 
