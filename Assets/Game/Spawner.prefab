@@ -47,6 +47,7 @@ MonoBehaviour:
   pollutantList:
   - {fileID: 11400000, guid: 976f6c240026233449c01a57e47e58a8, type: 2}
   - {fileID: 11400000, guid: b51137145c7a671498ba416297403e9b, type: 2}
+  - {fileID: 11400000, guid: a435dfae3936fe24282398b344170575, type: 2}
   deadBodyList:
   - {fileID: 11400000, guid: 1c3d3bf3f86b3cf40be5d3e0bfe639f1, type: 2}
   - {fileID: 11400000, guid: acd783fcf176aa0468655ace68d00853, type: 2}
