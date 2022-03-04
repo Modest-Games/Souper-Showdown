@@ -650,7 +650,7 @@ public class PlayerController : NetworkBehaviour
 
                 StartCoroutine(TempDisablePickup());
                 StartCoroutine(TempDisableMovement());
-                OnThrowServerRpc();
+                OnThrowServerRpc(transform.forward);
             }
         }
     }
@@ -835,7 +835,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void OnThrowServerRpc()
+    public void OnThrowServerRpc(Vector3 playerForward)
     {
         if (networkCarryState.Value == PlayerCarryState.Empty) return;
 
@@ -848,7 +848,7 @@ public class PlayerController : NetworkBehaviour
             forwardOffset = 1.55f;
         }
 
-        throwPos += (transform.forward) * forwardOffset;
+        throwPos += (playerForward) * forwardOffset;
 
         var thrownObj = Instantiate(pollutantPrefab, throwPos, Quaternion.Euler(0, transform.localEulerAngles.y, 90));
         var thrownObjBehaviour = thrownObj.GetComponent<PollutantBehaviour>();
@@ -856,7 +856,7 @@ public class PlayerController : NetworkBehaviour
         thrownObjBehaviour.meshInitialized = false;
 
         thrownObj.GetComponent<NetworkObject>().Spawn();
-        thrownObj.GetComponent<Rigidbody>().AddForce((transform.forward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);
+        thrownObj.GetComponent<Rigidbody>().AddForce((playerForward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);
         
         thrownObjBehaviour.OnThrowClientRpc();
 
