@@ -1,0 +1,18 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb37047bab566ae40ac1f165e2959178, type: 3}
+  m_Name: CarrotCharacter
+  m_EditorClassIdentifier: 
+  characterName: Carrot
+  characterPrefab: {fileID: 3234332731889011418, guid: a50dfeabcc5a29c49aaa6a3477699bec, type: 3}
+  deadCharacter: {fileID: 11400000, guid: 1c3d3bf3f86b3cf40be5d3e0bfe639f1, type: 2}
+  primaryColour: {r: 1, g: 0.5254902, b: 0.06666667, a: 1}

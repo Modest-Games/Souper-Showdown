@@ -259,6 +259,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Arms
       objectReference: {fileID: 0}
+    - target: {fileID: 5727149900867649100, guid: 63dc8662372581845a507f02df2432dc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7313946374973547068, guid: 63dc8662372581845a507f02df2432dc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0.07
+      objectReference: {fileID: 0}
+    - target: {fileID: 8188501958974711512, guid: 63dc8662372581845a507f02df2432dc, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.07
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 63dc8662372581845a507f02df2432dc, type: 3}
 --- !u!4 &1053266376615791181 stripped

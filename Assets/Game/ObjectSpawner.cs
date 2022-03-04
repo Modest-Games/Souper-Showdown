@@ -6,8 +6,12 @@ using Unity.Netcode;
 
 public class ObjectSpawner : NetworkBehaviour
 {
+    public static ObjectSpawner Instance;
+
     public GameObject pollutantPrefab;
-    public Pollutant[] pollutants;
+    public List<Pollutant> pollutantList;
+    public List<Pollutant> deadBodyList;
+    public Dumpster[] dumpsters = new Dumpster[4];
 
     [Header("Config")]
     public bool useSquareExclusion;
@@ -16,55 +20,40 @@ public class ObjectSpawner : NetworkBehaviour
     public Vector2 spawnBounds;
     public float defaultYValue;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     [Button("Spawn Pollutant")]
     public void SpawnPollutant()
     {
-        Vector3 spawnLocation = GetSpawnLocation();
-
-        // spawn the new pollutant
-        GameObject newPollutant = Instantiate(pollutantPrefab, spawnLocation, Quaternion.identity);
-
-        newPollutant.GetComponent<PollutantBehaviour>().pollutantObject = pollutants[Random.Range(0, pollutants.Length - 1)];
-        newPollutant.GetComponent<NetworkObject>().Spawn();
-
-        Debug.Log("Spawned pollutant at " + spawnLocation);
-    }
-
-    [Header("Testing")]
-    [SerializeField] private int manualPollutantsToSpawn;
-    [Button("Spawn Multiple Pollutants")]
-    private void ManualSpawnManyPollutants()
-    {
-        SpawnManyPollutants(manualPollutantsToSpawn);
+        var pollutantIndex = Random.Range(0, pollutantList.Count);
+        dumpsters[Random.Range(0, 4)].SpawnPoulltant(pollutantList[pollutantIndex]);
     }
 
     public void SpawnManyPollutants(int numPollutants)
     {
-        for (int i = 0; i < numPollutants; i++)
-        {
-            SpawnPollutant();
-        }
+        StartCoroutine(CycleDumpsters());
     }
 
-    private Vector3 GetSpawnLocation()
+    public IEnumerator CycleDumpsters()
     {
-        Vector3 returnVec;
+        var numPollutants = 0;
 
-        if (useSquareExclusion)
+        while (numPollutants < 4)
         {
-            float xVal = Random.Range(squareExclusion.x / 2f, spawnBounds.x / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
-            //float yMin = Mathf.Max(0f, (squareExclusion.y / 2f) - Mathf.Abs(xVal));
-            //float yMin = Mathf.Abs(xVal) > squareExclusion.x / 2f ? 0f : squareExclusion.y / 2f;
-            float yVal = Random.Range(0f, spawnBounds.y / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
-            returnVec = new Vector3(xVal, defaultYValue, yVal);
-        } else
-        {
-            float xVal = Random.Range(0f, spawnBounds.x / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
-            float yMin = Mathf.Max(0f, roundExclusionRadius - Mathf.Abs(xVal));
-            float yVal = Random.Range(yMin, spawnBounds.y / 2f) * (Random.Range(0, 2) == 1 ? 1f : -1f);
-            returnVec = new Vector3(xVal, defaultYValue, yVal);
+            SpawnPollutant();
+            yield return new WaitForSeconds(1.00f);
+            numPollutants++;
         }
-
-        return returnVec;
+        
     }
 }
