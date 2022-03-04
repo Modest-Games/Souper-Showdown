@@ -23,6 +23,7 @@ public class GameController : NetworkBehaviour
     public static event DebugDelegate DebugDisabled;
 
     public delegate void GameStateDelegate();
+    public static event GameStateDelegate GameCreated;
     public static event GameStateDelegate GameStarted;
     public static event GameStateDelegate GameStopped;
     public static event GameStateDelegate GamePaused;
@@ -65,6 +66,9 @@ public class GameController : NetworkBehaviour
 
     void Start()
     {
+        if (GameCreated != null)
+            GameCreated();
+
         Debug.Log(gameState.Value);
         //gameState.Value = GameState.Stopped;
         spawner = FindObjectOfType<ObjectSpawner>();

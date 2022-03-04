@@ -673,6 +673,15 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    private void OnGameCreated()
+    {
+        if (IsClient && IsOwner)
+        {
+            canMove = false;
+            PlayerRandomSpawnPoint(networkIsChef.Value);
+        }
+    }
+
     private void OnGameStarted()
     {
         canMove = true;
@@ -734,6 +743,7 @@ public class PlayerController : NetworkBehaviour
         GameController.GamePaused       += OnGamePaused;
         GameController.GameResumed      += OnGameResumed;
         GameController.GameStopped      += OnGameStopped;
+        GameController.GameCreated      += OnGameCreated;
 
         // setup network event listeners
         networkIsChef.OnValueChanged += OnIsChefChanged;
@@ -752,6 +762,7 @@ public class PlayerController : NetworkBehaviour
         GameController.GamePaused       -= OnGamePaused;
         GameController.GameResumed      -= OnGameResumed;
         GameController.GameStopped      -= OnGameStopped;
+        GameController.GameCreated      -= OnGameCreated;
 
         // clear network event listeners
         networkIsChef.OnValueChanged -= OnIsChefChanged;
