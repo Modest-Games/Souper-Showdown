@@ -628,9 +628,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner && SceneManager.GetActiveScene().name == "Lobby")
         {
-            characterObject = CharacterManager.Instance.GetNextCharacter(characterObject.characterName);
-            RefreshCharacter();
-            UpdateClientVisuals();
+            UpdateCharacterNameServerRpc(CharacterManager.Instance.GetNextCharacter(characterObject.characterName).characterName);
         }
     }
 
@@ -638,9 +636,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner && SceneManager.GetActiveScene().name == "Lobby")
         {
-            characterObject = CharacterManager.Instance.GetPreviousCharacter(characterObject.characterName);
-            RefreshCharacter();
-            UpdateClientVisuals();
+            UpdateCharacterNameServerRpc(CharacterManager.Instance.GetNextCharacter(characterObject.characterName).characterName);
         }
     }
 
