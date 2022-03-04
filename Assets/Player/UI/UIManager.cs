@@ -157,7 +157,6 @@ public class UIManager : NetworkBehaviour
         {
             // invoke the sceneswitchtriggered event
             if (SceneSwitchRequested != null)
-                Debug.Log("LAKSDJFLASDJFKAJSDF");
                 SceneSwitchRequested();
         });
 
