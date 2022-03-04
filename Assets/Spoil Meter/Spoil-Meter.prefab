@@ -635,6 +635,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   value: 0
+  maxValue: 85
 --- !u!114 &2021346689918092721
 MonoBehaviour:
   m_ObjectHideFlags: 0
