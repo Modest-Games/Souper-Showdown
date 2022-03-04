@@ -13,6 +13,9 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(ClientNetworkTransform))]
 public class PlayerController : NetworkBehaviour
 {
+    public delegate void PlayerDelegate();
+    public static event PlayerDelegate PlayerCreated;
+
     public enum ArmState
     {
         Stiff,
@@ -141,6 +144,9 @@ public class PlayerController : NetworkBehaviour
             // Spawn the player
             //PlayerRandomSpawnPoint(isChef);
         }
+
+        if (PlayerCreated != null)
+            PlayerCreated();
 
         // setup debugging
         debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
