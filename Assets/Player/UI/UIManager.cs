@@ -81,7 +81,7 @@ public class UIManager : NetworkBehaviour
 
         //NetworkManager.Singleton.SceneManager.OnLoad += OnSceneChanged;
 
-        BindUI();
+        BindUIEvents();
     }
 
     // called when the scene changes
@@ -93,8 +93,14 @@ public class UIManager : NetworkBehaviour
 
     private void BindUI()
     {
+        if (SceneManager.GetActiveScene().name == "InGame")
+            return;
+
         // get the network UI canvas
         Transform networkUICanvas = GameObject.Find("NetworkUI").transform;     // probably bad
+
+        if (networkUICanvas == null)
+            return;
 
         // bind buttons
         startHostButton = networkUICanvas.Find("Start Host").GetComponentInChildren<Button>();
@@ -105,10 +111,15 @@ public class UIManager : NetworkBehaviour
         switchSceneButton = networkUICanvas.Find("Switch Scene").GetComponentInChildren<Button>();
         characterSelector = networkUICanvas.Find("CharacterSelect").GetComponentInChildren<Dropdown>();
 
+        BindUIEvents();
+    }
+
+    private void BindUIEvents()
+    {
         startHostButton.onClick.RemoveAllListeners();
         startHostButton.onClick.AddListener(() =>
         {
-            if(NetworkManager.Singleton.StartHost())
+            if (NetworkManager.Singleton.StartHost())
             {
                 Debug.Log("Host started...");
             }
