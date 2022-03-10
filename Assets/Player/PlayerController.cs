@@ -6,7 +6,7 @@ using System.Linq;
 using Unity.Netcode;
 using Unity.Netcode.Samples;
 using NaughtyAttributes;
-using Unity.Netcode.Components;
+using UnityEngine.VFX;
 using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(NetworkObject))]
@@ -73,6 +73,7 @@ public class PlayerController : NetworkBehaviour
     public bool canMove;
     private GameObject dazeIndicator;
     private CharacterBehaviour characterBehaviour;
+    private VisualEffect vfx;
 
     private bool justThrew;
     private float timeDazed;
@@ -124,11 +125,7 @@ public class PlayerController : NetworkBehaviour
         dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
         heldObject = transform.Find("Held Object").gameObject;
 
-        //looseArms = ;
-        //stiffArms = null;
-
-        //looseArms = characterObject.characterPrefab.transform.Find("Flaccid").gameObject;
-        //stiffArms = characterObject.characterPrefab.transform.Find("Stiff").gameObject;
+        vfx = transform.Find("VFX").GetComponent<VisualEffect>();
 
         // setup variables
         if (IsClient && IsOwner)
@@ -732,6 +729,8 @@ public class PlayerController : NetworkBehaviour
         
         if (characterInitialized && !isRefreshingCharacter)
             RefreshCharacter();
+
+        vfx.Play();
     }
 
     private void OnEnable()
