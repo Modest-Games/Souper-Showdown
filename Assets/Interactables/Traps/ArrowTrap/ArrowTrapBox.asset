@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: ArrowTrapBox
   m_EditorClassIdentifier: 
   boxColor: {r: 0.3301887, g: 0.3301887, b: 0.3301887, a: 0}
-  trapPrefab: {fileID: 0}
+  trapPrefab: {fileID: 2512757752469678952, guid: 91311204b2f7b0143ab11bbb81b5b434, type: 3}
