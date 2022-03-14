@@ -29,32 +29,6 @@ public class CharacterManager : MonoBehaviour
     {
         return characterList[index];
     }
-
-    public Character GetNextCharacter(string characterName)
-    {
-        // get the old character's index
-        int oldCharacterIndex = characterList.IndexOf(characterList.Find(x => x.characterName == characterName));
-
-        // get the next index value
-        int newIndex = (oldCharacterIndex + 1) % characterList.Count;
-
-        return GetCharacter(newIndex);
-    }
-
-    public Character GetPreviousCharacter(string characterName)
-    {
-        // get the old character's index
-        int oldCharacterIndex = characterList.IndexOf(characterList.Find(x => x.characterName == characterName));
-
-        // get the previous index value
-        int newIndex = oldCharacterIndex - 1;
-
-        if (newIndex < 0)
-            newIndex = characterList.Count + newIndex;
-
-        return GetCharacter(newIndex);
-    }
-
     public Character GetCharacter(string name, bool doLog)
     {
         Character foundCharacter = characterList.Find(x => x.characterName == name);
@@ -64,7 +38,6 @@ public class CharacterManager : MonoBehaviour
 
         return foundCharacter;
     }
-
     public Character GetCharacter(string name)
     {
         return GetCharacter(name, false);

@@ -182,7 +182,7 @@ public class GameController : NetworkBehaviour
         }
     }
 
-    private void OnSoupReceivedTrash(float amount)
+    private void OnSoupReceivedTrash()
     {
         if (gameState.Value == GameState.Stopped) return;
 

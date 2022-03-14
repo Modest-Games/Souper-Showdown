@@ -14,14 +14,13 @@ public class PollutantBehaviour : NetworkBehaviour
         Airborn
     }
 
-    // Assigned by object spawner:
     public Pollutant pollutantObject;
-
-    public bool meshInitialized;
 
     [ReadOnly] public PollutantState state;
 
     private TrailRenderer trail;
+    private Vector3 throwStartPos;
+    private Vector3 throwDestination;
 
     public Rigidbody rb;
 
@@ -30,25 +29,12 @@ public class PollutantBehaviour : NetworkBehaviour
         // setup variables
         trail = gameObject.GetComponent<TrailRenderer>();
         rb = GetComponent<Rigidbody>();
-        meshInitialized = false;
-    }
 
-    void Start()
-    {
-        if (!IsServer) return;
-
-        SetPollutantObjectClientRpc(pollutantObject.type);
+        //RefreshMesh();
     }
 
     void Update()
     {
-        // check if the character needs to be refreshed
-        if (!meshInitialized && pollutantObject != null)
-        {
-            RefreshMesh();
-            meshInitialized = true;
-        }
-
         switch (state)
         {
             case PollutantState.Idle:
@@ -88,17 +74,6 @@ public class PollutantBehaviour : NetworkBehaviour
                 trail.emitting = false;
                 state = PollutantState.Idle;
                 break;
-        }
-    }
-
-    [ClientRpc]
-    public void SetPollutantObjectClientRpc(string type)
-    {
-        pollutantObject = ObjectSpawner.Instance.pollutantList.Find(x => x.type == type);
-
-        if (pollutantObject == null)
-        {
-            pollutantObject = ObjectSpawner.Instance.deadBodyList.Find(x => x.type == type);
         }
     }
 

@@ -11,7 +11,6 @@ TagManager:
   - Projectile
   - CamTargetCroup
   - Canvas
-  - CineMachineVCam
   layers:
   - Default
   - TransparentFX

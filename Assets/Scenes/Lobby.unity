@@ -336,10 +336,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7665602946402444091, guid: 4874d39b58bbda142972b0381c92a226, type: 3}
-      propertyPath: GlobalObjectIdHash
-      value: 2315724045
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4874d39b58bbda142972b0381c92a226, type: 3}
 --- !u!1 &79032190
@@ -3305,18 +3301,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: LobbyEnvironment
       objectReference: {fileID: 0}
-    - target: {fileID: 7335596313217129448, guid: 2adc9e8ea236ec84aa2ee14fe0e3559b, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -9.88
-      objectReference: {fileID: 0}
-    - target: {fileID: 7335596313217129448, guid: 2adc9e8ea236ec84aa2ee14fe0e3559b, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -9.52
-      objectReference: {fileID: 0}
-    - target: {fileID: 7335596313217129448, guid: 2adc9e8ea236ec84aa2ee14fe0e3559b, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 5.6
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2adc9e8ea236ec84aa2ee14fe0e3559b, type: 3}
 --- !u!1 &1952773496
@@ -3697,10 +3681,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1487667035890383235, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
-      propertyPath: NetworkConfig.PlayerPrefab
-      value: 
-      objectReference: {fileID: 8762603722751848709, guid: ef0ee8ee46c709f4780a0efa9f5c0a64, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d744729c159f99546ab9b84b6d36f48e, type: 3}
 --- !u!1001 &7074134074923405437

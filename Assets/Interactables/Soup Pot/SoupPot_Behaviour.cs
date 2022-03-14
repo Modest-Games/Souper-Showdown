@@ -5,11 +5,9 @@ using Unity.Netcode;
 
 public class SoupPot_Behaviour : NetworkBehaviour
 {
-    public delegate void SoupPotDelegate(float influence);
+    public delegate void SoupPotDelegate();
     public static event SoupPotDelegate SoupReceivedTrash;
     public static event SoupPotDelegate SoupReceivedPlayer;
-
-    public ParticleSystem ps;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -19,13 +17,26 @@ public class SoupPot_Behaviour : NetworkBehaviour
             {
                 case "Pollutant":
                     // make sure the pollutant is airborn
+                    if (other.gameObject.GetComponent<PollutantBehaviour>().state
+                        == PollutantBehaviour.PollutantState.Airborn)
+                    {
                         // destroy the trash
                         other.gameObject.GetComponent<SphereCollider>().isTrigger = false;
                         StartCoroutine(OnPollutantEnter(other.gameObject));
 
                         // call the received trash event
                         if (SoupReceivedTrash != null)
-                            SoupReceivedTrash(other.gameObject.GetComponent<PollutantBehaviour>().pollutantObject.effectAmount);
+                            SoupReceivedTrash();
+                    }
+
+                    break;
+
+                case "Character":
+                    // kill the player
+
+                    // call the received player event
+                    if (SoupReceivedPlayer != null)
+                        SoupReceivedPlayer();
 
                     break;
             }
@@ -44,6 +55,6 @@ public class SoupPot_Behaviour : NetworkBehaviour
     [ClientRpc]
     private void OnPollutantEnterClientRpc()
     {
-        ps.Play();
+        GetComponent<ParticleSystem>().Play();
     }
 }

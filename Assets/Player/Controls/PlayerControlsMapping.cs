@@ -123,24 +123,6 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Next Character"",
-                    ""type"": ""Button"",
-                    ""id"": ""ca847879-4121-466e-be2e-6921384660da"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Previous Character"",
-                    ""type"": ""Button"",
-                    ""id"": ""6183318b-6b8c-4381-b8aa-3b39e8c20f0c"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -185,28 +167,6 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Throw"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3684614b-7742-468f-8595-75d4d1d9c117"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Next Character"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""4bb06dfd-cafd-4e60-a5bb-ef6ac73e3f27"",
-                    ""path"": ""<Gamepad>/leftShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Previous Character"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -274,8 +234,6 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         m_Gameplay_Dash = m_Gameplay.FindAction("Dash", throwIfNotFound: true);
         m_Gameplay_Grab = m_Gameplay.FindAction("Grab", throwIfNotFound: true);
         m_Gameplay_Throw = m_Gameplay.FindAction("Throw", throwIfNotFound: true);
-        m_Gameplay_NextCharacter = m_Gameplay.FindAction("Next Character", throwIfNotFound: true);
-        m_Gameplay_PreviousCharacter = m_Gameplay.FindAction("Previous Character", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_ToggleDebug = m_Debug.FindAction("ToggleDebug", throwIfNotFound: true);
@@ -375,8 +333,6 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
     private readonly InputAction m_Gameplay_Dash;
     private readonly InputAction m_Gameplay_Grab;
     private readonly InputAction m_Gameplay_Throw;
-    private readonly InputAction m_Gameplay_NextCharacter;
-    private readonly InputAction m_Gameplay_PreviousCharacter;
     public struct GameplayActions
     {
         private @PlayerControlsMapping m_Wrapper;
@@ -385,8 +341,6 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
         public InputAction @Grab => m_Wrapper.m_Gameplay_Grab;
         public InputAction @Throw => m_Wrapper.m_Gameplay_Throw;
-        public InputAction @NextCharacter => m_Wrapper.m_Gameplay_NextCharacter;
-        public InputAction @PreviousCharacter => m_Wrapper.m_Gameplay_PreviousCharacter;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -408,12 +362,6 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @Throw.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnThrow;
                 @Throw.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnThrow;
                 @Throw.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnThrow;
-                @NextCharacter.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnNextCharacter;
-                @NextCharacter.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnNextCharacter;
-                @NextCharacter.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnNextCharacter;
-                @PreviousCharacter.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPreviousCharacter;
-                @PreviousCharacter.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPreviousCharacter;
-                @PreviousCharacter.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPreviousCharacter;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -430,12 +378,6 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @Throw.started += instance.OnThrow;
                 @Throw.performed += instance.OnThrow;
                 @Throw.canceled += instance.OnThrow;
-                @NextCharacter.started += instance.OnNextCharacter;
-                @NextCharacter.performed += instance.OnNextCharacter;
-                @NextCharacter.canceled += instance.OnNextCharacter;
-                @PreviousCharacter.started += instance.OnPreviousCharacter;
-                @PreviousCharacter.performed += instance.OnPreviousCharacter;
-                @PreviousCharacter.canceled += instance.OnPreviousCharacter;
             }
         }
     }
@@ -483,8 +425,6 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         void OnDash(InputAction.CallbackContext context);
         void OnGrab(InputAction.CallbackContext context);
         void OnThrow(InputAction.CallbackContext context);
-        void OnNextCharacter(InputAction.CallbackContext context);
-        void OnPreviousCharacter(InputAction.CallbackContext context);
     }
     public interface IDebugActions
     {
