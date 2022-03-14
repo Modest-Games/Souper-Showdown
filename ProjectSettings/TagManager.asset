@@ -12,6 +12,7 @@ TagManager:
   - CamTargetCroup
   - CineMachineVCam
   - ChefZone
+  - Canvas
   layers:
   - Default
   - TransparentFX
