@@ -665,7 +665,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner && !isRefreshingCharacter && !justSwitchedCharacters && SceneManager.GetActiveScene().name == "Lobby")
         {
-            UpdateCharacterNameServerRpc(CharacterManager.Instance.GetNextCharacter(characterObject.characterName).characterName);
+            UpdateCharacterNameServerRpc(CharacterManager.Instance.GetPreviousCharacter(characterObject.characterName).characterName);
             StartCoroutine(TempDisableCharacterSwitch());
         }
     }

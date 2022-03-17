@@ -36,7 +36,13 @@ public class CharacterManager : MonoBehaviour
         int oldCharacterIndex = characterList.IndexOf(characterList.Find(x => x.characterName == characterName));
 
         // get the next index value
-        int newIndex = (oldCharacterIndex + 1) % characterList.Count;
+        int newIndex = oldCharacterIndex + 1;
+
+        // clamp new index
+        // who needs modulo anyways
+        if (newIndex == characterList.Count) {
+            newIndex = 0;
+        }
 
         return GetCharacter(newIndex);
     }
@@ -49,8 +55,11 @@ public class CharacterManager : MonoBehaviour
         // get the previous index value
         int newIndex = oldCharacterIndex - 1;
 
-        if (newIndex < 0)
-            newIndex = characterList.Count + newIndex;
+        // clamp new index
+        // who needs modulo anyways
+        if (newIndex < 0) {
+            newIndex = characterList.Count;
+        }
 
         return GetCharacter(newIndex);
     }
