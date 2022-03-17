@@ -58,7 +58,7 @@ public class CharacterManager : MonoBehaviour
         // clamp new index
         // who needs modulo anyways
         if (newIndex < 0) {
-            newIndex = characterList.Count;
+            newIndex = characterList.Count - 1;
         }
 
         return GetCharacter(newIndex);
