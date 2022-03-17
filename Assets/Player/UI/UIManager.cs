@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Unity.Netcode;
+using Unity.Netcode.Transports.UNET;
 using UnityEngine.SceneManagement;
 
 public class UIManager : NetworkBehaviour
@@ -22,6 +23,8 @@ public class UIManager : NetworkBehaviour
     [SerializeField] private TextMeshProUGUI connectedPlayersText;
 
     [SerializeField] private Button startGameButton;
+
+    [SerializeField] private TMP_InputField networkAddressInput;
 
     private bool hasServerStarted;
 
@@ -58,6 +61,7 @@ public class UIManager : NetworkBehaviour
         //NetworkManager.Singleton.SceneManager.OnLoad += OnSceneChanged;
 
         BindUIEvents();
+        UpdateNetworkAddress(networkAddressInput.text);
     }
 
     // called when the scene changes
@@ -84,6 +88,8 @@ public class UIManager : NetworkBehaviour
         startClientButton = networkUICanvas.Find("Start Client").GetComponentInChildren<Button>();
         connectedPlayersText = networkUICanvas.Find("Players").GetComponent<TextMeshProUGUI>();
         startGameButton = networkUICanvas.Find("Start Game").GetComponentInChildren<Button>();
+        networkAddressInput = networkUICanvas.Find("NetworkAddressInput").GetComponent<TMP_InputField>();
+
 
         BindUIEvents();
     }
@@ -146,6 +152,11 @@ public class UIManager : NetworkBehaviour
         });
     }
 
+    public void UpdateNetworkAddress(string newAddress)
+    {
+        NetworkManager.Singleton.GetComponent<UNetTransport>().ConnectAddress = newAddress;
+    }
+
     private void UpdateButtonVisibilities(bool isConnected)
     {
         if (SceneManager.GetActiveScene().name == "InGame")
@@ -154,6 +165,7 @@ public class UIManager : NetworkBehaviour
         startHostButton.gameObject.SetActive(!isConnected);
         startClientButton.gameObject.SetActive(!isConnected);
         startServerButton.gameObject.SetActive(!isConnected);
+        networkAddressInput.gameObject.SetActive(!isConnected);
         startGameButton.gameObject.SetActive(isConnected);
     }
 
