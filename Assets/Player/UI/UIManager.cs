@@ -23,14 +23,6 @@ public class UIManager : NetworkBehaviour
 
     [SerializeField] private Button startGameButton;
 
-    [SerializeField] private Button switchSceneButton;
-
-    [SerializeField] private Dropdown characterSelector;
-
-    public Toggle isChefToggle;
-    public string chosenCharacterName;
-    public int chosenCharacterIndex;
-
     private bool hasServerStarted;
 
     private void Awake()
@@ -47,26 +39,10 @@ public class UIManager : NetworkBehaviour
         {
             Instance = this;
         }
-
-        isChefToggle.isOn = false;
     }
     
     private void Start()
     {
-        // setup character selector
-        foreach (Character character in CharacterManager.Instance.characterList)
-        {
-            characterSelector.options.Add(new Dropdown.OptionData(character.characterName));
-        }
-        characterSelector.RefreshShownValue();
-
-        characterSelector.onValueChanged.AddListener((chosen) =>
-        {
-            //Debug.Log(characterSelector.options[chosen].text);
-            chosenCharacterName = characterSelector.options[chosen].text;
-            chosenCharacterIndex = chosen;
-        });
-
         hasServerStarted = false;
 
         // setup event listeners
@@ -108,8 +84,6 @@ public class UIManager : NetworkBehaviour
         startClientButton = networkUICanvas.Find("Start Client").GetComponentInChildren<Button>();
         connectedPlayersText = networkUICanvas.Find("Players").GetComponent<TextMeshProUGUI>();
         startGameButton = networkUICanvas.Find("Start Game").GetComponentInChildren<Button>();
-        switchSceneButton = networkUICanvas.Find("Switch Scene").GetComponentInChildren<Button>();
-        characterSelector = networkUICanvas.Find("CharacterSelect").GetComponentInChildren<Dropdown>();
 
         BindUIEvents();
     }
@@ -163,24 +137,29 @@ public class UIManager : NetworkBehaviour
             hasServerStarted = true;
         };
 
-        switchSceneButton.onClick.RemoveAllListeners();
-        switchSceneButton.onClick.AddListener(() =>
+        startGameButton.onClick.RemoveAllListeners();
+        startGameButton.onClick.AddListener(() =>
         {
             // invoke the sceneswitchtriggered event
             if (SceneSwitchRequested != null)
                 SceneSwitchRequested();
         });
+    }
 
-        startGameButton.onClick.RemoveAllListeners();
-        startGameButton.onClick.AddListener(() =>
-        {
-            if (!hasServerStarted) return;
-            GameController.Instance.InitializeGame();
-        });
+    private void UpdateButtonVisibilities(bool isConnected)
+    {
+        if (SceneManager.GetActiveScene().name == "InGame")
+            return;
+
+        startHostButton.gameObject.SetActive(!isConnected);
+        startClientButton.gameObject.SetActive(!isConnected);
+        startServerButton.gameObject.SetActive(!isConnected);
+        startGameButton.gameObject.SetActive(isConnected);
     }
 
     private void Update()
     {
         connectedPlayersText.text = $"Players in game: {PlayersManager.Instance.ConnectedPlayers}";
+        UpdateButtonVisibilities(hasServerStarted); // should probably not be done on the update
     }
 }
