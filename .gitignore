@@ -9,6 +9,7 @@
 /[Bb]uilds/
 /[Ll]ogs/
 /[Uu]ser[Ss]ettings/
+/UserSettings/*
 
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
@@ -36,8 +37,8 @@ ExportedObj/
 *.unityproj
 *.sln
 *.suo
-*.tmp
 *.user
+*.tmp
 *.userprefs
 *.pidb
 *.booproj
@@ -68,8 +69,8 @@ crashlytics-build.properties
 /[Aa]ssets/[Aa]ddressable[Aa]ssets[Dd]ata/*/*.bin*
 
 # Temporary auto-generated Android Assets
-/[Aa]ssets/[Ss]treamingAssets/aa.meta
 /[Aa]ssets/[Ss]treamingAssets/aa/*
+/[Aa]ssets/[Ss]treamingAssets/aa.meta
 
 # MacOS
 .DS_STORE
