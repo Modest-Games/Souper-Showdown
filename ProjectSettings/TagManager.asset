@@ -13,6 +13,7 @@ TagManager:
   - CineMachineVCam
   - ChefZone
   - Canvas
+  - ControllerMapping
   layers:
   - Default
   - TransparentFX

@@ -4,6 +4,7 @@ using UnityEngine;
 using NaughtyAttributes;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
+using UnityEngine.UI;
 
 public class GameController : NetworkBehaviour
 {
@@ -45,6 +46,10 @@ public class GameController : NetworkBehaviour
     private SoupPot_Behaviour soupPot;
     private ObjectSpawner spawner;
     private PlayerControlsMapping controls;
+
+    public GameObject controllerMappingSprite;
+    public int countdownTime;
+    public Text countdownDisplay;
 
     private void Awake()
     {
@@ -259,8 +264,33 @@ public class GameController : NetworkBehaviour
 
     public IEnumerator GameStartDelay()
     {
-        yield return new WaitForSeconds(3f);
+        // set it active
+        controllerMappingSprite.SetActive(true);
 
+        // wait 6 seconds
+        yield return new WaitForSeconds(6f);
+
+        // deactivate the UI
+        controllerMappingSprite.SetActive(false);
+
+        // handles countdown timer
+        countdownDisplay.gameObject.SetActive(true);
+        while (countdownTime > 0)
+        {
+            countdownDisplay.text = countdownTime.ToString();
+
+            yield return new WaitForSeconds(1f);
+
+            countdownTime--;
+        }
+
+        countdownDisplay.text = "GO";
+
+        // start game
         InitializeGame();
+
+        yield return new WaitForSeconds(1f);
+
+        countdownDisplay.gameObject.SetActive(false);
     }
 }
