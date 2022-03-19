@@ -100,6 +100,7 @@ MonoBehaviour:
   trap: {fileID: 2512757752469678952, guid: 91311204b2f7b0143ab11bbb81b5b434, type: 3}
   placeable: {fileID: 2100000, guid: 6b59f17e7ecc7c84494ef347f2daabaf, type: 2}
   notPlaceable: {fileID: 2100000, guid: aa8b02a5983a06842bd87ea34dca01b9, type: 2}
+  crate: {fileID: 6150662518824468198, guid: eee25676eac14a14c9255aed274a5bc1, type: 3}
 --- !u!111 &6276012046822002519
 Animation:
   m_ObjectHideFlags: 0

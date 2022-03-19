@@ -12,6 +12,7 @@ public class UnplacedTrap : MonoBehaviour
 
     [SerializeField] private Material placeable;
     [SerializeField] private Material notPlaceable;
+    [SerializeField] private GameObject crate;
 
     void Start()
     {
@@ -45,6 +46,7 @@ public class UnplacedTrap : MonoBehaviour
         if (!canPlace)
             return;
 
+        Instantiate(crate, transform.position, crate.transform.localRotation);
         Instantiate(trap, transform.position, transform.localRotation);
         gameObject.SetActive(false);
     }
