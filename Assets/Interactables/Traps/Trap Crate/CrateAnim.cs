@@ -9,13 +9,6 @@ public class CrateAnim : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(DestroyObjectCoroutine());
-    }
-
-    public IEnumerator DestroyObjectCoroutine()
-    {
-        yield return new WaitForSeconds(1f);
-
-        Destroy(gameObject);
+        Destroy(gameObject, 1f);
     }
 }

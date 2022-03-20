@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
+using Unity.Netcode;
 
 public class UnplacedTrap : MonoBehaviour
 {
@@ -59,8 +60,10 @@ public class UnplacedTrap : MonoBehaviour
         if (!canPlace)
             return false;
 
-        Instantiate(crate, transform.position, crate.transform.localRotation);
-        Instantiate(trap, transform.position, rotation);
+        GameObject newTrap = Instantiate(trap, transform.position, rotation);
+
+        newTrap.GetComponent<NetworkObject>().Spawn();
+
         gameObject.SetActive(false);
         return true;
     }
