@@ -1,10 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using NaughtyAttributes;
 using Unity.Netcode;
 
-public class UnplacedTrap : MonoBehaviour
+public class UnplacedTrap : NetworkBehaviour
 {
     [SerializeField] private GameObject trap;
     private bool canPlace;
@@ -48,21 +47,19 @@ public class UnplacedTrap : MonoBehaviour
         SetCanPlace(true);
     }
 
-    [Button]
     public void RotateTrap()
     {
         rotation = Quaternion.Euler(rotation.eulerAngles + new Vector3(0, 90, 0));
     }
 
-    [Button]
     public bool SpawnTrap()
     {
+        // ensure the trap can be placed here
         if (!canPlace)
             return false;
 
-        GameObject newTrap = Instantiate(trap, transform.position, rotation);
-
-        newTrap.GetComponent<NetworkObject>().Spawn();
+        // spawn the trap
+        SpawnTrapServerRpc(transform.position, rotation);
 
         gameObject.SetActive(false);
         return true;
@@ -70,13 +67,13 @@ public class UnplacedTrap : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Wall" || other.tag == "Player" || other.tag == "Trap")
+        if (other.tag == "Wall" || other.tag == "Player" || other.tag == "Trap" || other.tag == "Soup Pot")
             SetCanPlace(false);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.tag == "Wall" || other.tag == "Player" || other.tag == "Trap")
+        if (other.tag == "Wall" || other.tag == "Player" || other.tag == "Trap" || other.tag == "Soup Pot")
             SetCanPlace(true);
     }
 
@@ -84,5 +81,12 @@ public class UnplacedTrap : MonoBehaviour
     {
         canPlace = newCanPlace;
         lineRenderer.enabled = newCanPlace;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void SpawnTrapServerRpc(Vector3 trapPosition, Quaternion trapRotation)
+    {
+        GameObject newTrap = Instantiate(trap, trapPosition, trapRotation);
+        newTrap.GetComponent<NetworkObject>().Spawn();
     }
 }
