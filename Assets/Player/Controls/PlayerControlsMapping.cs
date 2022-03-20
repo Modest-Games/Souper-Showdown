@@ -141,6 +141,51 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Toggle Trap Mode"",
+                    ""type"": ""Button"",
+                    ""id"": ""8f4fce4e-320b-4d5a-b115-28eb8c6b07af"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Next Trap"",
+                    ""type"": ""Button"",
+                    ""id"": ""8dda7ee8-193e-459a-9abc-fea0774e9d57"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Previous Trap"",
+                    ""type"": ""Button"",
+                    ""id"": ""b3b0c2b0-e916-41d2-b734-8749ff9e9eef"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Rotate Trap"",
+                    ""type"": ""Button"",
+                    ""id"": ""5ef6a2b4-ebf4-4c5e-ba08-975ed0a56e0a"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Place Trap"",
+                    ""type"": ""Button"",
+                    ""id"": ""e932f290-2c2a-4176-b37c-91676590191f"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -207,6 +252,61 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Previous Character"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f21835f-5b2e-444d-95b4-2dcbaaa2d689"",
+                    ""path"": ""<Gamepad>/buttonNorth"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Toggle Trap Mode"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e39adcf1-5a98-4f16-804b-2f504debaea4"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Next Trap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""aa1bb51e-bae3-4f65-97a7-de639c252ebc"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Previous Trap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bd45940c-4e3d-4809-9437-78f3745753d2"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Rotate Trap"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a7b2943c-280e-44cc-99a0-1537c233c353"",
+                    ""path"": ""<Gamepad>/buttonWest"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Place Trap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -276,6 +376,11 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         m_Gameplay_Throw = m_Gameplay.FindAction("Throw", throwIfNotFound: true);
         m_Gameplay_NextCharacter = m_Gameplay.FindAction("Next Character", throwIfNotFound: true);
         m_Gameplay_PreviousCharacter = m_Gameplay.FindAction("Previous Character", throwIfNotFound: true);
+        m_Gameplay_ToggleTrapMode = m_Gameplay.FindAction("Toggle Trap Mode", throwIfNotFound: true);
+        m_Gameplay_NextTrap = m_Gameplay.FindAction("Next Trap", throwIfNotFound: true);
+        m_Gameplay_PreviousTrap = m_Gameplay.FindAction("Previous Trap", throwIfNotFound: true);
+        m_Gameplay_RotateTrap = m_Gameplay.FindAction("Rotate Trap", throwIfNotFound: true);
+        m_Gameplay_PlaceTrap = m_Gameplay.FindAction("Place Trap", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_ToggleDebug = m_Debug.FindAction("ToggleDebug", throwIfNotFound: true);
@@ -377,6 +482,11 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
     private readonly InputAction m_Gameplay_Throw;
     private readonly InputAction m_Gameplay_NextCharacter;
     private readonly InputAction m_Gameplay_PreviousCharacter;
+    private readonly InputAction m_Gameplay_ToggleTrapMode;
+    private readonly InputAction m_Gameplay_NextTrap;
+    private readonly InputAction m_Gameplay_PreviousTrap;
+    private readonly InputAction m_Gameplay_RotateTrap;
+    private readonly InputAction m_Gameplay_PlaceTrap;
     public struct GameplayActions
     {
         private @PlayerControlsMapping m_Wrapper;
@@ -387,6 +497,11 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         public InputAction @Throw => m_Wrapper.m_Gameplay_Throw;
         public InputAction @NextCharacter => m_Wrapper.m_Gameplay_NextCharacter;
         public InputAction @PreviousCharacter => m_Wrapper.m_Gameplay_PreviousCharacter;
+        public InputAction @ToggleTrapMode => m_Wrapper.m_Gameplay_ToggleTrapMode;
+        public InputAction @NextTrap => m_Wrapper.m_Gameplay_NextTrap;
+        public InputAction @PreviousTrap => m_Wrapper.m_Gameplay_PreviousTrap;
+        public InputAction @RotateTrap => m_Wrapper.m_Gameplay_RotateTrap;
+        public InputAction @PlaceTrap => m_Wrapper.m_Gameplay_PlaceTrap;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -414,6 +529,21 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @PreviousCharacter.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPreviousCharacter;
                 @PreviousCharacter.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPreviousCharacter;
                 @PreviousCharacter.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPreviousCharacter;
+                @ToggleTrapMode.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnToggleTrapMode;
+                @ToggleTrapMode.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnToggleTrapMode;
+                @ToggleTrapMode.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnToggleTrapMode;
+                @NextTrap.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnNextTrap;
+                @NextTrap.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnNextTrap;
+                @NextTrap.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnNextTrap;
+                @PreviousTrap.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPreviousTrap;
+                @PreviousTrap.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPreviousTrap;
+                @PreviousTrap.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPreviousTrap;
+                @RotateTrap.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateTrap;
+                @RotateTrap.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateTrap;
+                @RotateTrap.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnRotateTrap;
+                @PlaceTrap.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPlaceTrap;
+                @PlaceTrap.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPlaceTrap;
+                @PlaceTrap.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPlaceTrap;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -436,6 +566,21 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @PreviousCharacter.started += instance.OnPreviousCharacter;
                 @PreviousCharacter.performed += instance.OnPreviousCharacter;
                 @PreviousCharacter.canceled += instance.OnPreviousCharacter;
+                @ToggleTrapMode.started += instance.OnToggleTrapMode;
+                @ToggleTrapMode.performed += instance.OnToggleTrapMode;
+                @ToggleTrapMode.canceled += instance.OnToggleTrapMode;
+                @NextTrap.started += instance.OnNextTrap;
+                @NextTrap.performed += instance.OnNextTrap;
+                @NextTrap.canceled += instance.OnNextTrap;
+                @PreviousTrap.started += instance.OnPreviousTrap;
+                @PreviousTrap.performed += instance.OnPreviousTrap;
+                @PreviousTrap.canceled += instance.OnPreviousTrap;
+                @RotateTrap.started += instance.OnRotateTrap;
+                @RotateTrap.performed += instance.OnRotateTrap;
+                @RotateTrap.canceled += instance.OnRotateTrap;
+                @PlaceTrap.started += instance.OnPlaceTrap;
+                @PlaceTrap.performed += instance.OnPlaceTrap;
+                @PlaceTrap.canceled += instance.OnPlaceTrap;
             }
         }
     }
@@ -485,6 +630,11 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         void OnThrow(InputAction.CallbackContext context);
         void OnNextCharacter(InputAction.CallbackContext context);
         void OnPreviousCharacter(InputAction.CallbackContext context);
+        void OnToggleTrapMode(InputAction.CallbackContext context);
+        void OnNextTrap(InputAction.CallbackContext context);
+        void OnPreviousTrap(InputAction.CallbackContext context);
+        void OnRotateTrap(InputAction.CallbackContext context);
+        void OnPlaceTrap(InputAction.CallbackContext context);
     }
     public interface IDebugActions
     {

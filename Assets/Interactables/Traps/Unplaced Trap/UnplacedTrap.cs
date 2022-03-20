@@ -9,16 +9,20 @@ public class UnplacedTrap : MonoBehaviour
     private bool canPlace;
 
     private MeshRenderer meshRenderer;
+    private LineRenderer lineRenderer;
 
     [SerializeField] private Material placeable;
     [SerializeField] private Material notPlaceable;
     [SerializeField] private GameObject crate;
 
+    private Quaternion rotation;
+
     void Start()
     {
-        canPlace = true;
-
-        meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderer = transform.GetComponent<MeshRenderer>();
+        lineRenderer = transform.GetComponentInChildren<LineRenderer>();
+        
+        SetCanPlace(true);
     }
 
     void Update()
@@ -32,32 +36,50 @@ public class UnplacedTrap : MonoBehaviour
         {
             meshRenderer.material = notPlaceable;
         }
+
+        // correct the trap's rotation
+        transform.rotation = Quaternion.Euler(transform.InverseTransformDirection(Vector3.forward) + rotation.eulerAngles);
+        //transform.Rotate(rotation.eulerAngles, Space.World);
     }
 
-    [Button]
-    private void RotateTrap()
+    private void OnDisable()
     {
-        transform.Rotate(0, 90, 0);
+        SetCanPlace(true);
     }
 
     [Button]
-    private void SpawnTrap()
+    public void RotateTrap()
+    {
+        rotation = Quaternion.Euler(rotation.eulerAngles + new Vector3(0, 90, 0));
+    }
+
+    [Button]
+    public bool SpawnTrap()
     {
         if (!canPlace)
-            return;
+            return false;
 
         Instantiate(crate, transform.position, crate.transform.localRotation);
-        Instantiate(trap, transform.position, transform.localRotation);
+        Instantiate(trap, transform.position, rotation);
         gameObject.SetActive(false);
+        return true;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        canPlace = false;
+        if (other.tag == "Wall" || other.tag == "Player" || other.tag == "Trap")
+            SetCanPlace(false);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        canPlace = true;
+        if (other.tag == "Wall" || other.tag == "Player" || other.tag == "Trap")
+            SetCanPlace(true);
+    }
+
+    private void SetCanPlace(bool newCanPlace)
+    {
+        canPlace = newCanPlace;
+        lineRenderer.enabled = newCanPlace;
     }
 }

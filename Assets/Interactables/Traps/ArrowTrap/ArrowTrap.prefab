@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: -3803866028212300701}
   m_Layer: 0
   m_Name: ArrowTrap
-  m_TagString: Untagged
+  m_TagString: Trap
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -263,6 +263,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 3904918349880815613}
     m_Modifications:
+    - target: {fileID: 6046037746705685932, guid: dc04055b11337cc4db24494e76065564, type: 3}
+      propertyPath: m_Size.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6046037746705685932, guid: dc04055b11337cc4db24494e76065564, type: 3}
+      propertyPath: m_Size.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6046037746705685932, guid: dc04055b11337cc4db24494e76065564, type: 3}
+      propertyPath: m_Size.z
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6745508103840533174, guid: dc04055b11337cc4db24494e76065564, type: 3}
       propertyPath: m_Name
       value: ArrowTrap_Alpha_MESH

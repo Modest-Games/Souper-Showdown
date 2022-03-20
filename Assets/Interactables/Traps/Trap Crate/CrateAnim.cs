@@ -7,9 +7,15 @@ public class CrateAnim : MonoBehaviour
 {
     public Animator animator;
 
-    [Button]
-    public void PlayAnim()
+    private void Start()
     {
-        animator.Play("Open");
+        StartCoroutine(DestroyObjectCoroutine());
+    }
+
+    public IEnumerator DestroyObjectCoroutine()
+    {
+        yield return new WaitForSeconds(1f);
+
+        Destroy(gameObject);
     }
 }

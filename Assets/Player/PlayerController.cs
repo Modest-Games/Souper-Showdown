@@ -35,7 +35,8 @@ public class PlayerController : NetworkBehaviour
     {
         Empty,
         CarryingObject,
-        CarryingPlayer
+        CarryingPlayer,
+        PlacingTrap
     }
 
     [Header("Config")]
@@ -74,6 +75,7 @@ public class PlayerController : NetworkBehaviour
     private GameObject dazeIndicator;
     private CharacterBehaviour characterBehaviour;
     private VisualEffect vfx;
+    private UnplacedTrap trapPlacer;
 
     private bool justThrew;
     private float timeDazed;
@@ -81,6 +83,9 @@ public class PlayerController : NetworkBehaviour
     private bool controlsBound;
     private bool isRefreshingCharacter;
     private bool justSwitchedCharacters;
+    private bool justSwitchedTrapPlacementMode;
+    private bool justRotatedTrap;
+    private bool justPlacedTrap;
 
     public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
     private GameObject heldObject;
@@ -92,6 +97,8 @@ public class PlayerController : NetworkBehaviour
 
     public NetworkVariable<Unity.Collections.FixedString64Bytes> networkCharacterName = new NetworkVariable<Unity.Collections.FixedString64Bytes>();
     public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
+    public NetworkVariable<int> networkTrapRotation = new NetworkVariable<int>();
+    public NetworkVariable<Unity.Collections.FixedString64Bytes> networkSelectedTrap = new NetworkVariable<Unity.Collections.FixedString64Bytes>();
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
 
@@ -104,6 +111,8 @@ public class PlayerController : NetworkBehaviour
         justThrew = false;
         controlsBound = false;
         justSwitchedCharacters = false;
+        justRotatedTrap = false;
+        justPlacedTrap = false;
     }
 
     private void Start()
@@ -124,6 +133,7 @@ public class PlayerController : NetworkBehaviour
         rb = GetComponent<Rigidbody>();
         dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
         heldObject = transform.Find("Held Object").gameObject;
+        trapPlacer = transform.Find("Trap Placer").GetComponentInChildren<UnplacedTrap>();
 
         vfx = transform.Find("VFX").GetComponent<VisualEffect>();
 
@@ -155,9 +165,6 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            playerInput = LocalPlayerManager.Instance.inputPlayers.Find(
-                p => p.playerIndex == playerIndex.Value);
-
             // map control inputs
             playerInput.actions["Dash"].performed += ctx => DashPerformed();
             playerInput.actions["Move"].performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
@@ -169,8 +176,12 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Next Character"].performed += ctx => NextCharacterPerformed();
             playerInput.actions["Previous Character"].performed += ctx => PreviousCharacterPerformed();
 
-            Debug.Log("Binding controls to client " + OwnerClientId + " on playerIndex: " + playerIndex);
-            controlsBound = true;
+            // map chef control inputs
+            playerInput.actions["Toggle Trap Mode"].performed += ctx => ToggleTrapModePerformed();
+            playerInput.actions["Next Trap"].performed += ctx => NextTrapPerformed();
+            playerInput.actions["Previous Trap"].performed += ctx => PreviousTrapPerformed();
+            playerInput.actions["Rotate Trap"].performed += ctx => RotateTrapPerformed();
+            playerInput.actions["Place Trap"].performed += ctx => PlaceTrapPerformed();
         }
     }
 
@@ -197,7 +208,13 @@ public class PlayerController : NetworkBehaviour
         // check if the controls need to be bound
         if (!controlsBound)
         {
+            playerInput = LocalPlayerManager.Instance.inputPlayers.Find(
+                p => p.playerIndex == playerIndex.Value);
+
             BindControls();
+
+            Debug.Log("Binding controls to client " + OwnerClientId + " on playerIndex: " + playerIndex);
+            controlsBound = true;
         }
     }
 
@@ -218,6 +235,8 @@ public class PlayerController : NetworkBehaviour
         PlayerCarryState carryStateVal = networkCarryState.Value;
         PlayerState playerStateVal = (IsClient && IsOwner) ? playerState : networkPlayerState.Value;
 
+        // update the trap placer
+        UpdateTrapPlacerVisuals();
 
         if (lastKnownState != carryStateVal)
         {
@@ -475,6 +494,32 @@ public class PlayerController : NetworkBehaviour
         isRefreshingCharacter = false;
     }
 
+    private void UpdateTrapPlacerVisuals()
+    {
+        // don't show the trap placer if the player is a chef
+        if (!networkIsChef.Value)
+        {
+            trapPlacer.gameObject.SetActive(false);
+            UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+            return;
+        }
+
+        switch (networkCarryState.Value)
+        {
+            case PlayerCarryState.PlacingTrap:
+                // enable the trap placer
+                trapPlacer.gameObject.SetActive(true);
+
+                break;
+
+            default:
+                // disable the trap placer
+                trapPlacer.gameObject.SetActive(false);
+
+                break;
+        }
+    }
+
     private void OnBoop()
     {
         // make sure the player can be booped
@@ -560,6 +605,78 @@ public class PlayerController : NetworkBehaviour
                 UpdatePlayerStateServerRpc(PlayerState.Dashing);
                 playerState = PlayerState.Dashing;
             }
+        }
+    }
+
+    public void ToggleTrapModePerformed()
+    {
+        if (IsClient && IsOwner)
+        {
+            // ensure that the player is a chef
+            if (!networkIsChef.Value)
+                return;
+
+            // ensure that the player didn't just toggle trap mode
+            if (justSwitchedTrapPlacementMode)
+                return;
+
+            // toggle the trap placement mode
+            switch (networkCarryState.Value)
+            {
+                case PlayerCarryState.Empty:
+                    UpdatePlayerCarryStateServerRpc(PlayerCarryState.PlacingTrap);
+                    StartCoroutine(TempDisableTrapPlacementToggle());
+                    break;
+
+                case PlayerCarryState.PlacingTrap:
+                    UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+                    StartCoroutine(TempDisableTrapPlacementToggle());
+                    break;
+            }
+        }
+    }
+
+    public void NextTrapPerformed()
+    {
+        if (IsClient && IsOwner && networkIsChef.Value)
+        {
+
+        }
+    }
+
+    public void PreviousTrapPerformed()
+    {
+        if (IsClient && IsOwner && networkIsChef.Value)
+        {
+
+        }
+    }
+
+    public void RotateTrapPerformed()
+    {
+        if (IsClient && IsOwner && networkIsChef.Value)
+        {
+            // ensure the trap wasn't just rotated
+            if (justRotatedTrap)
+                return;
+
+            // rotate the trap 90 degrees
+            trapPlacer.RotateTrap();
+            StartCoroutine(TempDisableTrapRotation());
+        }
+    }
+
+    public void PlaceTrapPerformed()
+    {
+        if (IsClient && IsOwner && networkIsChef.Value)
+        {
+            // ensure that the trap wasn't just placed
+            if (justPlacedTrap)
+                return;
+
+            // place the trap
+            if (trapPlacer.SpawnTrap())
+                StartCoroutine(TempDisableTrapPlacement());
         }
     }
 
@@ -733,11 +850,14 @@ public class PlayerController : NetworkBehaviour
         vfx.Play();
     }
 
+    private void OnSelectedTrapChanged(
+        Unity.Collections.FixedString64Bytes oldVal, Unity.Collections.FixedString64Bytes newVal)
+    {
+
+    }
+
     private void OnEnable()
     {
-        // enable controls
-        //controls.Gameplay.Enable();
-
         // setup event listeners
         GameController.DebugEnabled     += OnDebugEnabled;
         GameController.DebugDisabled    += OnDebugDisabled;
@@ -754,9 +874,6 @@ public class PlayerController : NetworkBehaviour
 
     private void OnDisable()
     {
-        // disable controls
-        //controls.Gameplay.Disable();
-
         // clear event listeners
         GameController.DebugEnabled     -= OnDebugEnabled;
         GameController.DebugDisabled    -= OnDebugDisabled;
@@ -903,6 +1020,12 @@ public class PlayerController : NetworkBehaviour
         networkCharacterName.Value = newName;
     }
 
+    [ServerRpc(RequireOwnership = false)]
+    public void SetSelectedTrapServerRpc(string newTrap)
+    {
+        networkSelectedTrap.Value = newTrap;
+    }
+
     public IEnumerator TempDisablePickup()
     {
         justThrew = true;
@@ -944,5 +1067,32 @@ public class PlayerController : NetworkBehaviour
         yield return new WaitForSeconds(0.50f);
 
         justSwitchedCharacters = false;
+    }
+
+    public IEnumerator TempDisableTrapPlacementToggle()
+    {
+        justSwitchedTrapPlacementMode = true;
+
+        yield return new WaitForSeconds(0.5f);
+
+        justSwitchedTrapPlacementMode = false;
+    }
+
+    public IEnumerator TempDisableTrapRotation()
+    {
+        justRotatedTrap = true;
+
+        yield return new WaitForSeconds(0.25f);
+
+        justRotatedTrap = false;
+    }
+
+    public IEnumerator TempDisableTrapPlacement()
+    {
+        justPlacedTrap = true;
+
+        yield return new WaitForSeconds(0.5f);
+
+        justPlacedTrap = false;
     }
 }
