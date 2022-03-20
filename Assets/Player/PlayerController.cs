@@ -500,7 +500,7 @@ public class PlayerController : NetworkBehaviour
         if (!networkIsChef.Value)
         {
             trapPlacer.gameObject.SetActive(false);
-            UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+            // UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
             return;
         }
 
@@ -612,6 +612,14 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
+            // ensure we are in the ingame scene
+            if (SceneManager.GetActiveScene().name != "InGame")
+                return;
+
+            // ensure the game is running
+            if (GameController.Instance.gameState.Value != GameController.GameState.Running)
+                return;
+
             // ensure that the player is a chef
             if (!networkIsChef.Value)
                 return;
@@ -656,6 +664,18 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner && networkIsChef.Value)
         {
+            // ensure we are in the ingame scene
+            if (SceneManager.GetActiveScene().name != "InGame")
+                return;
+
+            // ensure the game is running
+            if (GameController.Instance.gameState.Value != GameController.GameState.Running)
+                return;
+
+            // ensure trap placement mode is enabled
+            if (networkCarryState.Value != PlayerCarryState.PlacingTrap)
+                return;
+
             // ensure the trap wasn't just rotated
             if (justRotatedTrap)
                 return;
@@ -670,6 +690,18 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner && networkIsChef.Value)
         {
+            // ensure we are in the ingame scene
+            if (SceneManager.GetActiveScene().name != "InGame")
+                return;
+
+            // ensure the game is running
+            if (GameController.Instance.gameState.Value != GameController.GameState.Running)
+                return;
+
+            // ensure trap placement mode is enabled
+            if (networkCarryState.Value != PlayerCarryState.PlacingTrap)
+                return;
+
             // ensure that the trap wasn't just placed
             if (justPlacedTrap)
                 return;
@@ -835,7 +867,10 @@ public class PlayerController : NetworkBehaviour
     private void OnIsChefChanged(bool oldVal, bool newVal)
     {
         if (characterInitialized && !isRefreshingCharacter)
+        {
             RefreshCharacter();
+            UpdateTrapPlacerVisuals();
+        }
     }
 
     private void OnCharacterNameChanged(
