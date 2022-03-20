@@ -165,6 +165,9 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
+            playerInput = LocalPlayerManager.Instance.inputPlayers.Find(
+                p => p.playerIndex == playerIndex.Value);
+
             // map control inputs
             playerInput.actions["Dash"].performed += ctx => DashPerformed();
             playerInput.actions["Move"].performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
@@ -182,6 +185,9 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Previous Trap"].performed += ctx => PreviousTrapPerformed();
             playerInput.actions["Rotate Trap"].performed += ctx => RotateTrapPerformed();
             playerInput.actions["Place Trap"].performed += ctx => PlaceTrapPerformed();
+
+            Debug.Log("Binding controls to client " + OwnerClientId + " on playerIndex: " + playerIndex);
+            controlsBound = true;
         }
     }
 
@@ -208,13 +214,7 @@ public class PlayerController : NetworkBehaviour
         // check if the controls need to be bound
         if (!controlsBound)
         {
-            playerInput = LocalPlayerManager.Instance.inputPlayers.Find(
-                p => p.playerIndex == playerIndex.Value);
-
             BindControls();
-
-            Debug.Log("Binding controls to client " + OwnerClientId + " on playerIndex: " + playerIndex);
-            controlsBound = true;
         }
     }
 
