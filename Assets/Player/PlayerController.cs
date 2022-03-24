@@ -47,6 +47,7 @@ public class PlayerController : NetworkBehaviour
     [Header("Character")]
     public Character characterObject;
     //public bool isChef = false;
+    private GameObject legs;
 
     [Header("State (ReadOnly)")]
     [SerializeField] [ReadOnly] public PlayerState playerState;
@@ -150,6 +151,8 @@ public class PlayerController : NetworkBehaviour
             UpdatePlayerStateServerRpc(PlayerState.Idle);
         }
 
+        legs = characterObject.characterPrefab.transform.GetChild(3).gameObject;
+
         // setup debugging
         debugCanvasObj.gameObject.SetActive(FindObjectOfType<GameController>().isDebugEnabled);
 
@@ -203,6 +206,7 @@ public class PlayerController : NetworkBehaviour
         }
 
 
+
         switch (carryStateVal)
         {
             case PlayerCarryState.Empty:
@@ -227,12 +231,14 @@ public class PlayerController : NetworkBehaviour
                 // show the daze indicator
                 dazeIndicator.SetActive(true);
                 break;
-
             default:
                 // hide the daze indicator
                 dazeIndicator.SetActive(false);
                 break;
         }
+
+        //update legs in character behaviour
+        characterBehaviour.UpdateLegs(playerStateVal);
     }
 
     private void PlayerMovement()
@@ -247,6 +253,10 @@ public class PlayerController : NetworkBehaviour
             case PlayerState.Idle:
                 // clear rotatitonal velocity
                 rb.angularVelocity = Vector3.zero;
+                //Freeze legs
+                legs = characterObject.characterPrefab.transform.GetChild(3).gameObject;
+                legs.SetActive(false);
+                Debug.Log("legs hidden");
                 break;
 
             case PlayerState.Moving:
@@ -262,6 +272,11 @@ public class PlayerController : NetworkBehaviour
 
                 transform.LookAt(Vector3.Lerp(transform.position + transform.forward, transform.position + lookVector, rotateSpeed * deltaTime));
                 // transform.rotation.SetFromToRotation(transform.rotation.eulerAngles, movementVec);
+
+                //Move legs
+                //legs = characterObject.characterPrefab.transform.GetChild(3).gameObject;
+                //legs.SetActive(true);
+                //Debug.Log("legs showing");
 
                 // DEBUG:
                 // draw motion vector
