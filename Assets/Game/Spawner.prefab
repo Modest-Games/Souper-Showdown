@@ -54,6 +54,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0bd5b5723cc1b5242a8c898d59de45a9, type: 2}
   - {fileID: 11400000, guid: 8030d7f123ac61a4bbdb768fb1120df4, type: 2}
   - {fileID: 11400000, guid: a0782ea5f7db5404d9e4a82c096fa4ed, type: 2}
+  - {fileID: 11400000, guid: dafc3cdf9185fe34289246f4ed05dee6, type: 2}
   dumpsters:
   - {fileID: 0}
   - {fileID: 0}
