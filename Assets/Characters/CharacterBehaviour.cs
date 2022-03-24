@@ -6,6 +6,25 @@ public class CharacterBehaviour : MonoBehaviour
 {
     public Transform looseArms;
     public Transform stiffArms;
+    public Transform stillLegs;
+    public Transform movingLegs;
+
+
+    public void UpdateLegs(PlayerController.PlayerState playerState)
+    {
+        if (playerState == PlayerController.PlayerState.Idle)
+        {
+            Debug.Log("Not moving");
+            stillLegs.gameObject.SetActive(true);
+            movingLegs.gameObject.SetActive(false);
+        }
+        else
+        {
+            Debug.Log("Moving");
+            stillLegs.gameObject.SetActive(false);
+            movingLegs.gameObject.SetActive(true);
+        }
+    }
 
     public void UpdateArms(PlayerController.PlayerCarryState carryState)
     {
@@ -22,4 +41,6 @@ public class CharacterBehaviour : MonoBehaviour
             looseArms.gameObject.SetActive(false);
         }
     }
+
+
 }
