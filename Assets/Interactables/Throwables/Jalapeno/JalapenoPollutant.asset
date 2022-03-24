@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c6b4c18a914c68249a2c1bf3cac5dddf, type: 3}
   m_Name: JalapenoPollutant
   m_EditorClassIdentifier: 
-  type: Carrot
-  mesh: {fileID: 503103582350038634, guid: 021d72169b1a9414a815e3589a51fd54, type: 3}
+  type: Jalapeno
+  mesh: {fileID: 503103582350038634, guid: 01881d8eed55f4489884d8c95c80fdeb, type: 3}
   effectAmount: -30

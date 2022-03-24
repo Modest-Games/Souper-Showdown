@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   characterName: Mushroom
   characterPrefab: {fileID: 3234332731889011418, guid: 1d75faa599b0d134681029e1857a301c, type: 3}
-  deadCharacter: {fileID: 11400000, guid: 1c3d3bf3f86b3cf40be5d3e0bfe639f1, type: 2}
+  deadCharacter: {fileID: 11400000, guid: dafc3cdf9185fe34289246f4ed05dee6, type: 2}
   primaryColour: {r: 0.8679245, g: 0.6490305, b: 0.24973297, a: 1}

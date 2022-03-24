@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 1035464355296544004}
   - component: {fileID: 3006788345110426062}
   m_Layer: 0
-  m_Name: CarrotFace
+  m_Name: JalapenoFace
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -186,8 +186,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c3f14c6e238dd4fe3823cf6a6b9be014, type: 3}
+--- !u!1 &3643948172573268797 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c3f14c6e238dd4fe3823cf6a6b9be014, type: 3}
+  m_PrefabInstance: {fileID: 4490245369613313644}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4168705028222714247 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c3f14c6e238dd4fe3823cf6a6b9be014, type: 3}
   m_PrefabInstance: {fileID: 4490245369613313644}
   m_PrefabAsset: {fileID: 0}
+--- !u!64 &3599196655529482237
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3643948172573268797}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 7854677610985959545, guid: c3f14c6e238dd4fe3823cf6a6b9be014, type: 3}
