@@ -15,4 +15,5 @@ MonoBehaviour:
   characterName: Eggplant
   characterPrefab: {fileID: 3234332731889011418, guid: 433345c5dea81e5498bbba1a7707c508, type: 3}
   deadCharacter: {fileID: 11400000, guid: acd783fcf176aa0468655ace68d00853, type: 2}
-  primaryColour: {r: 0.38823533, g: 0.18039216, b: 0.6313726, a: 0}
+  primaryColour: {r: 0.38823533, g: 0.18039216, b: 0.6313726, a: 1}
+  selectorSprite: {fileID: 21300000, guid: 4f34e05f09f1cfd4a8d0a83334c3c59b, type: 3}

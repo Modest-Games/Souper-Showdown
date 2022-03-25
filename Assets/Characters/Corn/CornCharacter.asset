@@ -15,4 +15,5 @@ MonoBehaviour:
   characterName: Corn
   characterPrefab: {fileID: 3234332731889011418, guid: ab297cd67e1e885418ff03db05334048, type: 3}
   deadCharacter: {fileID: 11400000, guid: 8030d7f123ac61a4bbdb768fb1120df4, type: 2}
-  primaryColour: {r: 0.8113208, g: 0.8052962, b: 0, a: 0}
+  primaryColour: {r: 0.8113208, g: 0.8052962, b: 0, a: 1}
+  selectorSprite: {fileID: 21300000, guid: ecb138c0781ce524a9ad5767c986f532, type: 3}

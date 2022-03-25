@@ -16,3 +16,4 @@ MonoBehaviour:
   characterPrefab: {fileID: 3234332731889011418, guid: dabd6aedfbf0b4b7fbf6501b7b86744a, type: 3}
   deadCharacter: {fileID: 11400000, guid: a0782ea5f7db5404d9e4a82c096fa4ed, type: 2}
   primaryColour: {r: 0.2509804, g: 0.5647059, b: 0.22352943, a: 1}
+  selectorSprite: {fileID: 21300000, guid: 780168057e4dee6489d6831ae692ee1e, type: 3}
