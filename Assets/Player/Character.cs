@@ -9,5 +9,5 @@ public class Character : ScriptableObject
     public GameObject characterPrefab;
     public Pollutant deadCharacter;
     public Color primaryColour;
-    public Sprite selectorSprite;
+    public SpriteAnimation animatedAvatar;
 }

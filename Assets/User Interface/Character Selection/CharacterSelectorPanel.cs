@@ -7,19 +7,21 @@ public class CharacterSelectorPanel : MonoBehaviour
 {
     public Character character;
 
+    private SpriteAnimator spriteAnimator;
     private Image image;
     private Image background;
 
     public void Setup()
     {
         // setup variables
-        image = transform.Find("Character_Image").GetComponent<Image>();
+        spriteAnimator = transform.Find("Character_Image").GetComponent<SpriteAnimator>();
+        image = spriteAnimator.GetComponent<Image>();
         background = transform.Find("Background").GetComponent<Image>();
 
-        if (character.selectorSprite != null)
+        if (character.animatedAvatar != null)
         {
             image.color = Color.white;
-            image.sprite = character.selectorSprite;
+            spriteAnimator.spriteAnimation = character.animatedAvatar;
         }
 
         if (character.primaryColour != null)

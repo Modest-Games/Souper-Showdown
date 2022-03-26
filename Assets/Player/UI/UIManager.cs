@@ -26,6 +26,8 @@ public class UIManager : NetworkBehaviour
 
     [SerializeField] private TMP_InputField networkAddressInput;
 
+    [SerializeField] private Transform characterSelectionUI;
+
     private bool hasServerStarted;
 
     private void Awake()
@@ -167,6 +169,7 @@ public class UIManager : NetworkBehaviour
         startServerButton.gameObject.SetActive(!isConnected);
         networkAddressInput.gameObject.SetActive(!isConnected);
         startGameButton.gameObject.SetActive(isConnected);
+        characterSelectionUI.gameObject.SetActive(isConnected);
     }
 
     private void Update()
