@@ -10,6 +10,7 @@ public class PlayersManager : NetworkBehaviour
 
     public GameObject playerPrefab;
 
+    private NetworkVariable<int> connectedClients = new NetworkVariable<int>();
     private NetworkVariable<int> connectedPlayers = new NetworkVariable<int>();
 
     private void Awake()
@@ -24,32 +25,39 @@ public class PlayersManager : NetworkBehaviour
         }
     }
 
-    public int ConnectedPlayers
+    public int ConnectedClients
     {
         get
         {
-            return connectedPlayers.Value;
+            return connectedClients.Value;
         }
     }
 
     private void Start()
     {
-        NetworkManager.Singleton.OnClientConnectedCallback += (id) =>
+        if (IsServer)
         {
-            if (IsServer)
+            NetworkManager.Singleton.OnClientConnectedCallback += (id) =>
             {
                 Debug.Log($"{id} just connected...");
-                connectedPlayers.Value++;
-            }
-        };
+                connectedClients.Value++;
+            };
 
-        NetworkManager.Singleton.OnClientDisconnectCallback += (id) =>
-        {
-            if (IsServer)
+            NetworkManager.Singleton.OnClientDisconnectCallback += (id) =>
             {
                 Debug.Log($"{id} just disconnected...");
-                connectedPlayers.Value--;
-            }
+                connectedClients.Value--;
+            };
+        }
+
+        PlayerTokenBehaviour.PlayerJoined += () =>
+        {
+            PlayerConnectedServerRpc();
+        };
+
+        PlayerTokenBehaviour.PlayerQuit += () =>
+        {
+            PlayerDisconnectedServerRpc();
         };
     }
 
@@ -65,5 +73,19 @@ public class PlayersManager : NetworkBehaviour
 
         newPlayerController.playerIndex.Value = playerIndex;
         newPlayerNetworkObj.SpawnWithOwnership(clientId);
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayerConnectedServerRpc()
+    {
+        // increment the number of connected players
+        connectedPlayers.Value++;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayerDisconnectedServerRpc()
+    {
+        // decrement the number of connected players
+        connectedPlayers.Value--;
     }
 }

@@ -2819,6 +2819,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1651346798}
     m_Modifications:
+    - target: {fileID: 3000333526824969003, guid: fd0e6cf5cf961974391f45b1edbfc22b, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3000333526824969003, guid: fd0e6cf5cf961974391f45b1edbfc22b, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3000333526824969003, guid: fd0e6cf5cf961974391f45b1edbfc22b, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3000333526824969003, guid: fd0e6cf5cf961974391f45b1edbfc22b, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3000333526824969003, guid: fd0e6cf5cf961974391f45b1edbfc22b, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3000333526824969003, guid: fd0e6cf5cf961974391f45b1edbfc22b, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3209054669060587843, guid: fd0e6cf5cf961974391f45b1edbfc22b, type: 3}
       propertyPath: m_ChildForceExpandWidth
       value: 0
@@ -2906,10 +2930,6 @@ PrefabInstance:
     - target: {fileID: 3361786539569540630, guid: fd0e6cf5cf961974391f45b1edbfc22b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4627886984285426558, guid: fd0e6cf5cf961974391f45b1edbfc22b, type: 3}
-      propertyPath: m_Color.a
-      value: 0.6117647
       objectReference: {fileID: 0}
     - target: {fileID: 4733269847855504393, guid: fd0e6cf5cf961974391f45b1edbfc22b, type: 3}
       propertyPath: m_Enabled
