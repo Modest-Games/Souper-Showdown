@@ -390,6 +390,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteAnimation: {fileID: 0}
-  useOverrideDuration: 0
-  overrideDuration: 0
+  useOverrideDuration: 1
+  overrideDuration: 4.5
   isEnabled: 1
