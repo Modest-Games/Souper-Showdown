@@ -5,41 +5,6 @@ using UnityEngine.UI;
 using TMPro;
 using Unity.Netcode;
 
-public class PlayerCard
-{
-    public GameObject Card;
-    public NumberCounter NumberCounter;
-    public int score;
-    public string spoilerType;
-
-
-    public PlayerCard(GameObject c, string n)
-    {
-        Card = c;
-        score = 0;
-        spoilerType = n;
-    }
-
-    public void setPosition(Vector3 p)
-    {
-        //Debug.Log("position should be: " + p);
-        Card.transform.position = p;
-    }
-
-
-    public void setNumberCounter(NumberCounter nc)
-    {
-        NumberCounter = nc;
-    }
-
-    public void addScore(int val)
-    {
-        score += val;
-        //scoreLabel.text = scoreValue.ToString();
-        NumberCounter.Value = score;
-    }
-
-}
 
 public class ScoreManager : MonoBehaviour
 {
@@ -50,7 +15,8 @@ public class ScoreManager : MonoBehaviour
     public Material[] particleMaterials;
 
     public int totalSpoilerCount;
-    public List<PlayerCard> playerCards = new List<PlayerCard>();
+    //public List<PlayerCard> playerCards = new List<PlayerCard>();
+    public List<CardRenderer> playerCards = new List<CardRenderer>();
 
     public Transform leftPoint;
     public Transform rightPoint;
@@ -81,27 +47,26 @@ public class ScoreManager : MonoBehaviour
                 playerCards[i].setPosition(newPos);
             }
         }
-
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("TEST");
         for (int i = 0; i < totalSpoilerCount; i++)
         {
             string name = "PLAYER " + (i + 1);
             AddPlayerCard(name, frames[i], particleMaterials[i], i);
             arrangeCards();
         }
-
     }
 
     //Adds new player card to deck
     void AddPlayerCard(string n, Sprite s, Material m, int index)
     {
+        GameObject card = Instantiate(cardRef, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+
         //Create new card
-        PlayerCard newCard = new PlayerCard(cardRef, n);
+        CardRenderer newCard = new CardRenderer(cardRef, n);
         //Set card Image, particle, and name
         newCard.Card.transform.Find("Backdrop").GetComponent<Image>().sprite = s;
         newCard.Card.transform.Find("Border").GetComponent<Image>().sprite = s;
@@ -109,7 +74,7 @@ public class ScoreManager : MonoBehaviour
         newCard.Card.transform.Find("PlayerName").GetComponent<TMPro.TextMeshProUGUI>().text = n;
 
 
-        GameObject card = Instantiate(newCard.Card, new Vector3(0, 0, 0), Quaternion.identity) as GameObject;
+        
         playerCards.Add(newCard);
         playerCards[index].Card = card;
 

@@ -270,7 +270,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: c6041b424d5a93742b7bbf4bde8d25a0, type: 2}
   - {fileID: 2100000, guid: bb9df464d4a202d4183f209d1229b43e, type: 2}
   - {fileID: 2100000, guid: 53db7c717c9da9947a82b8328998c149, type: 2}
-  totalSpoilerCount: 0
+  totalSpoilerCount: 3
   leftPoint: {fileID: 1018839477}
   rightPoint: {fileID: 1723186315}
 --- !u!4 &402050522 stripped
