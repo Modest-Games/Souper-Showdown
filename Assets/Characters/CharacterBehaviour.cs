@@ -14,13 +14,13 @@ public class CharacterBehaviour : MonoBehaviour
     {
         if (playerState == PlayerController.PlayerState.Idle)
         {
-            Debug.Log("Not moving");
+            //Debug.Log("Not moving");
             stillLegs.gameObject.SetActive(true);
             movingLegs.gameObject.SetActive(false);
         }
         else
         {
-            Debug.Log("Moving");
+            //Debug.Log("Moving");
             stillLegs.gameObject.SetActive(false);
             movingLegs.gameObject.SetActive(true);
         }

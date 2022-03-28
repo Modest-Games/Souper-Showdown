@@ -16,6 +16,9 @@ public class PlayerController : NetworkBehaviour
     public delegate void PlayerDelegate();
     public static event PlayerDelegate PlayerCreated;
 
+    public delegate void CharacterChangedDelegate(string oldCharName, string newCharName);
+    public static event CharacterChangedDelegate CharacterChanged;
+
     public enum ArmState
     {
         Stiff,
@@ -300,7 +303,7 @@ public class PlayerController : NetworkBehaviour
                 //Freeze legs
                 legs = characterObject.characterPrefab.transform.GetChild(3).gameObject;
                 legs.SetActive(false);
-                Debug.Log("legs hidden");
+                //Debug.Log("legs hidden");
                 break;
 
             case PlayerState.Moving:
@@ -896,6 +899,9 @@ public class PlayerController : NetworkBehaviour
             RefreshCharacter();
 
         vfx.Play();
+
+        if (CharacterChanged != null)
+            CharacterChanged(oldVal.ToString(), newVal.ToString());
     }
 
     private void OnSelectedTrapChanged(

@@ -6,6 +6,10 @@ using Unity.Netcode;
 
 public class PlayerTokenBehaviour : MonoBehaviour
 {
+    public delegate void PlayerTokenDelegate();
+    public static event PlayerTokenDelegate PlayerJoined;
+    public static event PlayerTokenDelegate PlayerQuit;
+    
     private PlayerInput playerInput;
 
     private void Awake()
