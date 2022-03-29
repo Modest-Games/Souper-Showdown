@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 using System.Linq;
 using Unity.Netcode;
 using Unity.Netcode.Samples;
-using NaughtyAttributes;
 using UnityEngine.VFX;
 using UnityEngine.SceneManagement;
 
@@ -54,20 +53,18 @@ public class PlayerController : NetworkBehaviour
 
     [Header("Character")]
     public Character characterObject;
-    //public bool isChef = false;
     private GameObject legs;
 
     [Header("State (ReadOnly)")]
-    [SerializeField] [ReadOnly] public PlayerState playerState;
-    //[SerializeField] [ReadOnly] public PlayerCarryState carryState;
-    [SerializeField] [ReadOnly] public PlayerCarryState lastKnownState;
-    [SerializeField] [ReadOnly] public bool isAlive;
+    [SerializeField] public PlayerState playerState;
+    [SerializeField] public PlayerCarryState lastKnownState;
+    [SerializeField] public bool isAlive;
 
     [Header("Variables (ReadOnly)")]
-    [SerializeField] [ReadOnly] public List<GameObject> reachableCollectables;
-    [SerializeField] [ReadOnly] private Vector2 movement;
-    [SerializeField] [ReadOnly] private Vector3 lookVector;
-    [SerializeField] [ReadOnly] private float timeOfLastDash;
+    [SerializeField] public List<GameObject> reachableCollectables;
+    [SerializeField] private Vector2 movement;
+    [SerializeField] private Vector3 lookVector;
+    [SerializeField] private float timeOfLastDash;
 
     [SerializeField] private GameObject pollutantPrefab;
 
@@ -91,13 +88,10 @@ public class PlayerController : NetworkBehaviour
     private bool justRotatedTrap;
     private bool justPlacedTrap;
 
-    public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
     private GameObject heldObject;
     private Pollutant currentlyHeld;
 
-    //public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
-    //public NetworkString networkCharacterName = new NetworkString();
-    //public NetworkVariable<char> networkCharacterName = new NetworkVariable<char>();
+    public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
 
     public NetworkVariable<Unity.Collections.FixedString64Bytes> networkCharacterName = new NetworkVariable<Unity.Collections.FixedString64Bytes>();
     public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
@@ -123,46 +117,35 @@ public class PlayerController : NetworkBehaviour
     {
         bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
 
-        //Physics.IgnoreLayerCollision(7, 10);
-
         characterObject = (IsClient && IsOwner) ?
             CharacterManager.Instance.GetRandomCharacter() :
             CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
-        canMove = true;
-        aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
-        debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
-        characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
-        //carryState = PlayerCarryState.Empty;
-        lastKnownState = networkCarryState.Value;
+
         rb = GetComponent<Rigidbody>();
+        canMove = true;
+        
         dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
         heldObject = transform.Find("Held Object").gameObject;
+        aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
+        characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
+        debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         trapPlacer = transform.Find("Trap Placer").GetComponentInChildren<UnplacedTrap>();
-
         vfx = transform.Find("VFX").GetComponent<VisualEffect>();
+
+        lastKnownState = networkCarryState.Value;
 
         // setup variables
         if (IsClient && IsOwner)
         {
-            // set character name
-            Debug.Log(characterObject.characterName);
             UpdateCharacterNameServerRpc(characterObject.characterName);
-
-            // NETWORKING:
             UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
             UpdatePlayerStateServerRpc(PlayerState.Idle);
-
-            // Spawn the player
-            //PlayerRandomSpawnPoint(isChef);
         }
 
         if (PlayerCreated != null)
             PlayerCreated();
 
-        // setup debugging
         debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
-
-        Debug.LogFormat("{2} initialized: IsClient: {0}, IsOwner: {1}, IsChef: {3}", IsClient, IsOwner, OwnerClientId, isChef);
     }
 
     public void BindControls()
@@ -172,7 +155,7 @@ public class PlayerController : NetworkBehaviour
             playerInput = LocalPlayerManager.Instance.inputPlayers.Find(
                 p => p.playerIndex == playerIndex.Value);
 
-            // map control inputs
+            // Map control inputs:
             playerInput.actions["Dash"].performed += ctx => DashPerformed();
             playerInput.actions["Move"].performed += ctx => MovePerformed(ctx.ReadValue<Vector2>());
             playerInput.actions["Move"].canceled += ctx => MoveCancelled();
@@ -183,14 +166,13 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Next Character"].performed += ctx => NextCharacterPerformed();
             playerInput.actions["Previous Character"].performed += ctx => PreviousCharacterPerformed();
 
-            // map chef control inputs
+            // Map chef control inputs:
             playerInput.actions["Toggle Trap Mode"].performed += ctx => ToggleTrapModePerformed();
             playerInput.actions["Next Trap"].performed += ctx => NextTrapPerformed();
             playerInput.actions["Previous Trap"].performed += ctx => PreviousTrapPerformed();
             playerInput.actions["Rotate Trap"].performed += ctx => RotateTrapPerformed();
             playerInput.actions["Place Trap"].performed += ctx => PlaceTrapPerformed();
 
-            Debug.Log("Binding controls to client " + OwnerClientId + " on playerIndex: " + playerIndex);
             controlsBound = true;
         }
     }
@@ -202,7 +184,6 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        // check if the character needs to be refreshed
         if (!characterInitialized && characterObject != null)
         {
             RefreshCharacter();
@@ -211,11 +192,9 @@ public class PlayerController : NetworkBehaviour
 
         else
         {
-            // update the player visuals
             UpdateClientVisuals();
         }
 
-        // check if the controls need to be bound
         if (!controlsBound)
         {
             BindControls();
@@ -235,35 +214,30 @@ public class PlayerController : NetworkBehaviour
 
     private void UpdateClientVisuals()
     {
-        // get the state values depending on if this is a networked client or a local player
+        // Get the state values depending on if this is a networked client or a local player:
         PlayerCarryState carryStateVal = networkCarryState.Value;
         PlayerState playerStateVal = (IsClient && IsOwner) ? playerState : networkPlayerState.Value;
 
-        // update the trap placer
         UpdateTrapPlacerVisuals();
 
         if (lastKnownState != carryStateVal)
         {
-            // update the arms on the character
             characterBehaviour.UpdateArms(carryStateVal);
 
-            // update last state
             lastKnownState = carryStateVal;
         }
-
-
 
         switch (carryStateVal)
         {
             case PlayerCarryState.Empty:
-                // Set "Held Object" to inactive
                 heldObject.SetActive(false);
+
                 break;
 
             case PlayerCarryState.CarryingObject:
-                // Set "Held Object" to active
                 heldObject.SetActive(true);
                 heldObject.transform.localRotation = Quaternion.Euler(0, 0, 90);
+
                 break;
 
             case PlayerCarryState.CarryingPlayer:
@@ -275,69 +249,48 @@ public class PlayerController : NetworkBehaviour
         switch (playerStateVal)
         {
             case PlayerState.Dazed:
-                // show the daze indicator
                 dazeIndicator.SetActive(true);
                 break;
             default:
-                // hide the daze indicator
                 dazeIndicator.SetActive(false);
                 break;
         }
 
-        //update legs in character behaviour
         characterBehaviour.UpdateLegs(playerStateVal);
     }
 
     private void PlayerMovement()
     {
-        // calculate useful variables once
         float currentTime = Time.time;
         float deltaTime = Time.fixedDeltaTime;
 
-        // switch on playerstate
         switch (playerState)
         {
             case PlayerState.Idle:
-                // clear rotatitonal velocity
                 rb.angularVelocity = Vector3.zero;
-                //Freeze legs
+
                 legs = characterObject.characterPrefab.transform.GetChild(3).gameObject;
                 legs.SetActive(false);
-                //Debug.Log("legs hidden");
                 break;
 
             case PlayerState.Moving:
-                // handle player movement
                 Vector3 movementVec = new Vector3(movement.x, 0, movement.y) * deltaTime * moveSpeed;
-                //rb.AddForce(movementVec, ForceMode.Impulse);
-                //transform.Translate(movementVec, Space.World);
+
                 rb.MovePosition(rb.position + movementVec);
 
-                // rotate towards motion vector
                 lookVector = movementVec.normalized;
-                lookVector.y = 0f; // remove any y angle from the look vector
+                lookVector.y = 0f;
 
                 transform.LookAt(Vector3.Lerp(transform.position + transform.forward, transform.position + lookVector, rotateSpeed * deltaTime));
-                // transform.rotation.SetFromToRotation(transform.rotation.eulerAngles, movementVec);
 
-                //Move legs
-                //legs = characterObject.characterPrefab.transform.GetChild(3).gameObject;
-                //legs.SetActive(true);
-                //Debug.Log("legs showing");
-
-                // DEBUG:
-                // draw motion vector
                 Debug.DrawRay(transform.position, movementVec.normalized * 2, Color.blue);
-
-                // draw facing vector
                 Debug.DrawRay(transform.position, transform.forward * 2, Color.green);
+
                 break;
 
             case PlayerState.Dashing:
-                // check if the dash should be complete
                 if ((currentTime - timeOfLastDash) >= dashDuration)
                 {
-                    // complete the dash and update the player state (depending on if moving or not)
                     PlayerState newPlayerState = (movement.magnitude == 0) ? PlayerState.Idle : PlayerState.Moving;
                     UpdatePlayerStateServerRpc(newPlayerState);
                     playerState = newPlayerState;
@@ -345,46 +298,28 @@ public class PlayerController : NetworkBehaviour
 
                 else
                 {
-                    // calculate the dash vector
                     Vector3 dashVector = rb.position + (lookVector * dashForce * deltaTime);
 
-                    // TEMP: to cause the network to send a transform update
-                    //transform.Translate(transform.forward * 0.01f);
-
-                    // continue performing the dash
-                    //transform.Translate(lookVector * dashForce * Time.deltaTime, Space.World);
                     rb.MovePosition(dashVector);
-                    //transform.Translate(dashVector, Space.Self);
-                    //rb.AddForce(lookVector * dashForce, ForceMode.Impulse);
-                    //rb.velocity = lookVector * dashForce;
-
-                    // look at direction of motion
                     transform.LookAt(Vector3.Lerp(transform.position + transform.forward, transform.position + lookVector, rotateSpeed * deltaTime));
 
                     Debug.DrawLine(rb.position, rb.position + (lookVector * 4), Color.red);
-
-                    // update the player state
-                    //UpdatePlayerStateServerRpc(PlayerState.Dashing);
                 }
 
                 break;
 
             case PlayerState.Dazed:
-                // clear rotatitonal velocity
+                // Clear rotatitonal velocity:
                 rb.angularVelocity = Vector3.zero;
 
-                // check if the daze should be over
                 if (timeDazed >= dazeDuration)
                 {
-                    // end the daze
                     playerState = PlayerState.Idle;
                     UpdatePlayerStateServerRpc(PlayerState.Idle);
                 }
 
-                // if the daze is still going
                 else
                 {
-                    // update time dazed
                     timeDazed += deltaTime;
                 }
 
@@ -399,17 +334,26 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsOwner && IsClient)
         {
-            // switch on the other object's tag
             switch (other.tag)
             {
                 case "Pollutant":
-                    // add the pollutant to the list of reachable collectables
                     if (!reachableCollectables.Contains(other.gameObject) && !justThrew)
                     {
                         reachableCollectables.Add(other.gameObject);
                     }
 
-                    //Debug.Log("ENTER: " + other.gameObject.GetInstanceID());
+                    break;
+
+                case "Player":
+
+                    if (!reachableCollectables.Contains(other.gameObject) && !justThrew)
+                    {
+                        if (networkIsChef.Value)
+                        {
+                            reachableCollectables.Add(other.gameObject);
+                        }
+                    }
+
                     break;
             }
         }
@@ -430,25 +374,19 @@ public class PlayerController : NetworkBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        //Debug.Log(other.gameObject.tag); //TEMP UNDO
-
-        // only get booped if not a chef
         if (IsOwner && IsClient && !networkIsChef.Value)
         {
             switch (other.gameObject.tag)
             {
                 case "Player":
-                    // get the other player's PlayerController
                     PlayerController otherPC = other.GetComponentInParent<PlayerController>();
 
-                    // get the other player's state (if they are a local player, then use the appropriate player state)
+                    // Get the state values depending on if this is a networked client or a local player:
                     PlayerState otherPlayerState = (otherPC.IsClient && otherPC.IsOwner)
                         ? otherPC.playerState : otherPC.networkPlayerState.Value;
 
-                    // check if the other player is a chef
                     if (otherPC.networkIsChef.Value && otherPlayerState == PlayerState.Dashing)
                     {
-                        // get rekt
                         OnBoop();
                     }
 
@@ -461,13 +399,14 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsOwner && IsClient)
         {
-            // switch on the other object's tag
             switch (other.tag)
             {
                 case "Pollutant":
-                    // remove the pollutant from the list of reachable collectables
                     reachableCollectables.Remove(other.gameObject);
-                    //Debug.Log("EXIT: " + other.gameObject.GetInstanceID());
+                    break;
+
+                case "Player":
+                    reachableCollectables.Remove(other.gameObject);
                     break;
             }
         }
@@ -486,23 +425,19 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
-    [NaughtyAttributes.Button("Refresh Character", EButtonEnableMode.Editor)]
     private void RefreshCharacter()
     {
         isRefreshingCharacter = true;
         Debug.Log("REFRESH CHARACTER CALLED");
 
-        // check if there is a character mesh ready
+        // Check if there is a character mesh ready:
         GameObject newCharacterMesh = characterObject == null ?
             CharacterManager.Instance.GetCharacter(0).characterPrefab : characterObject.characterPrefab;
 
-        // remove the old mesh
         Destroy(transform.Find("Character").gameObject);
 
-        // instantiate the new mesh
         GameObject newMesh = Instantiate(newCharacterMesh, transform);
 
-        // enable the chef hat if this player is a chef
         transform.Find("ChefHat").gameObject.SetActive(networkIsChef.Value);
 
         newMesh.name = "Character";
@@ -512,24 +447,20 @@ public class PlayerController : NetworkBehaviour
 
     private void UpdateTrapPlacerVisuals()
     {
-        // don't show the trap placer if the player is a chef
         if (!networkIsChef.Value)
         {
             trapPlacer.gameObject.SetActive(false);
-            // UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
             return;
         }
 
         switch (networkCarryState.Value)
         {
             case PlayerCarryState.PlacingTrap:
-                // enable the trap placer
                 trapPlacer.gameObject.SetActive(true);
 
                 break;
 
             default:
-                // disable the trap placer
                 trapPlacer.gameObject.SetActive(false);
 
                 break;
@@ -538,46 +469,42 @@ public class PlayerController : NetworkBehaviour
 
     private void OnBoop()
     {
-        // make sure the player can be booped
         bool canGetBooped = (playerState != PlayerState.Dazed) && (playerState != PlayerState.Ungrounded);
 
         if (canGetBooped)
         {
-            Debug.Log(gameObject.name + " was booped!");
-
-            // reset timeDazed
             timeDazed = 0f;
 
-            // drop what's being held (if anything)
             GrabCancelled();
 
-            // update the player state
             playerState = PlayerState.Dazed;
             UpdatePlayerStateServerRpc(PlayerState.Dazed);
         }
     }
 
-    [NaughtyAttributes.Button("Refresh Reachable Collectables")]
     private void RefreshReachableCollectables()
     {
         for (int i = 0; i < reachableCollectables.Count; i++)
         {
-            // remove missing reachable collectables
             if (reachableCollectables[i] == null)
                 reachableCollectables.RemoveAt(i);
-        }
 
-        Debug.Log(reachableCollectables);
+            if (reachableCollectables[i].tag == "Player")
+            {
+                var playerState = reachableCollectables[i].GetComponentInParent<PlayerController>().playerState;
+
+                if (playerState != PlayerState.Dazed)
+                    reachableCollectables.RemoveAt(i);
+            } 
+        }
     }
 
     public void MovePerformed(Vector2 newMovement)
     {
         if (Application.isFocused && IsClient && IsOwner)
         {
-            // update the movement vector
             movement = newMovement;
 
-            // set the playerstate to moving if not dashing
             if (playerState == PlayerState.Idle || playerState == PlayerState.Moving)
             {
                 UpdatePlayerStateServerRpc(PlayerState.Moving);
@@ -590,10 +517,8 @@ public class PlayerController : NetworkBehaviour
     {
         if (Application.isFocused && IsClient && IsOwner)
         {
-            // reset the movement vector
             movement = Vector2.zero;
 
-            // set playerstate to idle if not dashing
             if (playerState != PlayerState.Dashing)
             {
                 UpdatePlayerStateServerRpc(PlayerState.Idle);
@@ -606,18 +531,15 @@ public class PlayerController : NetworkBehaviour
     {
         if (Application.isFocused && IsClient && IsOwner)
         {
-            // calculate the time since the last dash, and if the player can dash
+            // Calculate the time since the last dash, and if the player can dash:
             float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
             bool canDash = (playerState == PlayerState.Idle || playerState == PlayerState.Moving)
                 && timeSinceDashCompleted >= dashCooldown && networkCarryState.Value == PlayerCarryState.Empty;
 
-            // make sure the player is not already dashing
             if (canDash)
             {
-                Debug.LogFormat("Started dash for {0}s", dashDuration);
                 timeOfLastDash = Time.time;
 
-                // set the playerstate to dashing
                 UpdatePlayerStateServerRpc(PlayerState.Dashing);
                 playerState = PlayerState.Dashing;
             }
@@ -628,23 +550,18 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            // ensure we are in the ingame scene
             if (SceneManager.GetActiveScene().name != "InGame")
                 return;
 
-            // ensure the game is running
             if (GameController.Instance.gameState.Value != GameController.GameState.Running)
                 return;
 
-            // ensure that the player is a chef
             if (!networkIsChef.Value)
                 return;
 
-            // ensure that the player didn't just toggle trap mode
             if (justSwitchedTrapPlacementMode)
                 return;
 
-            // toggle the trap placement mode
             switch (networkCarryState.Value)
             {
                 case PlayerCarryState.Empty:
@@ -680,23 +597,18 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner && networkIsChef.Value)
         {
-            // ensure we are in the ingame scene
             if (SceneManager.GetActiveScene().name != "InGame")
                 return;
 
-            // ensure the game is running
             if (GameController.Instance.gameState.Value != GameController.GameState.Running)
                 return;
 
-            // ensure trap placement mode is enabled
             if (networkCarryState.Value != PlayerCarryState.PlacingTrap)
                 return;
 
-            // ensure the trap wasn't just rotated
             if (justRotatedTrap)
                 return;
 
-            // rotate the trap 90 degrees
             trapPlacer.RotateTrap();
             StartCoroutine(TempDisableTrapRotation());
         }
@@ -706,23 +618,18 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner && networkIsChef.Value)
         {
-            // ensure we are in the ingame scene
             if (SceneManager.GetActiveScene().name != "InGame")
                 return;
 
-            // ensure the game is running
             if (GameController.Instance.gameState.Value != GameController.GameState.Running)
                 return;
 
-            // ensure trap placement mode is enabled
             if (networkCarryState.Value != PlayerCarryState.PlacingTrap)
                 return;
 
-            // ensure that the trap wasn't just placed
             if (justPlacedTrap)
                 return;
 
-            // place the trap
             if (trapPlacer.SpawnTrap())
                 StartCoroutine(TempDisableTrapPlacement());
         }
@@ -732,26 +639,28 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            // refresh reachable collectables
             RefreshReachableCollectables();
 
-            // determine if can pickup
             bool canPickup = (networkCarryState.Value == PlayerCarryState.Empty) && (reachableCollectables.Count > 0);
 
-            // if the player can pickup
             if (canPickup)
             {
-                // sort reachableCollectables by distance
+                for (int i = 0; i < reachableCollectables.Count; i++)
+                {
+                    if (reachableCollectables[i].tag == "Player" && networkIsChef.Value)
+                    {
+                        return;
+                    }
+                }
+
                 reachableCollectables = reachableCollectables.OrderBy(
                     r => Vector3.Distance(transform.position, r.transform.position)).ToList();
 
-                // get the nearest reachable collectable
                 GameObject nearestReachableCollectable = reachableCollectables[0];
 
                 reachableCollectables.Remove(nearestReachableCollectable);
                 var netObj = nearestReachableCollectable.GetComponent<NetworkObject>();
 
-                // Spawn new pollutant:
                 OnGrabServerRpc(netObj.NetworkObjectId);
             }
         }
@@ -761,13 +670,10 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            // determine if can drop
             bool canDrop = (networkCarryState.Value == PlayerCarryState.CarryingObject) || (networkCarryState.Value == PlayerCarryState.CarryingPlayer);
 
-            // if the player can drop
             if (canDrop)
             {
-                // hide the aim indicator (in case throw is being held)
                 aimIndicator.gameObject.SetActive(false);
 
                 StartCoroutine(TempDisablePickup());
@@ -782,14 +688,12 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            // determine if can throw
             bool canThrow =
             (networkPlayerState.Value == PlayerState.Idle || networkPlayerState.Value == PlayerState.Moving) &&
             (networkCarryState.Value == PlayerCarryState.CarryingObject || networkCarryState.Value == PlayerCarryState.CarryingPlayer);
 
             if (canThrow)
             {
-                // show the aim indicator
                 aimIndicator.gameObject.SetActive(true);
             }
         }
@@ -806,9 +710,6 @@ public class PlayerController : NetworkBehaviour
             if (canThrow)
             {
                 aimIndicator.gameObject.SetActive(false);
-
-                // Play a throwing animation:
-                // ...
 
                 StartCoroutine(TempDisablePickup());
                 StartCoroutine(TempDisableMovement());
@@ -863,9 +764,7 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner)
         {
-            // stop moving
             rb.velocity = Vector3.zero;
-
             canMove = false;
         }
     }
@@ -912,7 +811,7 @@ public class PlayerController : NetworkBehaviour
 
     private void OnEnable()
     {
-        // setup event listeners
+        // Setup game controller event listeners:
         GameController.DebugEnabled     += OnDebugEnabled;
         GameController.DebugDisabled    += OnDebugDisabled;
         GameController.GameStarted      += OnGameStarted;
@@ -921,14 +820,13 @@ public class PlayerController : NetworkBehaviour
         GameController.GameStopped      += OnGameStopped;
         GameController.GameCreated      += OnGameCreated;
 
-        // setup network event listeners
+        // Setup network event listeners:
         networkIsChef.OnValueChanged += OnIsChefChanged;
         networkCharacterName.OnValueChanged += OnCharacterNameChanged;
     }
 
     private void OnDisable()
     {
-        // clear event listeners
         GameController.DebugEnabled     -= OnDebugEnabled;
         GameController.DebugDisabled    -= OnDebugDisabled;
         GameController.GameStarted      -= OnGameStarted;
@@ -937,7 +835,6 @@ public class PlayerController : NetworkBehaviour
         GameController.GameStopped      -= OnGameStopped;
         GameController.GameCreated      -= OnGameCreated;
 
-        // clear network event listeners
         networkIsChef.OnValueChanged -= OnIsChefChanged;
         networkCharacterName.OnValueChanged += OnCharacterNameChanged;
     }
