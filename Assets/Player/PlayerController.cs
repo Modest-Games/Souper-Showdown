@@ -489,11 +489,11 @@ public class PlayerController : NetworkBehaviour
             if (reachableCollectables[i] == null)
                 reachableCollectables.RemoveAt(i);
 
-            if (reachableCollectables[i].tag == "Player")
+            if (reachableCollectables[i].CompareTag("Player"))
             {
-                var playerState = reachableCollectables[i].GetComponentInParent<PlayerController>().playerState;
+                var playerState = reachableCollectables[i].GetComponentInParent<PlayerController>().networkPlayerState;
 
-                if (playerState != PlayerState.Dazed)
+                if (playerState.Value != PlayerState.Dazed)
                     reachableCollectables.RemoveAt(i);
             } 
         }
@@ -647,8 +647,17 @@ public class PlayerController : NetworkBehaviour
             {
                 for (int i = 0; i < reachableCollectables.Count; i++)
                 {
-                    if (reachableCollectables[i].tag == "Player" && networkIsChef.Value)
+                    if (reachableCollectables[i].CompareTag("Player") && networkIsChef.Value)
                     {
+                        var otherPlayer = reachableCollectables[i];
+
+                        PlayerController otherPC = otherPlayer.GetComponentInParent<PlayerController>();
+                        if (!(otherPC.IsClient && otherPC.IsOwner))
+                        {
+                            var chefObject = GetComponentInParent<NetworkObject>();
+                            otherPC.ChangeOwnershipServerRpc(chefObject);
+                        }
+
                         return;
                     }
                 }
@@ -663,6 +672,15 @@ public class PlayerController : NetworkBehaviour
 
                 OnGrabServerRpc(netObj.NetworkObjectId);
             }
+        }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void ChangeOwnershipServerRpc(NetworkObjectReference chefRef)
+    {
+        if (chefRef.TryGet(out NetworkObject chefObject))
+        {
+            GetComponentInParent<NetworkObject>().ChangeOwnership(chefObject.OwnerClientId);
         }
     }
 
