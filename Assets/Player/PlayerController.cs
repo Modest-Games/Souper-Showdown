@@ -654,8 +654,14 @@ public class PlayerController : NetworkBehaviour
                         PlayerController otherPC = otherPlayer.GetComponentInParent<PlayerController>();
                         if (!(otherPC.IsClient && otherPC.IsOwner))
                         {
-                            var chefObject = GetComponentInParent<NetworkObject>();
-                            otherPC.ChangeOwnershipServerRpc(chefObject);
+                            var chefID = GetComponentInParent<NetworkObject>().OwnerClientId;
+                            otherPC.ChangeOwnershipServerRpc(chefID);
+
+                            otherPlayer.GetComponentInParent<ClientNetworkTransform>().CanCommitToTransform = true;
+
+                            var carriedBehaviour = otherPlayer.GetComponentInParent<Carried>();
+                            carriedBehaviour.target = heldObject.transform;
+                            carriedBehaviour.carried = true;
                         }
 
                         return;
@@ -676,12 +682,18 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ChangeOwnershipServerRpc(NetworkObjectReference chefRef)
+    public void ChangeOwnershipServerRpc(ulong chefID)
     {
-        if (chefRef.TryGet(out NetworkObject chefObject))
-        {
-            GetComponentInParent<NetworkObject>().ChangeOwnership(chefObject.OwnerClientId);
-        }
+        GetComponentInParent<NetworkObject>().ChangeOwnership(chefID);
+        DisablePlayerControllerClientRpc();
+    }
+
+    [ClientRpc]
+    public void DisablePlayerControllerClientRpc()
+    {
+        GetComponentInParent<PlayerController>().enabled = false;
+        GetComponentInParent<ClientNetworkTransform>().enabled = false;
+
     }
 
     public void GrabCancelled()
