@@ -6,6 +6,11 @@ using Unity.Netcode;
 
 public class PlayersManager : NetworkBehaviour
 {
+    public struct Player
+    {
+        public int controllerIndex;
+    }
+
     public static PlayersManager Instance { get; private set; }
 
     public GameObject playerPrefab;

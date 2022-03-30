@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Unity.Netcode;
 
 public class LocalPlayerManager : MonoBehaviour
 {
@@ -12,6 +13,8 @@ public class LocalPlayerManager : MonoBehaviour
     public ulong thisClientId;
 
     private PlayerInputManager inputManager;
+    public bool canSpawn = false;
+    public bool connected;
 
     private void Awake()
     {
@@ -27,11 +30,29 @@ public class LocalPlayerManager : MonoBehaviour
         inputManager = GetComponent<PlayerInputManager>();
     }
 
-    private void OnApplicationFocus(bool focus)
+    private void Start()
     {
-        if (focus)
-            inputManager.EnableJoining();
-        else
-            inputManager.DisableJoining();
+        NetworkManager.Singleton.ConnectionApprovalCallback += (byte[] arg1, ulong arg2, NetworkManager.ConnectionApprovedDelegate arg3) =>
+        {
+            //connected = true;
+        };
     }
+
+    private void Update()
+    {
+        connected = NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsConnectedClient;
+
+        bool tempCanSpawn = Application.isFocused && connected;
+
+        if (tempCanSpawn != canSpawn)
+        {
+            canSpawn = tempCanSpawn;
+
+            if (canSpawn)
+                inputManager.EnableJoining();
+            else
+                inputManager.DisableJoining();
+        }
+    }
+
 }
