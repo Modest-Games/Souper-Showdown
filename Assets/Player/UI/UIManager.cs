@@ -132,11 +132,13 @@ public class UIManager : NetworkBehaviour
             if (NetworkManager.Singleton.StartClient())
             {
                 Debug.Log("Client started...");
+                hasServerStarted = true;
             }
 
             else
             {
                 Debug.Log("Host not started!");
+                hasServerStarted = true;
             }
         });
 
