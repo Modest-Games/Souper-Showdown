@@ -11,6 +11,8 @@ public class LocalPlayerManager : MonoBehaviour
 
     public ulong thisClientId;
 
+    private PlayerInputManager inputManager;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -21,5 +23,15 @@ public class LocalPlayerManager : MonoBehaviour
         {
             Instance = this;
         }
+
+        inputManager = GetComponent<PlayerInputManager>();
+    }
+
+    private void OnApplicationFocus(bool focus)
+    {
+        if (focus)
+            inputManager.EnableJoining();
+        else
+            inputManager.DisableJoining();
     }
 }

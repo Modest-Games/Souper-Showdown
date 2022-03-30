@@ -740,6 +740,10 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner && !isRefreshingCharacter && !justSwitchedCharacters && SceneManager.GetActiveScene().name == "Lobby")
         {
+            // dont switch when the window isn't focused
+            if (!Application.isFocused)
+                return;
+
             UpdateCharacterNameServerRpc(CharacterManager.Instance.GetNextCharacter(characterObject.characterName).characterName);
             StartCoroutine(TempDisableCharacterSwitch());
         }
@@ -749,6 +753,10 @@ public class PlayerController : NetworkBehaviour
     {
         if (IsClient && IsOwner && !isRefreshingCharacter && !justSwitchedCharacters && SceneManager.GetActiveScene().name == "Lobby")
         {
+            // dont switch when the window isn't focused
+            if (!Application.isFocused)
+                return;
+
             UpdateCharacterNameServerRpc(CharacterManager.Instance.GetPreviousCharacter(characterObject.characterName).characterName);
             StartCoroutine(TempDisableCharacterSwitch());
         }
