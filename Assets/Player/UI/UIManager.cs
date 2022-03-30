@@ -138,7 +138,7 @@ public class UIManager : NetworkBehaviour
             else
             {
                 Debug.Log("Host not started!");
-                hasServerStarted = true;
+                hasServerStarted = false;
             }
         });
 
