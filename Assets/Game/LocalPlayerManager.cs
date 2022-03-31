@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class LocalPlayerManager : MonoBehaviour
 {
@@ -42,7 +43,7 @@ public class LocalPlayerManager : MonoBehaviour
     {
         connected = NetworkManager.Singleton.IsServer || NetworkManager.Singleton.IsConnectedClient;
 
-        bool tempCanSpawn = Application.isFocused && connected;
+        bool tempCanSpawn = Application.isFocused && connected && SceneManager.GetActiveScene().name == "Lobby";
 
         if (tempCanSpawn != canSpawn)
         {
@@ -54,5 +55,4 @@ public class LocalPlayerManager : MonoBehaviour
                 inputManager.DisableJoining();
         }
     }
-
 }
