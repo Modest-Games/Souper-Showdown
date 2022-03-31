@@ -783,6 +783,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputPlayers: []
   thisClientId: 0
+  canSpawn: 0
+  connected: 0
 --- !u!1 &600939136
 GameObject:
   m_ObjectHideFlags: 0

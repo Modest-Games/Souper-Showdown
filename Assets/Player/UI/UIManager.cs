@@ -176,7 +176,7 @@ public class UIManager : NetworkBehaviour
 
     private void Update()
     {
-        connectedPlayersText.text = $"Players in game: {PlayersManager.Instance.ConnectedClients}";
+        connectedPlayersText.text = $"Players in game: {PlayersManager.Instance._players.Count}";
         UpdateButtonVisibilities(hasServerStarted); // should probably not be done on the update
     }
 }
