@@ -2416,7 +2416,7 @@ MonoBehaviour:
   m_RestoreOriginalTextOnEscape: 1
   m_isRichTextEditingAllowed: 0
   m_LineLimit: 0
-  m_InputValidator: {fileID: 0}
+  m_InputValidator: {fileID: 11400000, guid: c96c7bde5b9a6bb40a5d832f2a3a7ef3, type: 2}
 --- !u!114 &1081481041
 MonoBehaviour:
   m_ObjectHideFlags: 0
