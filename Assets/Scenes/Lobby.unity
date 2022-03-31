@@ -297,6 +297,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6620624001080799110, guid: 206609f60f8491f4e8460d13570d8c25, type: 3}
+      propertyPath: souperLogo
+      value: 
+      objectReference: {fileID: 1627769583}
+    - target: {fileID: 6620624001080799110, guid: 206609f60f8491f4e8460d13570d8c25, type: 3}
       propertyPath: isChefToggle
       value: 
       objectReference: {fileID: 0}
