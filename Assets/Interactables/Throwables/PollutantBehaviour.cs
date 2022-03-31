@@ -42,53 +42,63 @@ public class PollutantBehaviour : NetworkBehaviour
 
     void Update()
     {
-        // check if the character needs to be refreshed
+        // Check if the mesh needs to be refreshed
         if (!meshInitialized && pollutantObject != null)
         {
             RefreshMesh();
             meshInitialized = true;
-        }
-
-        switch (state)
-        {
-            case PollutantState.Idle:
-                // do nothing (for now)
-                break;
-
-            case PollutantState.Airborn:
-                //transform.position = Vector3.Lerp(throwStartPos, throwDestination, );
-                break;
         }
     }
 
     [Button]
     private void RefreshMesh()
     {
-        // check if there is an existing mesh
         Transform oldMesh = transform.Find("Mesh");
         if (oldMesh != null)
         {
-            // remove the old mesh
             DestroyImmediate(oldMesh.gameObject);
         }
 
-        // instantiate the new mesh
         GameObject newMesh = Instantiate(pollutantObject.mesh, transform);
         newMesh.name = "Mesh";
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        // switch on other tag
+        if (!IsServer)
+            return;
+
         switch (collision.gameObject.tag)
         {
-            // if colliding with the ground
             case "Ground":
-                // stop being airborn
                 trail.emitting = false;
                 state = PollutantState.Idle;
+
+                if (pollutantObject.playerID != -1)
+                {
+                    ReplaceLiveMeshClientRpc((ulong) pollutantObject.playerID);
+                    gameObject.SetActive(false);
+                }
+
                 break;
         }
+    }
+
+    [ClientRpc]
+    public void ReplaceLiveMeshClientRpc(ulong playerID)
+    {
+        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(playerID, out var playerToTeleport);
+        if (playerToTeleport == null) return;
+
+        playerToTeleport.GetComponentInParent<Rigidbody>().isKinematic = false;
+        playerToTeleport.GetComponentInParent<SphereCollider>().enabled = true;
+        playerToTeleport.transform.Find("Character").gameObject.SetActive(true);
+
+        var playerController = playerToTeleport.GetComponent<PlayerController>();
+        playerController.TeleportPlayer(transform.position);
+        StartCoroutine(playerController.CinemachineDelay());
+
+        gameObject.SetActive(false);
     }
 
     [ClientRpc]
