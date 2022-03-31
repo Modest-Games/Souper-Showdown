@@ -182,9 +182,23 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public void TeleportPlayer(Vector3 pos)
+    {
+        if (IsClient && IsOwner)
+        {
+            var adjustedPos = new Vector3(pos.x, 0, pos.z);
+            GetComponent<ClientNetworkTransform>().Teleport(adjustedPos, Quaternion.identity, Vector3.one);
+
+            playerState = PlayerState.Idle;
+            UpdatePlayerStateServerRpc(PlayerState.Idle);
+        }
+
+        vfx.Play();
+    }
+
     private void PlayerRandomSpawnPoint(bool isChef)
     {
-        rb.position = TerrainManager.Instance.GetRandomSpawnLocation(isChef);
+        TeleportPlayer(TerrainManager.Instance.GetRandomSpawnLocation(isChef));
     }
 
     void Update()
@@ -664,7 +678,7 @@ public class PlayerController : NetworkBehaviour
                         {
                             var playerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
                             HideGrabbedPlayerServerRpc(playerID);
-                            OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value);
+                            OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value, (int) playerID);
                         }
 
                         return;
@@ -685,11 +699,12 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    private void OnPlayerGrabServerRpc(NetcodeString characterName)
+    private void OnPlayerGrabServerRpc(NetcodeString characterName, int playerID)
     {
         string pollutantType = characterName.ToString();
         pollutantType += "Live";
         currentlyHeld = GetPollutantObject(pollutantType);
+        currentlyHeld.playerID = playerID;
 
         var heldObjectBehaviour = heldObject.GetComponent<HeldObject>();
         heldObjectBehaviour.heldObject = currentlyHeld.mesh;
@@ -713,10 +728,16 @@ public class PlayerController : NetworkBehaviour
         NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(playerID, out var playerToHide);
         if (playerToHide == null) return;
 
-        playerToHide.gameObject.SetActive(false);
-
         CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
-        camTargetGroup.RemoveMember(playerToHide.gameObject.transform);
+        camTargetGroup.RemoveMember(playerToHide.transform);
+
+        var playerController = playerToHide.GetComponentInParent<PlayerController>();
+        playerController.playerState = PlayerState.Idle;
+        playerController.UpdatePlayerStateServerRpc(PlayerState.Idle);
+
+        playerToHide.GetComponentInParent<Rigidbody>().isKinematic = true;
+        playerToHide.GetComponentInParent<SphereCollider>().enabled = false;
+        playerToHide.transform.Find("Character").gameObject.SetActive(false);
     }
 
     public void GrabCancelled()
@@ -993,9 +1014,6 @@ public class PlayerController : NetworkBehaviour
         var thrownObjBehaviour = thrownObj.GetComponent<PollutantBehaviour>();
         thrownObjBehaviour.pollutantObject = currentlyHeld;
         thrownObjBehaviour.meshInitialized = false;
-
-        Debug.Log(currentlyHeld);
-        Debug.Log(thrownObjBehaviour.pollutantObject);
 
         thrownObj.GetComponent<NetworkObject>().Spawn();
         thrownObj.GetComponent<Rigidbody>().AddForce((playerForward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);

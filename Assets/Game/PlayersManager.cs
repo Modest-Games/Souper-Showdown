@@ -104,6 +104,16 @@ public class PlayersManager : NetworkBehaviour
             PlayerListChanged();
     }
 
+    public Player GetPlayerFromList(ulong networkObjId)
+    {
+        return players.Find(p => p.networkObjId == networkObjId);
+    }
+
+    public int GetPlayerIndex(ulong networkObjId)
+    {
+        return players.IndexOf(players.Find(p => p.networkObjId == networkObjId));
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public void RequestPlayerServerRpc(int playerIndex, ulong clientId)
     {
