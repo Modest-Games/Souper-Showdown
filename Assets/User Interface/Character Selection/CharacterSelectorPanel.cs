@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class CharacterSelectorPanel : MonoBehaviour
 {
@@ -52,12 +53,13 @@ public class CharacterSelectorPanel : MonoBehaviour
         }
 
         // create new selections
-        foreach (PlayersManager.Player p in PlayersManager.Instance.players)
+        for (int i = 0; i < PlayersManager.Instance.players.Count; i ++)
         {
-            if (p.character == character.characterName)
+            if (PlayersManager.Instance.players[i].character == character.characterName)
             {
                 selections++;
-                Instantiate(selectionIcon, selectionsPanel);
+                GameObject newSelection = Instantiate(selectionIcon, selectionsPanel);
+                newSelection.GetComponentInChildren<TMP_Text>().text = (i+1).ToString();
             }
         }
 
