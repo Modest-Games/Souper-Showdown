@@ -100,6 +100,11 @@ public class PollutantBehaviour : NetworkBehaviour
         {
             pollutantObject = ObjectSpawner.Instance.deadBodyList.Find(x => x.type == type);
         }
+
+        if (pollutantObject == null)
+        {
+            pollutantObject = ObjectSpawner.Instance.liveBodyList.Find(x => x.type == type);
+        }
     }
 
     [ClientRpc]

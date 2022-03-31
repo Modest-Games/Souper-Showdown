@@ -271,6 +271,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: bb9df464d4a202d4183f209d1229b43e, type: 2}
   - {fileID: 2100000, guid: 53db7c717c9da9947a82b8328998c149, type: 2}
   totalSpoilerCount: 3
+  playerCards: []
   leftPoint: {fileID: 1018839477}
   rightPoint: {fileID: 1723186315}
 --- !u!4 &402050522 stripped
@@ -628,6 +629,10 @@ PrefabInstance:
       value: 2554672315
       objectReference: {fileID: 0}
     - target: {fileID: 450344430088371965, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
+      propertyPath: blenderPrefab
+      value: 
+      objectReference: {fileID: 1802975607863114797, guid: 9f219294e1cdd55488eb3cf3cc1ae91c, type: 3}
+    - target: {fileID: 450344430088371965, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
       propertyPath: gridDimensions.x
       value: 8
       objectReference: {fileID: 0}
@@ -639,6 +644,10 @@ PrefabInstance:
       propertyPath: numStartingPoints
       value: 30
       objectReference: {fileID: 0}
+    - target: {fileID: 450344430848429289, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
+      propertyPath: blenderPrefab
+      value: 
+      objectReference: {fileID: 1802975607863114797, guid: 9f219294e1cdd55488eb3cf3cc1ae91c, type: 3}
     - target: {fileID: 450344430848429289, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
       propertyPath: gridDimensions.x
       value: 8
