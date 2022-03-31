@@ -148,6 +148,9 @@ public class PlayerController : NetworkBehaviour
             PlayerCreated();
 
         debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
+
+        // add the player to the list of players in the players manager
+        PlayersManager.Instance.AddPlayerToList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
     }
 
     public void BindControls()
@@ -445,6 +448,9 @@ public class PlayerController : NetworkBehaviour
         newMesh.name = "Character";
         characterBehaviour = newMesh.GetComponent<CharacterBehaviour>();
         isRefreshingCharacter = false;
+
+        // update the player in the list of players in the players manager
+        PlayersManager.Instance.UpdatePlayerInList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
     }
 
     private void UpdateTrapPlacerVisuals()
@@ -892,6 +898,12 @@ public class PlayerController : NetworkBehaviour
 
         networkIsChef.OnValueChanged -= OnIsChefChanged;
         networkCharacterName.OnValueChanged += OnCharacterNameChanged;
+    }
+
+    new private void OnDestroy()
+    {
+        // remove the player from the players list in players manager
+        PlayersManager.Instance.RemovePlayerFromList(NetworkObjectId);
     }
 
     private Pollutant GetPollutantObject(string type)

@@ -11,7 +11,8 @@ public class UIManager : NetworkBehaviour
 {
     public delegate void UIDelegate();
     public static event UIDelegate SceneSwitchRequested;
-
+    public static event UIDelegate GameJoined;
+    
     public static UIManager Instance { get; private set; }
 
     [SerializeField] private Button startHostButton;
@@ -137,6 +138,8 @@ public class UIManager : NetworkBehaviour
             {
                 Debug.Log("Client started...");
                 hasServerStarted = true;
+                if (GameJoined != null)
+                    GameJoined();
             }
 
             else
@@ -149,6 +152,8 @@ public class UIManager : NetworkBehaviour
         NetworkManager.Singleton.OnServerStarted += () =>
         {
             hasServerStarted = true;
+            if (GameJoined != null)
+                GameJoined();
         };
 
         startGameButton.onClick.RemoveAllListeners();
@@ -170,6 +175,7 @@ public class UIManager : NetworkBehaviour
         if (SceneManager.GetActiveScene().name == "InGame")
             return;
 
+        connectedPlayersText.gameObject.SetActive(isConnected);
         startHostButton.gameObject.SetActive(!isConnected);
         startClientButton.gameObject.SetActive(!isConnected);
         startServerButton.gameObject.SetActive(!isConnected);
@@ -182,7 +188,9 @@ public class UIManager : NetworkBehaviour
 
     private void Update()
     {
-        connectedPlayersText.text = $"Players in game: {PlayersManager.Instance._players.Count}";
+        if (PlayersManager.Instance != null && hasServerStarted)
+            connectedPlayersText.text = $"Players in game: {PlayersManager.Instance.players.Count}";
+
         UpdateButtonVisibilities(hasServerStarted); // should probably not be done on the update
     }
 }

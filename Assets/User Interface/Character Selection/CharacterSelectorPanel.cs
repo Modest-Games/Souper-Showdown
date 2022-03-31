@@ -8,7 +8,6 @@ public class CharacterSelectorPanel : MonoBehaviour
     public Character character;
     public GameObject selectionIcon;
 
-    private int numSelected;
     private SpriteAnimator spriteAnimator;
     private Image image;
     private Image background;
@@ -31,25 +30,7 @@ public class CharacterSelectorPanel : MonoBehaviour
         if (character.primaryColour != null)
             background.color = character.primaryColour;
 
-        RenderSelections();
-    }
-
-    private void RenderSelections()
-    {
-        // clear all selections
-        foreach (Transform selection in selectionsPanel.transform)
-        {
-            Destroy(selection.gameObject);
-        }
-
-        // add the needed selections
-        for (int i = 0; i < numSelected; i++)
-        {
-            Instantiate(selectionIcon, selectionsPanel);
-        }
-
-        // update enabled
-        SetEnabled(numSelected > 0);
+        OnPlayerListChanged();
     }
 
     private void SetEnabled(bool enabled)
@@ -60,41 +41,38 @@ public class CharacterSelectorPanel : MonoBehaviour
         spriteAnimator.isEnabled = enabled;
     }
 
-    public void Select()
+    private void OnPlayerListChanged()
     {
-        numSelected++;
-        RenderSelections();
-    }
+        int selections = 0;
 
-    public void Deselect()
-    {
-        numSelected--;
-        RenderSelections();
-    }
+        // clear all selections
+        foreach (Transform selection in selectionsPanel.transform)
+        {
+            Destroy(selection.gameObject);
+        }
 
-    private void OnCharacterChanged(string oldCharName, string newCharName)
-    {
-        //Debug.LogFormat("This char: {0}, oldChar: {1}, newChar: {2}", character.characterName, oldCharName, newCharName);
+        // create new selections
+        foreach (PlayersManager.Player p in PlayersManager.Instance.players)
+        {
+            if (p.character == character.characterName)
+            {
+                selections++;
+                Instantiate(selectionIcon, selectionsPanel);
+            }
+        }
 
-        if (oldCharName == newCharName)
-            return;
-
-        if (character.characterName == newCharName)
-            Select();
-
-        if (character.characterName == oldCharName)
-            Deselect();
+        SetEnabled(selections > 0);
     }
 
     private void OnEnable()
     {
         // bind events listeners
-        PlayerController.CharacterChanged += OnCharacterChanged;
+        PlayersManager.PlayerListChanged += OnPlayerListChanged;
     }
 
     private void OnDisable()
     {
         // clear event listeners
-        PlayerController.CharacterChanged -= OnCharacterChanged;
+        PlayersManager.PlayerListChanged -= OnPlayerListChanged;
     }
 }
