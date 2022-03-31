@@ -7,6 +7,8 @@ using Unity.Netcode;
 using Unity.Netcode.Samples;
 using UnityEngine.VFX;
 using UnityEngine.SceneManagement;
+using Cinemachine;
+using NetcodeString = Unity.Collections.FixedString64Bytes;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(ClientNetworkTransform))]
@@ -93,10 +95,10 @@ public class PlayerController : NetworkBehaviour
 
     public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
 
-    public NetworkVariable<Unity.Collections.FixedString64Bytes> networkCharacterName = new NetworkVariable<Unity.Collections.FixedString64Bytes>();
+    public NetworkVariable<NetcodeString> networkCharacterName = new NetworkVariable<NetcodeString>();
     public NetworkVariable<bool> networkIsChef = new NetworkVariable<bool>();
     public NetworkVariable<int> networkTrapRotation = new NetworkVariable<int>();
-    public NetworkVariable<Unity.Collections.FixedString64Bytes> networkSelectedTrap = new NetworkVariable<Unity.Collections.FixedString64Bytes>();
+    public NetworkVariable<NetcodeString> networkSelectedTrap = new NetworkVariable<NetcodeString>();
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
 
@@ -654,14 +656,9 @@ public class PlayerController : NetworkBehaviour
                         PlayerController otherPC = otherPlayer.GetComponentInParent<PlayerController>();
                         if (!(otherPC.IsClient && otherPC.IsOwner))
                         {
-                            var chefID = GetComponentInParent<NetworkObject>().OwnerClientId;
-                            otherPC.ChangeOwnershipServerRpc(chefID);
-
-                            otherPlayer.GetComponentInParent<ClientNetworkTransform>().CanCommitToTransform = true;
-
-                            var carriedBehaviour = otherPlayer.GetComponentInParent<Carried>();
-                            carriedBehaviour.target = heldObject.transform;
-                            carriedBehaviour.carried = true;
+                            var playerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
+                            HideGrabbedPlayerServerRpc(playerID);
+                            OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value);
                         }
 
                         return;
@@ -682,18 +679,38 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
-    public void ChangeOwnershipServerRpc(ulong chefID)
+    private void OnPlayerGrabServerRpc(NetcodeString characterName)
     {
-        GetComponentInParent<NetworkObject>().ChangeOwnership(chefID);
-        DisablePlayerControllerClientRpc();
+        string pollutantType = characterName.ToString();
+        pollutantType += "Live";
+        currentlyHeld = GetPollutantObject(pollutantType);
+
+        var heldObjectBehaviour = heldObject.GetComponent<HeldObject>();
+        heldObjectBehaviour.heldObject = currentlyHeld.mesh;
+        heldObjectBehaviour.meshInitialized = false;
+
+        // Repeat logic on client-side:
+        SetHeldObjectClientRpc(pollutantType);
+
+        networkCarryState.Value = PlayerCarryState.CarryingObject;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void HideGrabbedPlayerServerRpc(ulong playerID)
+    {
+        HideGrabbedPlayerClientRpc(playerID);
     }
 
     [ClientRpc]
-    public void DisablePlayerControllerClientRpc()
+    private void HideGrabbedPlayerClientRpc(ulong playerID)
     {
-        GetComponentInParent<PlayerController>().enabled = false;
-        GetComponentInParent<ClientNetworkTransform>().enabled = false;
+        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(playerID, out var playerToHide);
+        if (playerToHide == null) return;
 
+        playerToHide.gameObject.SetActive(false);
+
+        CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
+        camTargetGroup.RemoveMember(playerToHide.gameObject.transform);
     }
 
     public void GrabCancelled()
@@ -886,6 +903,11 @@ public class PlayerController : NetworkBehaviour
             pollutantObject = ObjectSpawner.Instance.deadBodyList.Find(x => x.type == type);
         }
 
+        if (pollutantObject == null)
+        {
+            pollutantObject = ObjectSpawner.Instance.liveBodyList.Find(x => x.type == type);
+        }
+
         return pollutantObject;
     }
 
@@ -959,6 +981,9 @@ public class PlayerController : NetworkBehaviour
         var thrownObjBehaviour = thrownObj.GetComponent<PollutantBehaviour>();
         thrownObjBehaviour.pollutantObject = currentlyHeld;
         thrownObjBehaviour.meshInitialized = false;
+
+        Debug.Log(currentlyHeld);
+        Debug.Log(thrownObjBehaviour.pollutantObject);
 
         thrownObj.GetComponent<NetworkObject>().Spawn();
         thrownObj.GetComponent<Rigidbody>().AddForce((playerForward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);

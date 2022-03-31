@@ -717,7 +717,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_NotificationBehavior: 2
   m_MaxPlayerCount: -1
-  m_AllowJoining: 1
+  m_AllowJoining: 0
   m_JoinBehavior: 1
   m_PlayerJoinedEvent:
     m_PersistentCalls:
@@ -787,6 +787,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inputPlayers: []
   thisClientId: 0
+  canSpawn: 0
+  connected: 0
 --- !u!1 &600939136
 GameObject:
   m_ObjectHideFlags: 0

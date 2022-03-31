@@ -11,6 +11,7 @@ public class ObjectSpawner : NetworkBehaviour
     public GameObject pollutantPrefab;
     public List<Pollutant> pollutantList;
     public List<Pollutant> deadBodyList;
+    public List<Pollutant> liveBodyList;
     public Dumpster[] dumpsters = new Dumpster[4];
 
     [Header("Config")]

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine.Utility;
 using Cinemachine;
-using static PlayerController;
 
 public class GetPlayersOnStart : MonoBehaviour
 {
@@ -13,19 +12,6 @@ public class GetPlayersOnStart : MonoBehaviour
 
     private Vector3 startPos;
     private Quaternion startRot;
-
-    // force camera to this position on start
-    public void Start()
-    {
-        // startPos = new Vector3(5.0f, 16.0f, -69.0f);
-        // startRot = new Quaternion(8, 0, 0, 1);
-
-        // Debug.Log("start from cinemachine");
-
-        // camObj = GameObject.Find("CineMachine VCam");
-        // VCam = camObj.GetComponent<CinemachineVirtualCamera>();
-        // VCam.ForceCameraPosition(startPos, startRot);
-    }
 
     // handles players joining game
     private void OnEnable()
