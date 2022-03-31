@@ -90,8 +90,6 @@ public class PlayerController : NetworkBehaviour
     private bool justRotatedTrap;
     private bool justPlacedTrap;
 
-    CinemachineTargetGroup camTargetGroup;
-
     private GameObject heldObject;
     private Pollutant currentlyHeld;
 
@@ -135,7 +133,6 @@ public class PlayerController : NetworkBehaviour
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         trapPlacer = transform.Find("Trap Placer").GetComponentInChildren<UnplacedTrap>();
         vfx = transform.Find("VFX").GetComponent<VisualEffect>();
-        camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
 
         lastKnownState = networkCarryState.Value;
 
@@ -183,11 +180,6 @@ public class PlayerController : NetworkBehaviour
 
             controlsBound = true;
         }
-    }
-
-    public void AddToCinemachine()
-    {
-        camTargetGroup.AddMember(transform, 1f, 0f);
     }
 
     public void TeleportPlayer(Vector3 pos)
@@ -736,15 +728,16 @@ public class PlayerController : NetworkBehaviour
         NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(playerID, out var playerToHide);
         if (playerToHide == null) return;
 
+        CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
+        camTargetGroup.RemoveMember(playerToHide.transform);
+
+        var playerController = playerToHide.GetComponentInParent<PlayerController>();
+        playerController.playerState = PlayerState.Idle;
+        playerController.UpdatePlayerStateServerRpc(PlayerState.Idle);
+
         playerToHide.GetComponentInParent<Rigidbody>().isKinematic = true;
         playerToHide.GetComponentInParent<SphereCollider>().enabled = false;
         playerToHide.transform.Find("Character").gameObject.SetActive(false);
-
-        var playerController = playerToHide.GetComponentInParent<PlayerController>();
-        camTargetGroup.RemoveMember(playerToHide.transform);
-
-        playerController.playerState = PlayerState.Idle;
-        playerController.UpdatePlayerStateServerRpc(PlayerState.Idle);
     }
 
     public void GrabCancelled()
@@ -1145,12 +1138,5 @@ public class PlayerController : NetworkBehaviour
         yield return new WaitForSeconds(0.5f);
 
         justPlacedTrap = false;
-    }
-
-    public IEnumerator CinemachineDelay()
-    {
-        yield return new WaitForSeconds(0.50f);
-
-        AddToCinemachine();
     }
 }

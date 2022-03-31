@@ -5,6 +5,7 @@ using Unity.Netcode;
 using Unity.Netcode.Samples;
 using NaughtyAttributes;
 using Unity.Netcode.Components;
+using Cinemachine;
 
 public class PollutantBehaviour : NetworkBehaviour
 {
@@ -96,7 +97,9 @@ public class PollutantBehaviour : NetworkBehaviour
 
         var playerController = playerToTeleport.GetComponent<PlayerController>();
         playerController.TeleportPlayer(transform.position);
-        StartCoroutine(playerController.CinemachineDelay());
+
+        CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
+        camTargetGroup.AddMember(playerToTeleport.transform, 1f, 0f);
 
         gameObject.SetActive(false);
     }
