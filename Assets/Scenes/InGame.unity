@@ -404,7 +404,6 @@ MonoBehaviour:
   - {r: 0.8867924, g: 0.73619366, b: 0.20496619, a: 1}
   - {r: 0.7169812, g: 0.40370172, b: 0.08454966, a: 1}
   - {r: 0.39779705, g: 0.6603774, b: 0.12771448, a: 1}
-  presetScores: b0040000100e0000cc100000d0070000c409000070170000f4010000
   spoilers:
   - Tomato
   - Carrot
@@ -1429,11 +1428,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 4da7e2eb94a94804b8bd46a5f89cf98a, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.01
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
