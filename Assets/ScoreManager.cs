@@ -53,4 +53,21 @@ public class ScoreManager : MonoBehaviour
 
     //    card.transform.SetParent(GameObject.FindGameObjectWithTag("Canvas").transform, false);
     //}
+
+
+    private void OnEnable()
+    {
+        GameController.GameStopped += OnGameOver;
+    }
+
+    private void OnGameOver()
+    {
+        gameObject.SetActive(false);
+
+    }
+
+    private void OnDisable()
+    {
+        GameController.GameStopped -= OnGameOver;
+    }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class EndScreenManager : MonoBehaviour
 {
@@ -12,10 +13,13 @@ public class EndScreenManager : MonoBehaviour
 
     public GameObject BarGraphPanel;
 
+    public GameObject endScreen; 
 
     public int playerNum = 0;
     public GameObject PlayerBarPrefab;
     public GameObject[] PlayerBars;
+
+    public Transform GraphPanel;
 
     public int numPlayers;
 
@@ -75,12 +79,16 @@ public class EndScreenManager : MonoBehaviour
 
     void SortBars()
     {
+        /*
         int len = PlayerBars.Length;
 
         for (int i = 0; i < len; i++)
         {
+            //for (int j = 0; j < len - i - 1; j++)
             for (int j = 0; j < len - i - 1; j++)
             {
+                Debug.Log(PlayerBars[j].transform.GetChild(0).GetComponent<PlayerBar>().score);
+                Debug.Log(PlayerBars[j + 1].transform.GetChild(0).GetComponent<PlayerBar>().score);
                 if (PlayerBars[j].transform.GetChild(0).GetComponent<PlayerBar>().score < PlayerBars[j + 1].transform.GetChild(0).GetComponent<PlayerBar>().score)
                 {
                     //Swap player bars
@@ -90,16 +98,31 @@ public class EndScreenManager : MonoBehaviour
                 }
             }
         }
+        */
+
+
+        List<GameObject> list1 = new List<GameObject>();
+
+        list1 = PlayerBars.OfType<GameObject>().ToList();
+
+        list1.Sort((element2, element1) => element1.transform.GetChild(0).GetComponent<PlayerBar>().score.CompareTo(element2.transform.GetChild(0).GetComponent<PlayerBar>().score));
+
+        PlayerBars = list1.ToArray();
+
+        
+
 
         foreach (GameObject pb in PlayerBars)
         {
+            Debug.Log(pb);
             //Place bar in panel
-            pb.transform.SetParent(GameObject.FindGameObjectWithTag("BarGraph").transform, false);
+            //pb.transform.SetParent(GameObject.FindGameObjectWithTag("BarGraph").transform, false);
+            pb.transform.SetParent(GraphPanel, false);
         }
     }
 
 
-    GameObject MakeBar(string spoiler, int score) 
+    GameObject MakeBar(string spoiler, int score, Sprite playerNum) 
     {
         //Create player bar
         GameObject playerBar = Instantiate(PlayerBarPrefab, new Vector3(0, 0, 0), Quaternion.identity);
@@ -111,10 +134,10 @@ public class EndScreenManager : MonoBehaviour
             Debug.Log("spoiler not found!");
         else
         {
-            playerBar.transform.GetChild(0).GetComponent<PlayerBar>().setUpBar(score, 1.0f, spoilerMaterials[spoilerIndex], spoilerIcons[spoilerIndex], playerNumbers[playerNum], spoilerColors[spoilerIndex]);
+            playerBar.transform.GetChild(0).GetComponent<PlayerBar>().setUpBar(score, 1.0f, spoilerMaterials[spoilerIndex], spoilerIcons[spoilerIndex], playerNum, spoilerColors[spoilerIndex]);
         }
 
-        playerNum++;
+        //playerNum++;
 
         return playerBar;
     }
@@ -123,24 +146,9 @@ public class EndScreenManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        loadSpoilerLibrary();
+        GameController.GameStopped += OnGameOver;
+        endScreen.SetActive(false);
 
-        PlayerBars = new GameObject[numPlayers];
-
-        //Create bars
-        for (int i = 0; i < numPlayers; i++)
-        {
-            PlayerBars[i] = MakeBar(spoilers[i], presetScores[i]);
-        }
-
-        //Sort bars
-        SortBars();
-
-        //Give Verticality to bars
-        setHeights();
-
-        //StartAnimating
-        StartCoroutine(StaggerAnimation());
     }
 
 
@@ -156,6 +164,38 @@ public class EndScreenManager : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
         PlayerBars[0].transform.GetChild(0).GetComponent<PlayerBar>().startAnimating();
     }
+
+    private void OnGameOver()
+    {
+        endScreen.SetActive(true);
+
+        loadSpoilerLibrary();
+
+        numPlayers = PlayersManager.Instance.players.Count;
+        PlayerBars = new GameObject[numPlayers];
+
+        //Create bars
+        for (int i = 0; i < numPlayers; i++)
+        {
+            //PlayerBars[i] = MakeBar(spoilers[i], presetScores[i], playerNumbers[0]);
+
+            PlayersManager.Player currentPlayer = PlayersManager.Instance.players[i];
+
+            PlayerBars[i] = MakeBar(currentPlayer.character, PlayersManager.Instance.GetPlayerScore(currentPlayer.networkObjId), playerNumbers[0]);
+
+        }
+
+        //Sort bars
+        SortBars();
+
+        //Give Verticality to bars
+        setHeights();
+
+        //Start Animating
+        StartCoroutine(StaggerAnimation());
+
+    }
+
 
     // Update is called once per frame
     void Update()
