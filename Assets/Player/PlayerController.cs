@@ -197,7 +197,7 @@ public class PlayerController : NetworkBehaviour
         vfx.Play();
     }
 
-    private void PlayerRandomSpawnPoint(bool isChef)
+    public void PlayerRandomSpawnPoint(bool isChef)
     {
         TeleportPlayer(TerrainManager.Instance.GetRandomSpawnLocation(isChef));
     }
