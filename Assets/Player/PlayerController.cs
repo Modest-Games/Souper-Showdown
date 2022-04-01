@@ -576,7 +576,7 @@ public class PlayerController : NetworkBehaviour
 
     public void ToggleTrapModePerformed()
     {
-        if (IsClient && IsOwner)
+        if (IsClient && IsOwner && Application.isFocused)
         {
             if (SceneManager.GetActiveScene().name != "InGame")
                 return;
@@ -607,7 +607,7 @@ public class PlayerController : NetworkBehaviour
 
     public void NextTrapPerformed()
     {
-        if (IsClient && IsOwner && networkIsChef.Value)
+        if (IsClient && IsOwner && networkIsChef.Value && Application.isFocused)
         {
 
         }
@@ -615,7 +615,7 @@ public class PlayerController : NetworkBehaviour
 
     public void PreviousTrapPerformed()
     {
-        if (IsClient && IsOwner && networkIsChef.Value)
+        if (IsClient && IsOwner && networkIsChef.Value && Application.isFocused)
         {
 
         }
@@ -623,7 +623,7 @@ public class PlayerController : NetworkBehaviour
 
     public void RotateTrapPerformed()
     {
-        if (IsClient && IsOwner && networkIsChef.Value)
+        if (IsClient && IsOwner && networkIsChef.Value && Application.isFocused)
         {
             if (SceneManager.GetActiveScene().name != "InGame")
                 return;
@@ -644,7 +644,7 @@ public class PlayerController : NetworkBehaviour
 
     public void PlaceTrapPerformed()
     {
-        if (IsClient && IsOwner && networkIsChef.Value)
+        if (IsClient && IsOwner && networkIsChef.Value && Application.isFocused)
         {
             if (SceneManager.GetActiveScene().name != "InGame")
                 return;
@@ -665,7 +665,7 @@ public class PlayerController : NetworkBehaviour
 
     public void GrabStarted()
     {
-        if (IsClient && IsOwner)
+        if (IsClient && IsOwner && Application.isFocused)
         {
             RefreshReachableCollectables();
 
