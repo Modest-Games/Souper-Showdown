@@ -12,7 +12,7 @@ public class LobbyController : NetworkBehaviour
     public bool isDebugEnabled;
 
     //public int countdownTime;
-    public Text countdownTimer;
+    //public Text countdownTimer;
 
     public delegate void LobbyControllerDelegate();
     public static event LobbyControllerDelegate PlayersReady;
