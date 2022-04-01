@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using Cinemachine;
 
 public class SoupPot_Behaviour : NetworkBehaviour
 {
@@ -37,11 +38,31 @@ public class SoupPot_Behaviour : NetworkBehaviour
 
     private IEnumerator OnPollutantEnter(GameObject pollutant)
     {
+        var liveMeshPlayerID = pollutant.GetComponent<PollutantBehaviour>().pollutantObject.playerID;
+        if(liveMeshPlayerID != -1)
+            RespawnPlayerFromLiveMeshClientRpc((ulong) liveMeshPlayerID);
+
         yield return new WaitForSeconds(0.25f);
 
         Destroy(pollutant);
         OnPollutantEnterClientRpc();
 
+    }
+
+    [ClientRpc]
+    public void RespawnPlayerFromLiveMeshClientRpc(ulong playerID)
+    {
+        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(playerID, out var playerToRespawn);
+        if (playerToRespawn == null) return;
+
+        playerToRespawn.GetComponentInParent<Rigidbody>().isKinematic = false;
+        playerToRespawn.GetComponentInParent<SphereCollider>().enabled = true;
+        playerToRespawn.transform.Find("Character").gameObject.SetActive(true);
+
+        playerToRespawn.GetComponentInParent<PlayerController>().PlayerRandomSpawnPoint(false);
+
+        CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
+        camTargetGroup.AddMember(playerToRespawn.transform, 1f, 0f);
     }
 
     [ClientRpc]

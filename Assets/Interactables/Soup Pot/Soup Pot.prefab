@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 8108877143035559674}
   m_Layer: 0
   m_Name: Soup Pot
-  m_TagString: Soup Pot
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4932,7 +4932,7 @@ GameObject:
   - component: {fileID: 2057299846401957999}
   m_Layer: 0
   m_Name: Trigger Collider
-  m_TagString: Untagged
+  m_TagString: Soup Pot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

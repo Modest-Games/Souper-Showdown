@@ -87,6 +87,8 @@ public class PollutantBehaviour : NetworkBehaviour
         }
     }
 
+    
+
     [ClientRpc]
     public void ReplaceLiveMeshClientRpc(ulong playerID)
     {

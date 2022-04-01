@@ -204,13 +204,7 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        //if (!characterInitialized && characterObject != null)
-        //{
-        //    RefreshCharacter();
-        //    characterInitialized = true;
-        //}
-
-            UpdateClientVisuals();
+        UpdateClientVisuals();
 
         if (!controlsBound)
         {
