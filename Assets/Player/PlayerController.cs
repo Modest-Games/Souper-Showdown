@@ -96,8 +96,6 @@ public class PlayerController : NetworkBehaviour
     private GameObject heldObject;
     private Pollutant currentlyHeld;
 
-    private bool startHasRan = false;
-
     public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
 
     public NetworkVariable<NetcodeString> networkCharacterName = new NetworkVariable<NetcodeString>();
@@ -110,7 +108,7 @@ public class PlayerController : NetworkBehaviour
 
     public int numberVeggies;
     public int numberChefs;
-    private IEnumerator lobbyCountdown;
+    // private IEnumerator lobbyCountdown;
 
     private void Awake()
     {
@@ -126,37 +124,37 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
+        bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
 
-            characterObject = (IsClient && IsOwner) ?
-                CharacterManager.Instance.GetRandomCharacter() :
-                CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
+        characterObject = (IsClient && IsOwner) ?
+            CharacterManager.Instance.GetRandomCharacter() :
+            CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
 
-            rb = GetComponent<Rigidbody>();
-            canMove = true;
+        rb = GetComponent<Rigidbody>();
+        canMove = true;
 
-            dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
-            heldObject = transform.Find("Held Object").gameObject;
-            aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
-            characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
-            debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
-            trapPlacer = transform.Find("Trap Placer").GetComponentInChildren<UnplacedTrap>();
-            vfx = transform.Find("VFX").GetComponent<VisualEffect>();
+        dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
+        heldObject = transform.Find("Held Object").gameObject;
+        aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
+        characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
+        debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
+        trapPlacer = transform.Find("Trap Placer").GetComponentInChildren<UnplacedTrap>();
+        vfx = transform.Find("VFX").GetComponent<VisualEffect>();
 
-            lastKnownState = networkCarryState.Value;
+        lastKnownState = networkCarryState.Value;
 
-            // setup variables
-            if (IsClient && IsOwner)
-            {
-                UpdateCharacterNameServerRpc(characterObject.characterName);
-                UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
-                UpdatePlayerStateServerRpc(PlayerState.Idle);
-            }
+        // setup variables
+        if (IsClient && IsOwner)
+        {
+            UpdateCharacterNameServerRpc(characterObject.characterName);
+            UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+            UpdatePlayerStateServerRpc(PlayerState.Idle);
+        }
 
-            if (PlayerCreated != null)
-                PlayerCreated();
+        if (PlayerCreated != null)
+            PlayerCreated();
 
-            debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
+        debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
 
         if (IsClient && !IsOwner)
         {
@@ -490,6 +488,9 @@ bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
         if (newCharacterMesh == transform.Find("Character").gameObject) return;
         
         Destroy(transform.Find("Character").gameObject);
+
+        if (transform.Find("Character").gameObject != null)
+            Destroy(transform.Find("Character").gameObject);
 
         GameObject newMesh = Instantiate(newCharacterMesh, transform);
         newMesh.name = "Character";
