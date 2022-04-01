@@ -125,7 +125,7 @@ public class EndScreenManager : MonoBehaviour
     GameObject MakeBar(string spoiler, int score, Sprite playerNum) 
     {
         //Create player bar
-        GameObject playerBar = Instantiate(PlayerBarPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+        GameObject playerBar = Instantiate(PlayerBarPrefab, GraphPanel);
 
         int spoilerIndex;
         bool hasValue = spoilerDictionary.TryGetValue(spoiler, out spoilerIndex);
@@ -174,19 +174,21 @@ public class EndScreenManager : MonoBehaviour
         numPlayers = PlayersManager.Instance.players.Count;
         PlayerBars = new GameObject[numPlayers];
 
+        List<PlayersManager.Player> players = PlayersManager.Instance.players;
+        players.Sort((p2, p1) => PlayersManager.Instance.GetPlayerScore(p1.networkObjId).CompareTo(PlayersManager.Instance.GetPlayerScore(p2.networkObjId)));
+
         //Create bars
         for (int i = 0; i < numPlayers; i++)
         {
             //PlayerBars[i] = MakeBar(spoilers[i], presetScores[i], playerNumbers[0]);
 
-            PlayersManager.Player currentPlayer = PlayersManager.Instance.players[i];
+            PlayersManager.Player currentPlayer = players[i];
 
             PlayerBars[i] = MakeBar(currentPlayer.character, PlayersManager.Instance.GetPlayerScore(currentPlayer.networkObjId), playerNumbers[0]);
-
         }
 
         //Sort bars
-        SortBars();
+        //SortBars();
 
         //Give Verticality to bars
         setHeights();

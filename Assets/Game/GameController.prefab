@@ -50,9 +50,8 @@ MonoBehaviour:
     m_InternalValue: 0
   numStartingPollutants: 20
   autoStart: 1
-  gameDuration: 180
+  gameDuration: 480
   gameTimeElapsed: 0
-  TerrainManager: {fileID: 450344431042757987, guid: b65a9b46bf2bd4c48b1c1dbe006c42d3, type: 3}
 --- !u!114 &4324836108296228691
 MonoBehaviour:
   m_ObjectHideFlags: 0
