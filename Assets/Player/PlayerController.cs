@@ -385,6 +385,9 @@ public class PlayerController : NetworkBehaviour
                         networkIsChef.Value = true;
                     }
                     break;
+                case "VeggieZone":
+                    Debug.Log("Vegetable is on veggie zone");
+                    break;
             }
         }
     }
