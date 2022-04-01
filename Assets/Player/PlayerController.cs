@@ -106,6 +106,10 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     public NetworkVariable<int> networkScore = new NetworkVariable<int>();
 
+    public int numberVeggies;
+    public int numberChefs;
+    private IEnumerator lobbyCountdown;
+
     private void Awake()
     {
         isAlive = true;
@@ -389,9 +393,26 @@ public class PlayerController : NetworkBehaviour
                     {
                         networkIsChef.Value = true;
                     }
+
+                    // if everyone's on their tiles, start game
+                    numberChefs++;
+
+                    if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
+                        lobbyCountdown = LobbyController.Instance.startCountdown();
+                        StartCoroutine(lobbyCountdown);
+
                     break;
+
                 case "VeggieZone":
-                    Debug.Log("Vegetable is on veggie zone");
+                    
+                    numberVeggies++;
+
+                    if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
+                    {
+                        Debug.Log("Vegetable is on veggie zone");
+                        //startCountdown();
+                    }
+
                     break;
             }
         }
@@ -445,6 +466,19 @@ public class PlayerController : NetworkBehaviour
                     {
                         networkIsChef.Value = false;
                     }
+
+                    numberChefs--;
+                    if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
+                        lobbyCountdown = LobbyController.Instance.startCountdown();
+                        StopCoroutine(lobbyCountdown);
+                        GameObject.Find("Countdown").SetActive(false);
+
+                    break;
+                
+                case "VeggieZone":
+                    
+                    numberVeggies--;
+
                     break;
             }
         }
