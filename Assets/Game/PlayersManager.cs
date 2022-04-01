@@ -80,8 +80,6 @@ public class PlayersManager : NetworkBehaviour
             if (PlayerListChanged != null)
                 PlayerListChanged();
         }
-        else
-            AddPlayerToList(clientId, controllerId, networkObjId, character);
     }
 
     public void AddPlayerToList(ulong clientId, int controllerID, ulong networkObjId, string character)
