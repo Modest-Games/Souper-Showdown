@@ -722,6 +722,12 @@ public class PlayerController : NetworkBehaviour
                         var otherPlayer = reachableCollectables[i];
 
                         PlayerController otherPC = otherPlayer.GetComponentInParent<PlayerController>();
+                        if (!(otherPC.IsClient && IsOwner))
+                        {
+                            var networkPlayerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
+                            HideGrabbedPlayerServerRpc(networkPlayerID);
+                            OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value, (int)networkPlayerID);
+                        }
 
                         var playerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
                         HideGrabbedPlayerServerRpc(playerID);
