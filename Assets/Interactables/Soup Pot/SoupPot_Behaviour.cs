@@ -5,9 +5,8 @@ using Unity.Netcode;
 
 public class SoupPot_Behaviour : NetworkBehaviour
 {
-    public delegate void SoupPotDelegate(float influence);
+    public delegate void SoupPotDelegate(float influence, ulong throwerId);
     public static event SoupPotDelegate SoupReceivedTrash;
-    public static event SoupPotDelegate SoupReceivedPlayer;
 
     public ParticleSystem ps;
 
@@ -25,7 +24,11 @@ public class SoupPot_Behaviour : NetworkBehaviour
 
                         // call the received trash event
                         if (SoupReceivedTrash != null)
-                            SoupReceivedTrash(other.gameObject.GetComponent<PollutantBehaviour>().pollutantObject.effectAmount);
+                        {
+                            PollutantBehaviour otherPollutantBehaviour = other.gameObject.GetComponent<PollutantBehaviour>();
+                            SoupReceivedTrash(
+                                otherPollutantBehaviour.pollutantObject.effectAmount, otherPollutantBehaviour.throwerId.Value);
+                        }
 
                     break;
             }

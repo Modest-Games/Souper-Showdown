@@ -22,6 +22,8 @@ public class PollutantBehaviour : NetworkBehaviour
 
     [ReadOnly] public PollutantState state;
 
+    public NetworkVariable<ulong> throwerId = new NetworkVariable<ulong>();
+
     private TrailRenderer trail;
 
     public Rigidbody rb;
