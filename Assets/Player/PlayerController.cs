@@ -482,15 +482,12 @@ public class PlayerController : NetworkBehaviour
     private void RefreshCharacter()
     {
         // Check if there is a character mesh ready:
-        GameObject newCharacterMesh = characterObject == null ?
-            CharacterManager.Instance.GetCharacter(0).characterPrefab : characterObject.characterPrefab;
+        var newCharacter = CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
+        GameObject newCharacterMesh = newCharacter.characterPrefab;
 
         if (newCharacterMesh == transform.Find("Character").gameObject) return;
-        
-        Destroy(transform.Find("Character").gameObject);
 
-        if (transform.Find("Character").gameObject != null)
-            Destroy(transform.Find("Character").gameObject);
+        Destroy(transform.Find("Character").gameObject);
 
         GameObject newMesh = Instantiate(newCharacterMesh, transform);
         newMesh.name = "Character";
