@@ -61,8 +61,8 @@ public class PlayersManager : NetworkBehaviour
 
     private void Update()
     {
-        if (players.Count > 0)
-            Debug.LogFormat("Player 1 score: {0}", GetPlayerScore(0));
+        //if (players.Count > 0)
+            //Debug.LogFormat("Player 1 score: {0}", GetPlayerScore(0));
     }
 
     public void UpdatePlayerInList(ulong clientId, int controllerId, ulong networkObjId, string character)
@@ -139,7 +139,12 @@ public class PlayersManager : NetworkBehaviour
 
     private void UIManager_GameJoined()
     {
-        NetworkObject.DestroyWithScene = false;
+        //if (IsServer)
+        //{
+        //    NetworkObject.Despawn(false);
+        //    NetworkObject.Spawn(false);
+        //    DontDestroyOnLoad(this);
+        //}
     }
 
     private void OnEnable()
