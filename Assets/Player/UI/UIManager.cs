@@ -33,6 +33,8 @@ public class UIManager : NetworkBehaviour
 
     [SerializeField] private GameObject menuControls;
 
+    [SerializeField] private Image menuBlur;
+
     private bool hasServerStarted;
 
     private void Awake()
@@ -184,6 +186,7 @@ public class UIManager : NetworkBehaviour
         characterSelectionUI.gameObject.SetActive(isConnected);
         souperLogo.gameObject.SetActive(!isConnected);
         menuControls.gameObject.SetActive(isConnected);
+        menuBlur.gameObject.SetActive(!isConnected);
     }
 
     private void Update()
