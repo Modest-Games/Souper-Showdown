@@ -39,22 +39,22 @@ public class LobbyController : NetworkBehaviour
         
     }
 
-    public IEnumerator startCountdown()
-    {
-        int countdownTime = 5;
+    // public IEnumerator startCountdown()
+    // {
+    //     int countdownTime = 5;
 
-        // handles countdown timer
-        countdownTimer.gameObject.SetActive(true);
+    //     // handles countdown timer
+    //     countdownTimer.gameObject.SetActive(true);
 
-        while (countdownTime > 0)
-        {
-            countdownTimer.text = countdownTime.ToString();
-            yield return new WaitForSeconds(1f);
-            countdownTime--;
-        }
+    //     while (countdownTime > 0)
+    //     {
+    //         countdownTimer.text = countdownTime.ToString();
+    //         yield return new WaitForSeconds(1f);
+    //         countdownTime--;
+    //     }
 
-        if(PlayersReady != null && countdownTime == 0) 
-            PlayersReady();
+    //     if(PlayersReady != null && countdownTime == 0) 
+    //         PlayersReady();
 
-    }
+    // }
 }

@@ -393,28 +393,28 @@ bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
                         networkIsChef.Value = true;
                     }
 
-                    // if everyone's on their tiles, start game
-                    numberChefs++;
+                    // // if everyone's on their tiles, start game
+                    // numberChefs++;
 
-                    if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
-                    {
-                        lobbyCountdown = LobbyController.Instance.startCountdown();
-                        StartCoroutine(lobbyCountdown);
-                    }
+                    // if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
+                    // {
+                    //     lobbyCountdown = LobbyController.Instance.startCountdown();
+                    //     StartCoroutine(lobbyCountdown);
+                    // }
                         
                     break;
 
-                case "VeggieZone":
+                // case "VeggieZone":
                     
-                    numberVeggies++;
+                //     numberVeggies++;
 
-                    if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
-                    {
-                        lobbyCountdown = LobbyController.Instance.startCountdown();
-                        StartCoroutine(lobbyCountdown);
-                    }
+                //     if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
+                //     {
+                //         lobbyCountdown = LobbyController.Instance.startCountdown();
+                //         StartCoroutine(lobbyCountdown);
+                //     }
 
-                    break;
+                //     break;
             }
         }
     }
@@ -468,15 +468,15 @@ bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
                         networkIsChef.Value = false;
                     }
 
-                    numberChefs--;
+                    // numberChefs--;
 
                     break;
                 
-                case "VeggieZone":
+                // case "VeggieZone":
                     
-                    numberVeggies--;
+                //     numberVeggies--;
 
-                    break;
+                //     break;
             }
         }
     }
