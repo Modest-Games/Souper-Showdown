@@ -40,12 +40,14 @@ public class SceneSwitcher : NetworkBehaviour
     private void OnEnable()
     {
         // subscribe to events
+        UIManager.SceneSwitchRequested += OnSceneSwitchRequested;
         LobbyController.PlayersReady += OnSceneSwitchRequested;
     }
 
     private void OnDisable()
     {
         // unsubscribe from events
+        UIManager.SceneSwitchRequested -= OnSceneSwitchRequested;
         LobbyController.PlayersReady -= OnSceneSwitchRequested;
     }
 }
