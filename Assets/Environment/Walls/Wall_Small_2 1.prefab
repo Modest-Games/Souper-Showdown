@@ -105,11 +105,11 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: d3739c02806a0aa428cd29b204284442, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: f06e011662e5e49ce9a19579e3590bbd, type: 2}
+      objectReference: {fileID: 2100000, guid: 684c55a8f5ec047beb10c5681ac760b7, type: 2}
     - target: {fileID: -5754084199372789682, guid: d3739c02806a0aa428cd29b204284442, type: 3}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: -5262854098853415389, guid: eb60fe8d44a6047eaa3659c0156d8f3b, type: 3}
+      objectReference: {fileID: -5262854098853415389, guid: c409506ee98964f52b337a200784af00, type: 3}
     - target: {fileID: 919132149155446097, guid: d3739c02806a0aa428cd29b204284442, type: 3}
       propertyPath: m_Name
       value: Wall_Small_2
