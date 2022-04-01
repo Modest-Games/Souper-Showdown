@@ -11,7 +11,7 @@ public class LobbyController : NetworkBehaviour
 
     public bool isDebugEnabled;
 
-    public int countdownTime;
+    //public int countdownTime;
     public Text countdownTimer;
 
     public delegate void LobbyControllerDelegate();
@@ -41,6 +41,7 @@ public class LobbyController : NetworkBehaviour
 
     public IEnumerator startCountdown()
     {
+        int countdownTime = 5;
 
         // handles countdown timer
         countdownTimer.gameObject.SetActive(true);
@@ -52,7 +53,7 @@ public class LobbyController : NetworkBehaviour
             countdownTime--;
         }
 
-        if(PlayersReady != null) 
+        if(PlayersReady != null && countdownTime == 0) 
             PlayersReady();
 
     }
