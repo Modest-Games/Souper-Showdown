@@ -82,9 +82,7 @@ public class PlayerController : NetworkBehaviour
 
     private bool justThrew;
     private float timeDazed;
-    private bool characterInitialized;
     private bool controlsBound;
-    private bool isRefreshingCharacter;
     private bool justSwitchedCharacters;
     private bool justSwitchedTrapPlacementMode;
     private bool justRotatedTrap;
@@ -104,7 +102,6 @@ public class PlayerController : NetworkBehaviour
 
     private void Awake()
     {
-        characterInitialized = false;
         isAlive = true;
         lookVector = transform.forward;
         timeOfLastDash = 0;
@@ -143,6 +140,9 @@ public class PlayerController : NetworkBehaviour
             UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
             UpdatePlayerStateServerRpc(PlayerState.Idle);
         }
+
+        if (IsClient && !IsOwner)
+            RefreshCharacter();
 
         if (PlayerCreated != null)
             PlayerCreated();
@@ -203,16 +203,13 @@ public class PlayerController : NetworkBehaviour
 
     void Update()
     {
-        if (!characterInitialized && characterObject != null)
-        {
-            RefreshCharacter();
-            characterInitialized = true;
-        }
+        //if (!characterInitialized && characterObject != null)
+        //{
+        //    RefreshCharacter();
+        //    characterInitialized = true;
+        //}
 
-        else
-        {
             UpdateClientVisuals();
-        }
 
         if (!controlsBound)
         {
@@ -446,8 +443,6 @@ public class PlayerController : NetworkBehaviour
 
     private void RefreshCharacter()
     {
-        isRefreshingCharacter = true;
-        Debug.Log("REFRESH CHARACTER CALLED");
 
         // Check if there is a character mesh ready:
         GameObject newCharacterMesh = characterObject == null ?
@@ -457,14 +452,16 @@ public class PlayerController : NetworkBehaviour
 
         GameObject newMesh = Instantiate(newCharacterMesh, transform);
 
-        transform.Find("ChefHat").gameObject.SetActive(networkIsChef.Value);
-
         newMesh.name = "Character";
         characterBehaviour = newMesh.GetComponent<CharacterBehaviour>();
-        isRefreshingCharacter = false;
 
         // update the player in the list of players in the players manager
         PlayersManager.Instance.UpdatePlayerInList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
+    }
+
+    private void RefreshChefHat()
+    {
+        transform.Find("ChefHat").gameObject.SetActive(networkIsChef.Value);
     }
 
     private void UpdateTrapPlacerVisuals()
@@ -794,7 +791,7 @@ public class PlayerController : NetworkBehaviour
 
     public void NextCharacterPerformed()
     {
-        if (IsClient && IsOwner && !isRefreshingCharacter && !justSwitchedCharacters && SceneManager.GetActiveScene().name == "Lobby")
+        if (IsClient && IsOwner && !justSwitchedCharacters && SceneManager.GetActiveScene().name == "Lobby")
         {
             // dont switch when the window isn't focused
             if (!Application.isFocused)
@@ -807,7 +804,7 @@ public class PlayerController : NetworkBehaviour
 
     public void PreviousCharacterPerformed()
     {
-        if (IsClient && IsOwner && !isRefreshingCharacter && !justSwitchedCharacters && SceneManager.GetActiveScene().name == "Lobby")
+        if (IsClient && IsOwner && !justSwitchedCharacters && SceneManager.GetActiveScene().name == "Lobby")
         {
             // dont switch when the window isn't focused
             if (!Application.isFocused)
@@ -863,21 +860,16 @@ public class PlayerController : NetworkBehaviour
 
     private void OnIsChefChanged(bool oldVal, bool newVal)
     {
-        if (characterInitialized && !isRefreshingCharacter)
-        {
-            RefreshCharacter();
-            UpdateTrapPlacerVisuals();
-        }
+        RefreshChefHat();
+        UpdateTrapPlacerVisuals();
     }
 
     private void OnCharacterNameChanged(
-        Unity.Collections.FixedString64Bytes oldVal, Unity.Collections.FixedString64Bytes newVal)
+        NetcodeString oldVal, NetcodeString newVal)
     {
         characterObject = CharacterManager.Instance.GetCharacter(newVal.ToString());
         
-        
-        if (characterInitialized && !isRefreshingCharacter)
-            RefreshCharacter();
+        RefreshCharacter();
 
         vfx.Play();
 
@@ -886,7 +878,7 @@ public class PlayerController : NetworkBehaviour
     }
 
     private void OnSelectedTrapChanged(
-        Unity.Collections.FixedString64Bytes oldVal, Unity.Collections.FixedString64Bytes newVal)
+        NetcodeString oldVal, NetcodeString newVal)
     {
 
     }
