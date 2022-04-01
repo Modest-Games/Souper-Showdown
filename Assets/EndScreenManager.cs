@@ -12,6 +12,9 @@ public class EndScreenManager : MonoBehaviour
 
     public GameObject BarGraphPanel;
 
+
+    public int playerNum = 0;
+
     public int[] scores;
     public GameObject PlayerBarPrefab;
     public GameObject[] PlayerBars;
@@ -24,6 +27,7 @@ public class EndScreenManager : MonoBehaviour
 
     public int[] presetScores = new int[]{ 1200, 3600, 4300, 2000};
     public string[] spoilers = new string[] { "Tomato", "Carrot", "Mushroom", "Eggplant" };
+    public Sprite[] playerNumbers;
 
     Dictionary<string, int> spoilerDictionary;
 
@@ -78,7 +82,7 @@ public class EndScreenManager : MonoBehaviour
 
         foreach (GameObject pb in PlayerBars)
         {
-            Debug.Log(pb.transform.GetChild(0).GetComponent<PlayerBar>().score);
+            //Place bar in panel
             pb.transform.SetParent(GameObject.FindGameObjectWithTag("BarGraph").transform, false);
         }
     }
@@ -105,11 +109,10 @@ public class EndScreenManager : MonoBehaviour
             Debug.Log("spoiler not found!");
         else
         {
-            playerBar.transform.GetChild(0).GetComponent<PlayerBar>().setUpBar(score, 1.0f, spoilerMaterials[spoilerIndex], spoilerIcons[spoilerIndex], spoilerColors[spoilerIndex]);
+            playerBar.transform.GetChild(0).GetComponent<PlayerBar>().setUpBar(score, 1.0f, spoilerMaterials[spoilerIndex], spoilerIcons[spoilerIndex], playerNumbers[playerNum], spoilerColors[spoilerIndex]);
         }
 
-        //Place bar in panel
-        //playerBar.transform.SetParent(GameObject.FindGameObjectWithTag("BarGraph").transform, false);
+        playerNum++;
 
         return playerBar;
     }
@@ -122,34 +125,11 @@ public class EndScreenManager : MonoBehaviour
 
         PlayerBars = new GameObject[numPlayers];
 
-
         //Create bars
-
-        /*
-        for(int i = 0; i < numPlayers; i++)
-        {
-            int tempScore = presetScores[i];
-            if (i % 2 == 0)
-            {
-                PlayerBars[i] = MakeBar("Carrot", tempScore);
-            }
-            else
-            {
-                PlayerBars[i] = MakeBar("Tomato", tempScore);
-            }
-        }
-        */
-
         for (int i = 0; i < numPlayers; i++)
         {
             PlayerBars[i] = MakeBar(spoilers[i], presetScores[i]);
         }
-
-
-        //PlayerBars[0] = MakeBar("Tomato", presetScores[0]);
-        //PlayerBars[1] = MakeBar("Carrot", presetScores[1]);
-        //PlayerBars[2] = MakeBar("Mushroom", presetScores[2]);
-        //PlayerBars[3] = MakeBar("Eggplant", presetScores[3]);
 
         //Sort bars
         SortBars();
@@ -164,6 +144,7 @@ public class EndScreenManager : MonoBehaviour
 
     private IEnumerator StaggerAnimation()
     {
+        //Triggers animations consecutively, leaving short delay for the winner
         for (int i = PlayerBars.Length - 1; i > 0; i--)
         {
             PlayerBars[i].transform.GetChild(0).GetComponent<PlayerBar>().startAnimating();

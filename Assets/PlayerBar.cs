@@ -25,6 +25,7 @@ public class PlayerBar : MonoBehaviour
 
     //Icon variables
     public GameObject iconImage;
+    public GameObject playerNumberImage;
 
     float t = 0;
 
@@ -36,7 +37,7 @@ public class PlayerBar : MonoBehaviour
         barHeight = bH;
     }
 
-    public void setUpBar(int s, float bH, Material spoilerType, Sprite icon, Color c)
+    public void setUpBar(int s, float bH, Material spoilerType, Sprite icon, Sprite p,  Color c)
     {
         score = s;
         barHeight = bH;
@@ -45,6 +46,8 @@ public class PlayerBar : MonoBehaviour
         BurstParticleEdgeSystem.GetComponent<ParticleSystemRenderer>().material = spoilerType;
         //Sets sprite to passed image
         iconImage.GetComponent<Image>().sprite = icon;
+        //Sets sprite to passed image
+        playerNumberImage.GetComponent<Image>().sprite = p;
         //Set bar to desried color
         GetComponent<Image>().color = c;
     }
