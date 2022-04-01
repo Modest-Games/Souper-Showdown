@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6b4c18a914c68249a2c1bf3cac5dddf, type: 3}
-  m_Name: TomatoPollutant
+  m_Name: MushroomDeadPollutant
   m_EditorClassIdentifier: 
-  type: Tomato
-  mesh: {fileID: 8810611233430608641, guid: 3a18a8a2cae2650459add588d15438eb, type: 3}
+  type: Mushroom
+  mesh: {fileID: 503103582350038634, guid: 1dcc33df4eee7ae448dd9539aa644bf2, type: 3}
   effectAmount: -30

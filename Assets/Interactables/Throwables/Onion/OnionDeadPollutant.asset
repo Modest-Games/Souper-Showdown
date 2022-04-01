@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6b4c18a914c68249a2c1bf3cac5dddf, type: 3}
+  m_Name: OnionDeadPollutant
+  m_EditorClassIdentifier: 
+  type: Onion
+  mesh: {fileID: 4205050009867024792, guid: 83dc4e0be7f0f00499de6965601f2d5a, type: 3}
+  effectAmount: -30

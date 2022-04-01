@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c6b4c18a914c68249a2c1bf3cac5dddf, type: 3}
-  m_Name: JalapenoPollutant
+  m_Name: EggplantLivePollutant
   m_EditorClassIdentifier: 
-  type: Jalapeno
-  mesh: {fileID: 503103582350038634, guid: 01881d8eed55f4489884d8c95c80fdeb, type: 3}
-  effectAmount: -30
+  type: EggplantLive
+  mesh: {fileID: 3234332731889011418, guid: ad6bccf313c25b340811194e6f63727a, type: 3}
+  effectAmount: -50
+  playerID: 5
