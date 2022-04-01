@@ -27,9 +27,11 @@ public class EndScreenManager : MonoBehaviour
     public Sprite[] spoilerIcons;
     public Color[] spoilerColors;
 
-    public int[] presetScores = new int[]{ 1200, 3600, 4300, 2000, 2500, 6000, 500};
-    public string[] spoilers = new string[] { "Tomato", "Carrot", "Mushroom", "Eggplant", "Corn", "Onion", "Jalepeno" };
+    //public int[] presetScores = new int[]{ 1200, 3600, 4300, 2000, 2500, 6000, 500};
+    public string[] spoilers = new string[] { "Tomato", "Carrot", "Mushroom", "Eggplant", "Corn", "Onion", "Jalapeno" };
     public Sprite[] playerNumbers;
+
+    private bool hasGameEnded;
 
     Dictionary<string, int> spoilerDictionary;
 
@@ -44,7 +46,7 @@ public class EndScreenManager : MonoBehaviour
         spoilerDictionary.Add("Eggplant", 3);
         spoilerDictionary.Add("Corn", 4);
         spoilerDictionary.Add("Onion", 5);
-        spoilerDictionary.Add("Jalepeno", 6);
+        spoilerDictionary.Add("Jalapeno", 6);
     }
 
     void positionBars()
@@ -146,9 +148,9 @@ public class EndScreenManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        hasGameEnded = false;
         GameController.GameStopped += OnGameOver;
         endScreen.SetActive(false);
-
     }
 
 
@@ -167,6 +169,10 @@ public class EndScreenManager : MonoBehaviour
 
     private void OnGameOver()
     {
+        if (hasGameEnded)
+            return;
+
+        hasGameEnded = true;
         endScreen.SetActive(true);
 
         loadSpoilerLibrary();
