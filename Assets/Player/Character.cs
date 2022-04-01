@@ -10,4 +10,6 @@ public class Character : ScriptableObject
     public Pollutant deadCharacter;
     public Color primaryColour;
     public SpriteAnimation animatedAvatar;
+    public Sprite characterCard;
+    public Material UIParticleMaterial;
 }

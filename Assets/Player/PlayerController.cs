@@ -17,6 +17,9 @@ public class PlayerController : NetworkBehaviour
     public delegate void PlayerDelegate();
     public static event PlayerDelegate PlayerCreated;
 
+    public delegate void PlayerScoreDelegate(ulong playerNetworkId, int newScore);
+    public static event PlayerScoreDelegate PlayerScoreChanged;
+
     public delegate void CharacterChangedDelegate(string oldCharName, string newCharName);
     public static event CharacterChangedDelegate CharacterChanged;
 
@@ -881,6 +884,18 @@ public class PlayerController : NetworkBehaviour
 
     }
 
+    private void SoupPot_Behaviour_OnSoupReceivedTrash(float influence, ulong throwerId)
+    {
+        if (IsServer && throwerId == NetworkObjectId)
+            networkScore.Value = Mathf.Max(0, Mathf.RoundToInt(networkScore.Value + influence));
+    }
+
+    private void OnScoreChanged(int oldScore, int newScore)
+    {
+        if (PlayerScoreChanged != null)
+            PlayerScoreChanged(NetworkObjectId, newScore);
+    }
+
     private void OnEnable()
     {
         // Setup game controller event listeners:
@@ -895,6 +910,8 @@ public class PlayerController : NetworkBehaviour
         // Setup network event listeners:
         networkIsChef.OnValueChanged += OnIsChefChanged;
         networkCharacterName.OnValueChanged += OnCharacterNameChanged;
+        SoupPot_Behaviour.SoupReceivedTrash += SoupPot_Behaviour_OnSoupReceivedTrash;
+        networkScore.OnValueChanged += OnScoreChanged;
     }
 
     private void OnDisable()
@@ -908,7 +925,9 @@ public class PlayerController : NetworkBehaviour
         GameController.GameCreated      -= OnGameCreated;
 
         networkIsChef.OnValueChanged -= OnIsChefChanged;
-        networkCharacterName.OnValueChanged += OnCharacterNameChanged;
+        networkCharacterName.OnValueChanged -= OnCharacterNameChanged;
+        SoupPot_Behaviour.SoupReceivedTrash -= SoupPot_Behaviour_OnSoupReceivedTrash;
+        networkScore.OnValueChanged -= OnScoreChanged;
     }
 
     new private void OnDestroy()
@@ -1004,7 +1023,7 @@ public class PlayerController : NetworkBehaviour
         var thrownObjBehaviour = thrownObj.GetComponent<PollutantBehaviour>();
         thrownObjBehaviour.pollutantObject = currentlyHeld;
         thrownObjBehaviour.meshInitialized = false;
-        thrownObjBehaviour.throwerId.Value = OwnerClientId; // set the throwerid of the pollutant to this object's owner id
+        thrownObjBehaviour.throwerId.Value = NetworkObjectId; // set the throwerid of the pollutant to this object's owner id
 
         thrownObj.GetComponent<NetworkObject>().Spawn();
         thrownObj.GetComponent<Rigidbody>().AddForce((playerForward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);
