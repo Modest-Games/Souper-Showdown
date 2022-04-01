@@ -279,7 +279,8 @@ bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
                 break;
         }
 
-        characterBehaviour.UpdateLegs(playerStateVal);
+        if (characterBehaviour != null)
+            characterBehaviour.UpdateLegs(playerStateVal);
     }
 
     private void PlayerMovement()
@@ -505,7 +506,7 @@ bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
 
     private void UpdateTrapPlacerVisuals()
     {
-        if (!networkIsChef.Value)
+        if (!networkIsChef.Value && trapPlacer != null)
         {
             trapPlacer.gameObject.SetActive(false);
             return;
@@ -514,12 +515,19 @@ bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
         switch (networkCarryState.Value)
         {
             case PlayerCarryState.PlacingTrap:
-                trapPlacer.gameObject.SetActive(true);
+                if (trapPlacer != null)
+                {
+                    trapPlacer.gameObject.SetActive(true);
+                }
+                
 
                 break;
 
             default:
-                trapPlacer.gameObject.SetActive(false);
+                if (trapPlacer != null)
+                {
+                    trapPlacer.gameObject.SetActive(false);
+                }
 
                 break;
         }
@@ -912,7 +920,10 @@ bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
         
         RefreshCharacter();
 
-        vfx.Play();
+        if(vfx != null)
+        {
+            vfx.Play();
+        }
 
         if (CharacterChanged != null)
             CharacterChanged(oldVal.ToString(), newVal.ToString());
