@@ -125,9 +125,7 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-        if (!startHasRan)
-        {
-            bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
+bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
 
             characterObject = (IsClient && IsOwner) ?
                 CharacterManager.Instance.GetRandomCharacter() :
@@ -154,19 +152,18 @@ public class PlayerController : NetworkBehaviour
                 UpdatePlayerStateServerRpc(PlayerState.Idle);
             }
 
-            if (IsClient && !IsOwner)
-                RefreshCharacter();
-
             if (PlayerCreated != null)
                 PlayerCreated();
 
             debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
 
-            // add the player to the list of players in the players manager
-            PlayersManager.Instance.AddPlayerToList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
-
-            startHasRan = true;
+        if (IsClient && !IsOwner)
+        {
+            OnCharacterNameChanged(" ", networkCharacterName.Value);
         }
+ 
+        PlayersManager.Instance.AddPlayerToList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
+
     }
 
     public void BindControls()
@@ -484,16 +481,17 @@ public class PlayerController : NetworkBehaviour
 
     private void RefreshCharacter()
     {
-
         // Check if there is a character mesh ready:
         GameObject newCharacterMesh = characterObject == null ?
             CharacterManager.Instance.GetCharacter(0).characterPrefab : characterObject.characterPrefab;
 
+        if (newCharacterMesh == transform.Find("Character").gameObject) return;
+        
         Destroy(transform.Find("Character").gameObject);
 
         GameObject newMesh = Instantiate(newCharacterMesh, transform);
-
         newMesh.name = "Character";
+
         characterBehaviour = newMesh.GetComponent<CharacterBehaviour>();
 
         // update the player in the list of players in the players manager
@@ -908,6 +906,8 @@ public class PlayerController : NetworkBehaviour
     private void OnCharacterNameChanged(
         NetcodeString oldVal, NetcodeString newVal)
     {
+        Debug.Log(oldVal + " " + newVal);
+
         characterObject = CharacterManager.Instance.GetCharacter(newVal.ToString());
         
         RefreshCharacter();
