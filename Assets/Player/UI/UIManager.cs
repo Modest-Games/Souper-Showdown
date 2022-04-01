@@ -55,6 +55,8 @@ public class UIManager : NetworkBehaviour
     
     private void Start()
     {
+        Application.targetFrameRate = 60;
+
         hasServerStarted = false;
 
         // setup event listeners

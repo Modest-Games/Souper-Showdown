@@ -194,6 +194,8 @@ public class GameController : NetworkBehaviour
     {
         if (gameState.Value == GameState.Stopped) return;
 
+        if (amount < 0) return;
+
         spawner.SpawnPollutant();
     }
 
