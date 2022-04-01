@@ -17,9 +17,9 @@ public class CharacterSelectorPanel : MonoBehaviour
     public void Setup()
     {
         // setup variables
-        spriteAnimator = transform.Find("Character_Image").GetComponent<SpriteAnimator>();
+        spriteAnimator = transform.Find("Bubble").Find("Character_Image").GetComponent<SpriteAnimator>();
         image = spriteAnimator.GetComponent<Image>();
-        background = transform.Find("Background").GetComponent<Image>();
+        background = transform.Find("Bubble").Find("Background").GetComponent<Image>();
         selectionsPanel = transform.Find("Selections_Panel");
 
         if (character.animatedAvatar != null)
