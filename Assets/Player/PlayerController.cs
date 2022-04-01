@@ -94,6 +94,8 @@ public class PlayerController : NetworkBehaviour
     private GameObject heldObject;
     private Pollutant currentlyHeld;
 
+    private bool startHasRan = false;
+
     public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
 
     public NetworkVariable<NetcodeString> networkCharacterName = new NetworkVariable<NetcodeString>();
@@ -118,43 +120,49 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-        bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
-
-        characterObject = (IsClient && IsOwner) ?
-            CharacterManager.Instance.GetRandomCharacter() :
-            CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
-
-        rb = GetComponent<Rigidbody>();
-        canMove = true;
-        
-        dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
-        heldObject = transform.Find("Held Object").gameObject;
-        aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
-        characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
-        debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
-        trapPlacer = transform.Find("Trap Placer").GetComponentInChildren<UnplacedTrap>();
-        vfx = transform.Find("VFX").GetComponent<VisualEffect>();
-
-        lastKnownState = networkCarryState.Value;
-
-        // setup variables
-        if (IsClient && IsOwner)
+        if (!startHasRan)
         {
-            UpdateCharacterNameServerRpc(characterObject.characterName);
-            UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
-            UpdatePlayerStateServerRpc(PlayerState.Idle);
+            bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
+
+            characterObject = (IsClient && IsOwner) ?
+                CharacterManager.Instance.GetRandomCharacter() :
+                CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
+
+            rb = GetComponent<Rigidbody>();
+            canMove = true;
+
+            dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
+            heldObject = transform.Find("Held Object").gameObject;
+            aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
+            characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
+            debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
+            trapPlacer = transform.Find("Trap Placer").GetComponentInChildren<UnplacedTrap>();
+            vfx = transform.Find("VFX").GetComponent<VisualEffect>();
+
+            lastKnownState = networkCarryState.Value;
+
+            // setup variables
+            if (IsClient && IsOwner)
+            {
+                UpdateCharacterNameServerRpc(characterObject.characterName);
+                UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+                UpdatePlayerStateServerRpc(PlayerState.Idle);
+            }
+
+            if (IsClient && !IsOwner)
+                RefreshCharacter();
+
+            if (PlayerCreated != null)
+                PlayerCreated();
+
+            debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
+
+            // add the player to the list of players in the players manager
+            PlayersManager.Instance.AddPlayerToList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
+
+            startHasRan = true;
         }
-
-        if (IsClient && !IsOwner)
-            RefreshCharacter();
-
-        if (PlayerCreated != null)
-            PlayerCreated();
-
-        debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
-
-        // add the player to the list of players in the players manager
-        PlayersManager.Instance.AddPlayerToList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
+        
     }
 
     public void BindControls()
