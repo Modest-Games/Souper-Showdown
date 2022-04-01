@@ -9,6 +9,7 @@ using UnityEngine.VFX;
 using UnityEngine.SceneManagement;
 using Cinemachine;
 using NetcodeString = Unity.Collections.FixedString64Bytes;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(NetworkObject))]
 [RequireComponent(typeof(ClientNetworkTransform))]
@@ -166,7 +167,6 @@ public class PlayerController : NetworkBehaviour
 
             startHasRan = true;
         }
-        
     }
 
     public void BindControls()
@@ -398,9 +398,11 @@ public class PlayerController : NetworkBehaviour
                     numberChefs++;
 
                     if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
+                    {
                         lobbyCountdown = LobbyController.Instance.startCountdown();
                         StartCoroutine(lobbyCountdown);
-
+                    }
+                        
                     break;
 
                 case "VeggieZone":
@@ -409,8 +411,8 @@ public class PlayerController : NetworkBehaviour
 
                     if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
                     {
-                        Debug.Log("Vegetable is on veggie zone");
-                        //startCountdown();
+                        lobbyCountdown = LobbyController.Instance.startCountdown();
+                        StartCoroutine(lobbyCountdown);
                     }
 
                     break;
@@ -468,10 +470,6 @@ public class PlayerController : NetworkBehaviour
                     }
 
                     numberChefs--;
-                    if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
-                        lobbyCountdown = LobbyController.Instance.startCountdown();
-                        StopCoroutine(lobbyCountdown);
-                        GameObject.Find("Countdown").SetActive(false);
 
                     break;
                 
