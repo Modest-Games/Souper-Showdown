@@ -14,6 +14,7 @@ TagManager:
   - ChefZone
   - Canvas
   - Trap
+  - VeggieZone
   layers:
   - Default
   - TransparentFX
