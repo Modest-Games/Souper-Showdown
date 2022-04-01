@@ -17,8 +17,6 @@ public class UIManager : NetworkBehaviour
 
     [SerializeField] private Button startHostButton;
 
-    [SerializeField] private Button startServerButton;
-
     [SerializeField] private Button startClientButton;
 
     [SerializeField] private TextMeshProUGUI connectedPlayersText;
@@ -30,6 +28,8 @@ public class UIManager : NetworkBehaviour
     [SerializeField] private Transform characterSelectionUI;
 
     [SerializeField] private Image souperLogo;
+
+    [SerializeField] private GameObject mainMenuUI;
 
     [SerializeField] private GameObject menuControls;
 
@@ -95,7 +95,6 @@ public class UIManager : NetworkBehaviour
 
         // bind buttons
         startHostButton = networkUICanvas.Find("Start Host").GetComponentInChildren<Button>();
-        startServerButton = networkUICanvas.Find("Start Server").GetComponentInChildren<Button>();
         startClientButton = networkUICanvas.Find("Start Client").GetComponentInChildren<Button>();
         connectedPlayersText = networkUICanvas.Find("Players").GetComponent<TextMeshProUGUI>();
         startGameButton = networkUICanvas.Find("Start Game").GetComponentInChildren<Button>();
@@ -118,20 +117,6 @@ public class UIManager : NetworkBehaviour
             else
             {
                 Debug.Log("Host not started!");
-            }
-        });
-
-        startServerButton.onClick.RemoveAllListeners();
-        startServerButton.onClick.AddListener(() =>
-        {
-            if (NetworkManager.Singleton.StartServer())
-            {
-                Debug.Log("Server started...");
-            }
-
-            else
-            {
-                Debug.Log("Server not started!");
             }
         });
 
@@ -182,9 +167,10 @@ public class UIManager : NetworkBehaviour
         connectedPlayersText.gameObject.SetActive(isConnected);
         startHostButton.gameObject.SetActive(!isConnected);
         startClientButton.gameObject.SetActive(!isConnected);
-        startServerButton.gameObject.SetActive(!isConnected);
+        //startServerButton.gameObject.SetActive(!isConnected);
         networkAddressInput.gameObject.SetActive(!isConnected);
         startGameButton.gameObject.SetActive(isConnected);
+        mainMenuUI.gameObject.SetActive(!isConnected);
         characterSelectionUI.gameObject.SetActive(isConnected);
         souperLogo.gameObject.SetActive(!isConnected);
         menuControls.gameObject.SetActive(isConnected);
