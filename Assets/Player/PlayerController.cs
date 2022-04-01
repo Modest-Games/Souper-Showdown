@@ -94,6 +94,8 @@ public class PlayerController : NetworkBehaviour
     private GameObject heldObject;
     private Pollutant currentlyHeld;
 
+    private bool startHasRan = false;
+
     public NetworkVariable<int> playerIndex = new NetworkVariable<int>();
 
     public NetworkVariable<NetcodeString> networkCharacterName = new NetworkVariable<NetcodeString>();
@@ -103,6 +105,10 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     public NetworkVariable<int> networkScore = new NetworkVariable<int>();
+
+    public int numberVeggies;
+    public int numberChefs;
+    private IEnumerator lobbyCountdown;
 
     private void Awake()
     {
@@ -118,43 +124,49 @@ public class PlayerController : NetworkBehaviour
 
     private void Start()
     {
-        bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
-
-        characterObject = (IsClient && IsOwner) ?
-            CharacterManager.Instance.GetRandomCharacter() :
-            CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
-
-        rb = GetComponent<Rigidbody>();
-        canMove = true;
-        
-        dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
-        heldObject = transform.Find("Held Object").gameObject;
-        aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
-        characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
-        debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
-        trapPlacer = transform.Find("Trap Placer").GetComponentInChildren<UnplacedTrap>();
-        vfx = transform.Find("VFX").GetComponent<VisualEffect>();
-
-        lastKnownState = networkCarryState.Value;
-
-        // setup variables
-        if (IsClient && IsOwner)
+        if (!startHasRan)
         {
-            UpdateCharacterNameServerRpc(characterObject.characterName);
-            UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
-            UpdatePlayerStateServerRpc(PlayerState.Idle);
+            bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
+
+            characterObject = (IsClient && IsOwner) ?
+                CharacterManager.Instance.GetRandomCharacter() :
+                CharacterManager.Instance.GetCharacter(networkCharacterName.Value.ToString());
+
+            rb = GetComponent<Rigidbody>();
+            canMove = true;
+
+            dazeIndicator = transform.Find("DazeIndicatorHolder").gameObject;
+            heldObject = transform.Find("Held Object").gameObject;
+            aimIndicator = transform.Find("ThrowIndicator").GetComponent<LineRenderer>();
+            characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
+            debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
+            trapPlacer = transform.Find("Trap Placer").GetComponentInChildren<UnplacedTrap>();
+            vfx = transform.Find("VFX").GetComponent<VisualEffect>();
+
+            lastKnownState = networkCarryState.Value;
+
+            // setup variables
+            if (IsClient && IsOwner)
+            {
+                UpdateCharacterNameServerRpc(characterObject.characterName);
+                UpdatePlayerCarryStateServerRpc(PlayerCarryState.Empty);
+                UpdatePlayerStateServerRpc(PlayerState.Idle);
+            }
+
+            if (IsClient && !IsOwner)
+                RefreshCharacter();
+
+            if (PlayerCreated != null)
+                PlayerCreated();
+
+            debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
+
+            // add the player to the list of players in the players manager
+            PlayersManager.Instance.AddPlayerToList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
+
+            startHasRan = true;
         }
-
-        if (IsClient && !IsOwner)
-            RefreshCharacter();
-
-        if (PlayerCreated != null)
-            PlayerCreated();
-
-        debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
-
-        // add the player to the list of players in the players manager
-        PlayersManager.Instance.AddPlayerToList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
+        
     }
 
     public void BindControls()
@@ -381,9 +393,26 @@ public class PlayerController : NetworkBehaviour
                     {
                         networkIsChef.Value = true;
                     }
+
+                    // if everyone's on their tiles, start game
+                    numberChefs++;
+
+                    if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
+                        lobbyCountdown = LobbyController.Instance.startCountdown();
+                        StartCoroutine(lobbyCountdown);
+
                     break;
+
                 case "VeggieZone":
-                    Debug.Log("Vegetable is on veggie zone");
+                    
+                    numberVeggies++;
+
+                    if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
+                    {
+                        Debug.Log("Vegetable is on veggie zone");
+                        //startCountdown();
+                    }
+
                     break;
             }
         }
@@ -437,6 +466,19 @@ public class PlayerController : NetworkBehaviour
                     {
                         networkIsChef.Value = false;
                     }
+
+                    numberChefs--;
+                    if (numberVeggies == (PlayersManager.Instance.players.Count - 1) && numberChefs == 1) 
+                        lobbyCountdown = LobbyController.Instance.startCountdown();
+                        StopCoroutine(lobbyCountdown);
+                        GameObject.Find("Countdown").SetActive(false);
+
+                    break;
+                
+                case "VeggieZone":
+                    
+                    numberVeggies--;
+
                     break;
             }
         }
@@ -568,7 +610,7 @@ public class PlayerController : NetworkBehaviour
 
     public void ToggleTrapModePerformed()
     {
-        if (IsClient && IsOwner)
+        if (IsClient && IsOwner && Application.isFocused)
         {
             if (SceneManager.GetActiveScene().name != "InGame")
                 return;
@@ -599,7 +641,7 @@ public class PlayerController : NetworkBehaviour
 
     public void NextTrapPerformed()
     {
-        if (IsClient && IsOwner && networkIsChef.Value)
+        if (IsClient && IsOwner && networkIsChef.Value && Application.isFocused)
         {
 
         }
@@ -607,7 +649,7 @@ public class PlayerController : NetworkBehaviour
 
     public void PreviousTrapPerformed()
     {
-        if (IsClient && IsOwner && networkIsChef.Value)
+        if (IsClient && IsOwner && networkIsChef.Value && Application.isFocused)
         {
 
         }
@@ -615,7 +657,7 @@ public class PlayerController : NetworkBehaviour
 
     public void RotateTrapPerformed()
     {
-        if (IsClient && IsOwner && networkIsChef.Value)
+        if (IsClient && IsOwner && networkIsChef.Value && Application.isFocused)
         {
             if (SceneManager.GetActiveScene().name != "InGame")
                 return;
@@ -636,7 +678,7 @@ public class PlayerController : NetworkBehaviour
 
     public void PlaceTrapPerformed()
     {
-        if (IsClient && IsOwner && networkIsChef.Value)
+        if (IsClient && IsOwner && networkIsChef.Value && Application.isFocused)
         {
             if (SceneManager.GetActiveScene().name != "InGame")
                 return;
@@ -657,7 +699,7 @@ public class PlayerController : NetworkBehaviour
 
     public void GrabStarted()
     {
-        if (IsClient && IsOwner)
+        if (IsClient && IsOwner && Application.isFocused)
         {
             RefreshReachableCollectables();
 

@@ -17,3 +17,5 @@ MonoBehaviour:
   deadCharacter: {fileID: 11400000, guid: 1db6680c571b85145b9c85a37f452ae2, type: 2}
   primaryColour: {r: 0.532, g: 0.27233332, b: 0.1488333, a: 1}
   animatedAvatar: {fileID: 11400000, guid: a1f4fd9f5d65f6847834b53b599c6561, type: 2}
+  characterCard: {fileID: 21300000, guid: 1790a7769dcd48b499641684d8705dc3, type: 3}
+  UIParticleMaterial: {fileID: 2100000, guid: d3becf2613b4ab444bc7e1287f294c43, type: 2}
