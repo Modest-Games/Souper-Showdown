@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerIndicator : NetworkBehaviour
 {
@@ -19,10 +20,17 @@ public class PlayerIndicator : NetworkBehaviour
         text.GetComponent<TMP_Text>().text = "P" + (newNum+1).ToString();
     }
 
+    private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode sceneLoadMode)
+    {
+        if (scene.name == "InGame")
+            gameObject.SetActive(false);
+    }
+
     private void OnEnable()
     {
         // set up event listeners
         PlayersManager.PlayerListChanged += OnPlayersListChanged;
+        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
     }
 
     private void OnDisable()
