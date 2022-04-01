@@ -21,6 +21,8 @@ public class SpoilMeter : NetworkBehaviour
 
     private Color green;
 
+    private float currentTarget;
+
     void Start()
     {
         // 0-100 value of the Spoil Meter:
@@ -36,11 +38,12 @@ public class SpoilMeter : NetworkBehaviour
         acceptableDifference = 0.5f;
 
         green = new Color(152f/255f, 174f/255f, 81f/255f);
+
+        currentTarget = 150;
     }
 
     private void ChangeSpoilMeterValue(float pollutantValue)
     {
-        // Should be turned in to a network variable:
         value = Mathf.Clamp(value + pollutantValue, 0f, maxValue);
 
         // Change Spoil Meter for all clients:
@@ -60,6 +63,8 @@ public class SpoilMeter : NetworkBehaviour
 
     private IEnumerator SpoilMeterSmoothing(float target)
     {
+        currentTarget = target;
+
         // Check if the position of the mask is "close enough" to where it should be:
         while (Mathf.Abs(target - maskTransform.anchoredPosition.x) > acceptableDifference)
         {
@@ -72,6 +77,7 @@ public class SpoilMeter : NetworkBehaviour
         // After the smoothing is done, set the mask's position to the actual target for consistency:
         maskTransform.anchoredPosition = new Vector2(target, 0f);
     }
+    
 
     private float CalculateMaskPosition(float current, float difference)
     {
@@ -81,7 +87,9 @@ public class SpoilMeter : NetworkBehaviour
     [ClientRpc]
     private void ChangeSpoilMeterClientRpc(float pollutantValue)
     {
-        // Convert the value change in relation to the Spoil Meter mask's x position:
+        maskTransform.anchoredPosition = new Vector2(currentTarget, 0f);
+        StopAllCoroutines();
+        
         var maskTarget = Mathf.Clamp(CalculateMaskPosition(maskTransform.anchoredPosition.x, pollutantValue), 150f, 1800f);
         StartCoroutine(SpoilMeterSmoothing(maskTarget));
 
