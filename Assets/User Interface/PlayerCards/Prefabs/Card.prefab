@@ -32,7 +32,6 @@ RectTransform:
   - {fileID: 3923043768871167445}
   - {fileID: 3923043769010868308}
   - {fileID: 3923043768868887876}
-  - {fileID: 3923043769347924859}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -53,10 +52,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 785b0a841ad0bba448c6ce80c8df4f86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Card: {fileID: 0}
-  NumberCounter: {fileID: 0}
-  score: 0
-  spoilerType: 
 --- !u!1 &3923043768809622753
 GameObject:
   m_ObjectHideFlags: 0
@@ -5092,6 +5087,7 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 3923043768809622754}
+  - {fileID: 3923043769347924859}
   m_Father: {fileID: 3923043767685363627}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5316,12 +5312,12 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 3923043767685363627}
-  m_RootOrder: 4
+  m_Father: {fileID: 3923043768871167445}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0.000030517578}
+  m_AnchoredPosition: {x: -1.0769043, y: 16.700031}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3923043769347924861
