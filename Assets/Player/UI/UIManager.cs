@@ -11,7 +11,8 @@ public class UIManager : NetworkBehaviour
 {
     public delegate void UIDelegate();
     public static event UIDelegate SceneSwitchRequested;
-
+    public static event UIDelegate GameJoined;
+    
     public static UIManager Instance { get; private set; }
 
     [SerializeField] private Button startHostButton;
@@ -27,6 +28,12 @@ public class UIManager : NetworkBehaviour
     [SerializeField] private TMP_InputField networkAddressInput;
 
     [SerializeField] private Transform characterSelectionUI;
+
+    [SerializeField] private Image souperLogo;
+
+    [SerializeField] private GameObject menuControls;
+
+    [SerializeField] private Image menuBlur;
 
     private bool hasServerStarted;
 
@@ -132,17 +139,23 @@ public class UIManager : NetworkBehaviour
             if (NetworkManager.Singleton.StartClient())
             {
                 Debug.Log("Client started...");
+                hasServerStarted = true;
+                if (GameJoined != null)
+                    GameJoined();
             }
 
             else
             {
                 Debug.Log("Host not started!");
+                hasServerStarted = false;
             }
         });
 
         NetworkManager.Singleton.OnServerStarted += () =>
         {
             hasServerStarted = true;
+            if (GameJoined != null)
+                GameJoined();
         };
 
         startGameButton.onClick.RemoveAllListeners();
@@ -164,17 +177,23 @@ public class UIManager : NetworkBehaviour
         if (SceneManager.GetActiveScene().name == "InGame")
             return;
 
+        connectedPlayersText.gameObject.SetActive(isConnected);
         startHostButton.gameObject.SetActive(!isConnected);
         startClientButton.gameObject.SetActive(!isConnected);
         startServerButton.gameObject.SetActive(!isConnected);
         networkAddressInput.gameObject.SetActive(!isConnected);
         startGameButton.gameObject.SetActive(isConnected);
         characterSelectionUI.gameObject.SetActive(isConnected);
+        souperLogo.gameObject.SetActive(!isConnected);
+        menuControls.gameObject.SetActive(isConnected);
+        menuBlur.gameObject.SetActive(!isConnected);
     }
 
     private void Update()
     {
-        connectedPlayersText.text = $"Players in game: {PlayersManager.Instance.ConnectedClients}";
+        if (PlayersManager.Instance != null && hasServerStarted)
+            connectedPlayersText.text = $"Players in game: {PlayersManager.Instance.players.Count}";
+
         UpdateButtonVisibilities(hasServerStarted); // should probably not be done on the update
     }
 }

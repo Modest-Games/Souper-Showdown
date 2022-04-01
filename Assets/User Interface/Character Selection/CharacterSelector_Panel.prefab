@@ -266,10 +266,10 @@ MonoBehaviour:
   m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 15, y: 15}
-  m_Spacing: {x: 8.5, y: 8.5}
+  m_CellSize: {x: 35, y: 35}
+  m_Spacing: {x: 2.56, y: 0}
   m_Constraint: 1
-  m_ConstraintCount: 5
+  m_ConstraintCount: 3
 --- !u!1 &5876202445802115568
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,6 +586,10 @@ PrefabInstance:
     - target: {fileID: 5043541085717829105, guid: fa1e50d166776db45aa67b80722d4e3d, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6693975530616075143, guid: fa1e50d166776db45aa67b80722d4e3d, type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4292538879
       objectReference: {fileID: 0}
     - target: {fileID: 8613990291184591064, guid: fa1e50d166776db45aa67b80722d4e3d, type: 3}
       propertyPath: m_Name

@@ -63,6 +63,9 @@ public class coordinates_generator: NetworkBehaviour
         {new Vector2(-1, 1)},   {new Vector2(0, 1)},        {new Vector2(1, 1)}
     };
 
+    // possible orientation for blender
+    private int[] orientationDegrees = new int[] {0, 45, 90, 135, 180, 225, 270, 315};
+
 
     public void GenerateTerrain()
     {
@@ -169,10 +172,12 @@ public class coordinates_generator: NetworkBehaviour
                         gridCoordinates[i, j].aliveBool = false;
                         gridCoordinates[i, j].objectType = blender;
 
+                        // random orientation
+
                         // Add this center cell to the spawn items list
                         SpawnItem thisItem = new SpawnItem();
                         thisItem.location = new Vector2(i, j);
-                        thisItem.orientation = 0;
+                        thisItem.orientation = orientationDegrees[Random.Range(0,8)];
                         thisItem.objectType = blender;
                         envObjectsList.Add(thisItem);
 

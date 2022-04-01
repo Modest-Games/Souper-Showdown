@@ -55,6 +55,14 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 8030d7f123ac61a4bbdb768fb1120df4, type: 2}
   - {fileID: 11400000, guid: a0782ea5f7db5404d9e4a82c096fa4ed, type: 2}
   - {fileID: 11400000, guid: dafc3cdf9185fe34289246f4ed05dee6, type: 2}
+  liveBodyList:
+  - {fileID: 11400000, guid: a4ff249df8450234789cb8b6fb441d41, type: 2}
+  - {fileID: 11400000, guid: b67e6b324bf258b4f86b16d282dc2fe6, type: 2}
+  - {fileID: 11400000, guid: 97d21ee7455edcd49861337ee76a7b09, type: 2}
+  - {fileID: 11400000, guid: a2c7dbded216e2b43a52fba25cc72352, type: 2}
+  - {fileID: 11400000, guid: 4d1387286a6721e4795c435169c12b51, type: 2}
+  - {fileID: 11400000, guid: 8507cf47d87ea964f8df89ab43a27b5d, type: 2}
+  - {fileID: 11400000, guid: 6f4fc3cc82986d440810395d295bd36c, type: 2}
   dumpsters:
   - {fileID: 0}
   - {fileID: 0}

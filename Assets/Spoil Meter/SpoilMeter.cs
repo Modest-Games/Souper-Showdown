@@ -99,7 +99,7 @@ public class SpoilMeter : NetworkBehaviour
             SoupSpoiled();
     }
 
-    private void OnSoupReceivedTrash(float influence)
+    private void OnSoupReceivedTrash(float influence, ulong throwerId)
     {
         ChangeSpoilMeterValue(influence);
     }

@@ -15,6 +15,7 @@ TagManager:
   - Canvas
   - Trap
   - BarGraph
+  - VeggieZone
   layers:
   - Default
   - TransparentFX
