@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: UnplaceableTrap_MAT
+  m_Name: InvalidTrap_MAT
   m_Shader: {fileID: -6465566751694194690, guid: 6265546a219b5614ea0c7395c787e7fc, type: 3}
   m_ShaderKeywords: _ALPHATYPE_MANUAL _EMMISSIONTYPE_BASE_COLOUR
   m_LightmapFlags: 4
@@ -113,14 +113,14 @@ Material:
     - _DstBlend: 0
     - _EMMISSIONTYPE: 0
     - _EmmissionClampMax: 1
-    - _EmmissionClampMin: 0.454
+    - _EmmissionClampMin: 0.1
     - _EmmissionStrength: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _InvertSmoothnessMap: 0
-    - _ManualAlpha: 0.188
+    - _ManualAlpha: 0.6
     - _ManualMetallic: 0
     - _ManualSmoothness: 0.15
     - _Metallic: 0
@@ -144,7 +144,7 @@ Material:
     - _BaseColor: {r: 1, g: 0, b: 0, a: 0.105882354}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _ManualColour: {r: 0.4716981, g: 0.4716981, b: 0.4716981, a: 0}
+    - _ManualColour: {r: 0.63529414, g: 0, b: 0.09411765, a: 1}
     - _ManualEmmission: {r: 0, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
     - _UVOffset: {r: 0, g: 0, b: 0, a: 0}

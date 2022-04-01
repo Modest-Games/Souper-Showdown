@@ -17,6 +17,7 @@ public class PlayerController : NetworkBehaviour
 {
     public delegate void PlayerDelegate();
     public static event PlayerDelegate PlayerCreated;
+    public static event PlayerDelegate IsChefChanged;
 
     public delegate void PlayerScoreDelegate(ulong playerNetworkId, int newScore);
     public static event PlayerScoreDelegate PlayerScoreChanged;
@@ -901,6 +902,9 @@ bool isChef = (IsClient && IsOwner) ? false : networkIsChef.Value;
     {
         RefreshChefHat();
         UpdateTrapPlacerVisuals();
+
+        if (IsChefChanged != null)
+            IsChefChanged();
     }
 
     private void OnCharacterNameChanged(

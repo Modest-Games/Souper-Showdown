@@ -123,6 +123,31 @@ public class PlayersManager : NetworkBehaviour
         return GetNetworkObject(networkObjId).GetComponent<PlayerController>().networkScore.Value;
     }
 
+    public int NumberOfChefs
+    {
+        get
+        {
+            int numChefs = 0;
+
+            foreach (Player player in players)
+            {
+                if (GetNetworkObject(player.networkObjId).GetComponent<PlayerController>().networkIsChef.Value)
+                    numChefs++;
+            }
+
+            Debug.Log("Number of chefs: " + numChefs);
+            return numChefs;
+        }
+    }
+
+    public int NumberOfSpoilers
+    {
+        get
+        {
+            return players.Count - NumberOfChefs;
+        }
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public void RequestPlayerServerRpc(int playerIndex, ulong clientId)
     {
