@@ -4986,6 +4986,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Countdown
       objectReference: {fileID: 0}
+    - target: {fileID: 1311012139610336070, guid: ff17ea30d2c1046ac8cb4694bcf14b37, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6824515888403425569, guid: ff17ea30d2c1046ac8cb4694bcf14b37, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
