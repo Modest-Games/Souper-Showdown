@@ -559,13 +559,11 @@ public class PlayerController : NetworkBehaviour
 
             if (reachableCollectables[i].CompareTag("Player"))
             {
-                var otherPlayerController = reachableCollectables[i].GetComponentInParent<PlayerController>();
+                var playerState = reachableCollectables[i].GetComponentInParent<PlayerController>().networkPlayerState;
 
-                PlayerState playerStateVal = (IsClient && IsOwner) ? otherPlayerController.playerState : otherPlayerController.networkPlayerState.Value;
-
-                if (playerStateVal != PlayerState.Dazed)
+                if (playerState.Value != PlayerState.Dazed)
                     reachableCollectables.RemoveAt(i);
-            } 
+            }
         }
     }
 
@@ -722,16 +720,13 @@ public class PlayerController : NetworkBehaviour
                         var otherPlayer = reachableCollectables[i];
 
                         PlayerController otherPC = otherPlayer.GetComponentInParent<PlayerController>();
-                        if (!(otherPC.IsClient && IsOwner))
-                        {
-                            var networkPlayerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
-                            HideGrabbedPlayerServerRpc(networkPlayerID);
-                            OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value, (int)networkPlayerID);
-                        }
 
-                        var playerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
-                        HideGrabbedPlayerServerRpc(playerID);
-                        OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value, (int) playerID);
+                        if (!(otherPC.IsClient && otherPC.IsOwner))
+                        {
+                            var playerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
+                            HideGrabbedPlayerServerRpc(playerID);
+                            OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value, (int)playerID);
+                        }
 
                         return;
                     }
