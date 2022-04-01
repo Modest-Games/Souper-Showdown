@@ -559,9 +559,11 @@ public class PlayerController : NetworkBehaviour
 
             if (reachableCollectables[i].CompareTag("Player"))
             {
-                var playerState = reachableCollectables[i].GetComponentInParent<PlayerController>().networkPlayerState;
+                var otherPlayerController = reachableCollectables[i].GetComponentInParent<PlayerController>();
 
-                if (playerState.Value != PlayerState.Dazed)
+                PlayerState playerStateVal = (IsClient && IsOwner) ? otherPlayerController.playerState : otherPlayerController.networkPlayerState.Value;
+
+                if (playerStateVal != PlayerState.Dazed)
                     reachableCollectables.RemoveAt(i);
             } 
         }
@@ -720,12 +722,10 @@ public class PlayerController : NetworkBehaviour
                         var otherPlayer = reachableCollectables[i];
 
                         PlayerController otherPC = otherPlayer.GetComponentInParent<PlayerController>();
-                        if (!(otherPC.IsClient && otherPC.IsOwner))
-                        {
-                            var playerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
-                            HideGrabbedPlayerServerRpc(playerID);
-                            OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value, (int) playerID);
-                        }
+
+                        var playerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
+                        HideGrabbedPlayerServerRpc(playerID);
+                        OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value, (int) playerID);
 
                         return;
                     }
