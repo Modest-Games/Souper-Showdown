@@ -14,8 +14,6 @@ public class EndScreenManager : MonoBehaviour
 
 
     public int playerNum = 0;
-
-    public int[] scores;
     public GameObject PlayerBarPrefab;
     public GameObject[] PlayerBars;
 
@@ -25,12 +23,25 @@ public class EndScreenManager : MonoBehaviour
     public Sprite[] spoilerIcons;
     public Color[] spoilerColors;
 
-    public int[] presetScores = new int[]{ 1200, 3600, 4300, 2000};
-    public string[] spoilers = new string[] { "Tomato", "Carrot", "Mushroom", "Eggplant" };
+    public int[] presetScores = new int[]{ 1200, 3600, 4300, 2000, 2500, 6000, 500};
+    public string[] spoilers = new string[] { "Tomato", "Carrot", "Mushroom", "Eggplant", "Corn", "Onion", "Jalepeno" };
     public Sprite[] playerNumbers;
 
     Dictionary<string, int> spoilerDictionary;
 
+    //ADD WHENEVER NEW VEGGIE CREATED
+    void loadSpoilerLibrary()
+    {
+        //Initialize dictionary
+        spoilerDictionary = new Dictionary<string, int>();
+        spoilerDictionary.Add("Tomato", 0);
+        spoilerDictionary.Add("Carrot", 1);
+        spoilerDictionary.Add("Mushroom", 2);
+        spoilerDictionary.Add("Eggplant", 3);
+        spoilerDictionary.Add("Corn", 4);
+        spoilerDictionary.Add("Onion", 5);
+        spoilerDictionary.Add("Jalepeno", 6);
+    }
 
     void positionBars()
     {
@@ -87,15 +98,6 @@ public class EndScreenManager : MonoBehaviour
         }
     }
 
-    void loadSpoilerLibrary()
-    {
-        //Initialize dictionary
-        spoilerDictionary = new Dictionary<string, int>();
-        spoilerDictionary.Add("Tomato", 0);
-        spoilerDictionary.Add("Carrot", 1);
-        spoilerDictionary.Add("Mushroom", 2);
-        spoilerDictionary.Add("Eggplant", 3);
-    }
 
     GameObject MakeBar(string spoiler, int score) 
     {
