@@ -82,7 +82,7 @@ public class TrapManager : NetworkBehaviour
     private void OnNumChefsChanged()
     {
         if (IsServer)
-            numTrapsAllowed.Value = PlayersManager.Instance.NumberOfChefs;
+            numTrapsAllowed.Value = PlayersManager.Instance.NumberOfChefs * 2;
     }
 
     private void OnEnable()
