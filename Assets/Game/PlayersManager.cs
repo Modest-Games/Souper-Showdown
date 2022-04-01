@@ -5,7 +5,6 @@ using UnityEngine.InputSystem;
 using Unity.Netcode;
 using System.Linq;
 
-
 public class PlayersManager : NetworkBehaviour
 {
     [System.Serializable]
@@ -60,8 +59,10 @@ public class PlayersManager : NetworkBehaviour
         }
     }
 
-    private void Start()
+    private void Update()
     {
+        if (players.Count > 0)
+            Debug.LogFormat("Player 1 score: {0}", GetPlayerScore(0));
     }
 
     public void UpdatePlayerInList(ulong clientId, int controllerId, ulong networkObjId, string character)
@@ -112,6 +113,16 @@ public class PlayersManager : NetworkBehaviour
         return players.IndexOf(players.Find(p => p.networkObjId == networkObjId));
     }
 
+    public int GetPlayerScore(int playerIndex)
+    {
+        return GetPlayerScore(players[playerIndex].networkObjId);
+    }
+
+    public int GetPlayerScore(ulong networkObjId)
+    {
+        return GetNetworkObject(networkObjId).GetComponent<PlayerController>().networkScore.Value;
+    }
+
     [ServerRpc(RequireOwnership = false)]
     public void RequestPlayerServerRpc(int playerIndex, ulong clientId)
     {
@@ -126,13 +137,20 @@ public class PlayersManager : NetworkBehaviour
         newPlayerNetworkObj.SpawnWithOwnership(clientId);
     }
 
+    private void UIManager_GameJoined()
+    {
+        NetworkObject.DestroyWithScene = false;
+    }
+
     private void OnEnable()
     {
         // setup event listeners
+        UIManager.GameJoined += UIManager_GameJoined;
     }
 
     private void OnDisable()
     {
         // clear event listeners
+        UIManager.GameJoined += UIManager_GameJoined;
     }
 }

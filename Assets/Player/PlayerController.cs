@@ -99,6 +99,7 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<NetcodeString> networkSelectedTrap = new NetworkVariable<NetcodeString>();
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
+    public NetworkVariable<int> networkScore = new NetworkVariable<int>();
 
     private void Awake()
     {
@@ -1006,6 +1007,7 @@ public class PlayerController : NetworkBehaviour
         var thrownObjBehaviour = thrownObj.GetComponent<PollutantBehaviour>();
         thrownObjBehaviour.pollutantObject = currentlyHeld;
         thrownObjBehaviour.meshInitialized = false;
+        thrownObjBehaviour.throwerId.Value = OwnerClientId; // set the throwerid of the pollutant to this object's owner id
 
         thrownObj.GetComponent<NetworkObject>().Spawn();
         thrownObj.GetComponent<Rigidbody>().AddForce((playerForward.normalized * throwForce) + (Vector3.up * 6f), ForceMode.Impulse);
