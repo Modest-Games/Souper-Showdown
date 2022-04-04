@@ -41,10 +41,8 @@ public class UIManager : NetworkBehaviour
 
     private void Awake()
     {
-        // For ease of testing:
         Cursor.visible = true;
 
-        // singleton stuff
         if (Instance != null && Instance != this)
         {
             Destroy(this.gameObject);
@@ -61,26 +59,16 @@ public class UIManager : NetworkBehaviour
 
         hasServerStarted = false;
 
-        // setup event listeners
         SceneManager.sceneLoaded += (Scene newScene, LoadSceneMode loadSceneMode) =>
         {
-            Debug.Log("Rebinding UIManager buttons due to scene switch");
-            // re-enable the scene switcher
-            //GameObject.FindObjectOfType<SceneSwitcher>().gameObject.SetActive(true);
-
             BindUI();
         };
 
-        //NetworkManager.Singleton.SceneManager.OnLoad += OnSceneChanged;
-
         BindUIEvents();
-        UpdateNetworkAddress(networkAddressInput.text);
     }
 
-    // called when the scene changes
     private void OnSceneChanged(ulong clientId, string sceneName, LoadSceneMode loadSceneMode, AsyncOperation asyncOperation)
     {
-        // rebind the UI buttons
         BindUI();
     }
 
@@ -89,13 +77,11 @@ public class UIManager : NetworkBehaviour
         if (SceneManager.GetActiveScene().name == "InGame")
             return;
 
-        // get the network UI canvas
         Transform networkUICanvas = GameObject.Find("NetworkUI").transform;     // probably bad
 
         if (networkUICanvas == null)
             return;
 
-        // bind buttons
         startHostButton = networkUICanvas.Find("Start Host").GetComponentInChildren<Button>();
         startClientButton = networkUICanvas.Find("Start Client").GetComponentInChildren<Button>();
         connectedPlayersText = networkUICanvas.Find("Players").GetComponent<TextMeshProUGUI>();
@@ -103,15 +89,17 @@ public class UIManager : NetworkBehaviour
         controlsButton = networkUICanvas.Find("Controls Toggle").GetComponentInChildren<Button>();
         networkAddressInput = networkUICanvas.Find("NetworkAddressInput").GetComponent<TMP_InputField>();
 
-
         BindUIEvents();
     }
 
     private void BindUIEvents()
     {
         startHostButton.onClick.RemoveAllListeners();
-        startHostButton.onClick.AddListener(() =>
+        startHostButton.onClick.AddListener(async() =>
         {
+            if (RelayManager.Instance.IsRelayEnabled)
+                await RelayManager.Instance.SetupRelay();
+
             if (NetworkManager.Singleton.StartHost())
             {
                 Debug.Log("Host started...");
@@ -124,8 +112,11 @@ public class UIManager : NetworkBehaviour
         });
 
         startClientButton.onClick.RemoveAllListeners();
-        startClientButton.onClick.AddListener(() =>
+        startClientButton.onClick.AddListener(async() =>
         {
+            if (RelayManager.Instance.IsRelayEnabled && !string.IsNullOrEmpty(networkAddressInput.text))
+                await RelayManager.Instance.JoinRelay(networkAddressInput.text);
+
             if (NetworkManager.Singleton.StartClient())
             {
                 Debug.Log("Client started...");
@@ -151,15 +142,9 @@ public class UIManager : NetworkBehaviour
         startGameButton.onClick.RemoveAllListeners();
         startGameButton.onClick.AddListener(() =>
         {
-            // invoke the sceneswitchtriggered event
             if (SceneSwitchRequested != null)
                 SceneSwitchRequested();
         });
-    }
-
-    public void UpdateNetworkAddress(string newAddress)
-    {
-        NetworkManager.Singleton.GetComponent<UNetTransport>().ConnectAddress = newAddress;
     }
 
     private void UpdateButtonVisibilities(bool isConnected)
@@ -170,7 +155,6 @@ public class UIManager : NetworkBehaviour
         connectedPlayersText.gameObject.SetActive(isConnected);
         startHostButton.gameObject.SetActive(!isConnected);
         startClientButton.gameObject.SetActive(!isConnected);
-        //startServerButton.gameObject.SetActive(!isConnected);
         networkAddressInput.gameObject.SetActive(!isConnected);
         startGameButton.gameObject.SetActive(isConnected);
         controlsButton.gameObject.SetActive(isConnected);
@@ -186,6 +170,6 @@ public class UIManager : NetworkBehaviour
         if (PlayersManager.Instance != null && hasServerStarted)
             connectedPlayersText.text = $"Players in game: {PlayersManager.Instance.players.Count}";
 
-        UpdateButtonVisibilities(hasServerStarted); // should probably not be done on the update
+        UpdateButtonVisibilities(hasServerStarted);
     }
 }
