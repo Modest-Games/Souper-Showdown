@@ -2565,7 +2565,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593a2fe42fa9d37498c96f9a383b6521, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DontDestroy: 1
   RunInBackground: 1
   LogLevel: 1
   NetworkConfig:
@@ -2785,7 +2784,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "127.0.0.1\u200B"
+  m_text: "\u200B"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 1981348e9625f2b4fb930cd555c8be56, type: 2}
   m_sharedMaterial: {fileID: 90815056934473321, guid: 1981348e9625f2b4fb930cd555c8be56, type: 2}
@@ -3234,7 +3233,7 @@ MonoBehaviour:
   m_LineType: 0
   m_HideMobileInput: 0
   m_HideSoftKeyboard: 0
-  m_CharacterValidation: 8
+  m_CharacterValidation: 4
   m_RegexValue: ^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]| [1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$
   m_GlobalPointSize: 20
   m_CharacterLimit: 30
@@ -3258,26 +3257,14 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1077759284}
-        m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: UpdateNetworkAddress
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
   m_CaretColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_CustomCaretColor: 0
   m_SelectionColor: {r: 0.5235849, g: 0.73167413, b: 1, a: 0.7529412}
-  m_Text: 127.0.0.1
+  m_Text: 
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
   m_ReadOnly: 0
@@ -5182,8 +5169,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1d03592cf064131489496c25d3c91eaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  envrionment: production
-  maxConnections: 10
+  environment: production
+  maxNumberOfConnections: 10
 --- !u!114 &1487667036683122868
 MonoBehaviour:
   m_ObjectHideFlags: 0
