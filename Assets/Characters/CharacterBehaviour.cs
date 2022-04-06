@@ -8,35 +8,20 @@ public class CharacterBehaviour : MonoBehaviour
     public Transform stiffArms;
     public Transform stillLegs;
     public Transform movingLegs;
-    public Transform face;
-    public Transform sprintFace;
+    public MeshRenderer face;
 
-
-    public void UpdateFace(PlayerController.PlayerState playerState)
-    {
-        if (playerState == PlayerController.PlayerState.Dashing)
-        {
-            sprintFace.gameObject.SetActive(true);
-            face.gameObject.SetActive(false);
-        }
-        else
-        {
-            sprintFace.gameObject.SetActive(false);
-            face.gameObject.SetActive(true);
-        }
-    }
+    public Material idleFace;
+    public Material dashingFace;
 
     public void UpdateLegs(PlayerController.PlayerState playerState)
     {
         if (playerState == PlayerController.PlayerState.Idle)
         {
-            //Debug.Log("Not moving");
             stillLegs.gameObject.SetActive(true);
             movingLegs.gameObject.SetActive(false);
         }
         else
         {
-            //Debug.Log("Moving");
             stillLegs.gameObject.SetActive(false);
             movingLegs.gameObject.SetActive(true);
         }
@@ -46,17 +31,26 @@ public class CharacterBehaviour : MonoBehaviour
     {
         if (carryState == PlayerController.PlayerCarryState.Empty)
         {
-            Debug.Log("Loose arms engaged");
             looseArms.gameObject.SetActive(true);
             stiffArms.gameObject.SetActive(false);
         }
         else
         {
-            Debug.Log("Stiff arms engaged");
             stiffArms.gameObject.SetActive(true);
             looseArms.gameObject.SetActive(false);
         }
     }
 
+    public void UpdateFace(PlayerController.PlayerState playerState)
+    {
+        if (playerState == PlayerController.PlayerState.Dashing)
+        {
+            face.material = dashingFace;
+        }
 
+        else
+        {
+            face.material = idleFace;
+        }
+    }
 }

@@ -279,8 +279,10 @@ public class PlayerController : NetworkBehaviour
         }
 
         if (characterBehaviour != null)
+        {
             characterBehaviour.UpdateLegs(playerStateVal);
             characterBehaviour.UpdateFace(playerStateVal);
+        }
     }
 
     private void PlayerMovement()
