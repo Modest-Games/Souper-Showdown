@@ -158,7 +158,7 @@ public class PlayerController : NetworkBehaviour
 
         if (IsClient && !IsOwner)
         {
-            OnCharacterNameChanged(" ", networkCharacterName.Value);
+            RefreshCharacter();
         }
  
         PlayersManager.Instance.AddPlayerToList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
@@ -484,21 +484,24 @@ public class PlayerController : NetworkBehaviour
 
     private void RefreshCharacter()
     {
-        // Check if there is a character mesh ready:
-        GameObject newCharacterMesh = characterObject == null ?
-            CharacterManager.Instance.GetCharacter(0).characterPrefab : characterObject.characterPrefab;
+        // Don't refresh character if a characterObject is not set
+        if (characterObject == null || networkCharacterName.Value.IsEmpty)
+            return;
+
+        // get the new character mesh
+        GameObject newCharacterMesh = characterObject.characterPrefab;
 
         if (newCharacterMesh == transform.Find("Character").gameObject) return;
         
         Destroy(transform.Find("Character").gameObject);
 
-        if (transform.Find("Character").gameObject != null)
-            Destroy(transform.Find("Character").gameObject);
+        if (transform.Find("Character") != null)
+        {
+            GameObject newMesh = Instantiate(newCharacterMesh, transform);
+            newMesh.name = "Character";
 
-        GameObject newMesh = Instantiate(newCharacterMesh, transform);
-        newMesh.name = "Character";
-
-        characterBehaviour = newMesh.GetComponent<CharacterBehaviour>();
+            characterBehaviour = newMesh.GetComponent<CharacterBehaviour>();
+        }
 
         // update the player in the list of players in the players manager
         PlayersManager.Instance.UpdatePlayerInList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
