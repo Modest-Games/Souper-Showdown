@@ -8,7 +8,23 @@ public class CharacterBehaviour : MonoBehaviour
     public Transform stiffArms;
     public Transform stillLegs;
     public Transform movingLegs;
+    public Transform face;
+    public Transform sprintFace;
 
+
+    public void UpdateFace(PlayerController.PlayerState playerState)
+    {
+        if (playerState == PlayerController.PlayerState.Dashing)
+        {
+            sprintFace.gameObject.SetActive(true);
+            face.gameObject.SetActive(false);
+        }
+        else
+        {
+            sprintFace.gameObject.SetActive(false);
+            face.gameObject.SetActive(true);
+        }
+    }
 
     public void UpdateLegs(PlayerController.PlayerState playerState)
     {

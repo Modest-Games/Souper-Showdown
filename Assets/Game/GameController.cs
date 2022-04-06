@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
@@ -40,6 +41,11 @@ public class GameController : NetworkBehaviour
     public int numStartingPollutants;
     public bool autoStart;
     [Tooltip("The duration of the game in seconds")] public float gameDuration;
+
+    [Header("UI Components")]
+    public Transform timer;
+    private float lastSecond;
+
 
     [SerializeField] [ReadOnly] private float gameTimeElapsed;
     private SoupPot_Behaviour soupPot;
@@ -121,6 +127,24 @@ public class GameController : NetworkBehaviour
                     {
                         // add delta time to the time elapsed
                         gameTimeElapsed += Time.deltaTime;
+                        //update timer var
+                        float timeRemaining = gameDuration - gameTimeElapsed;
+
+                        var ts = TimeSpan.FromSeconds(timeRemaining);
+                        string timerVar = string.Format("{0:00}:{1:00}", ts.TotalMinutes, ts.Seconds);
+
+
+
+                        if (timerVar[0] == '0')
+                        {
+                            Debug.Log(timerVar);
+                            timerVar = timerVar.Remove(0, 1);
+                            Debug.Log(timerVar);
+                        }
+                        timer.GetComponent<TMPro.TextMeshProUGUI>().text = timerVar;
+                        //check if second has elasped
+                        //tick timer
+                        //audio clue here
                     }
 
                     break;
