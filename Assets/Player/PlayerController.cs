@@ -484,9 +484,12 @@ public class PlayerController : NetworkBehaviour
 
     private void RefreshCharacter()
     {
-        // Check if there is a character mesh ready:
-        GameObject newCharacterMesh = characterObject == null ?
-            CharacterManager.Instance.GetCharacter(0).characterPrefab : characterObject.characterPrefab;
+        // Don't refresh character if a characterObject is not set
+        if (characterObject == null || networkCharacterName.Value.IsEmpty)
+            return;
+
+        // get the new character mesh
+        GameObject newCharacterMesh = characterObject.characterPrefab;
 
         if (newCharacterMesh == transform.Find("Character").gameObject) return;
         
