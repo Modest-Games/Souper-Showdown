@@ -10,6 +10,8 @@ using UnityEngine;
 
 public class RelayManager : MonoBehaviour
 {
+    public string roomCode;
+
     public struct RelayHostData
     {
         public string JoinCode;
@@ -85,7 +87,7 @@ public class RelayManager : MonoBehaviour
 
         relayHostData.JoinCode = await Relay.Instance.GetJoinCodeAsync(relayHostData.AllocationID);
 
-        Debug.Log(relayHostData.JoinCode);
+        roomCode = relayHostData.JoinCode;
 
         Transport.SetRelayServerData(relayHostData.IPv4Address, relayHostData.Port, relayHostData.AllocationIDBytes,
                 relayHostData.Key, relayHostData.ConnectionData);

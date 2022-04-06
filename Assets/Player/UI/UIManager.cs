@@ -21,6 +21,8 @@ public class UIManager : NetworkBehaviour
 
     [SerializeField] private TextMeshProUGUI connectedPlayersText;
 
+    [SerializeField] private TextMeshProUGUI roomCodeText;
+
     [SerializeField] private Button startGameButton;
 
     [SerializeField] private TMP_InputField networkAddressInput;
@@ -38,6 +40,7 @@ public class UIManager : NetworkBehaviour
     [SerializeField] private Button controlsButton;
 
     private bool hasServerStarted;
+    private bool isClient;
 
     private void Awake()
     {
@@ -58,6 +61,7 @@ public class UIManager : NetworkBehaviour
         Application.targetFrameRate = 60;
 
         hasServerStarted = false;
+        isClient = false;
 
         SceneManager.sceneLoaded += (Scene newScene, LoadSceneMode loadSceneMode) =>
         {
@@ -121,13 +125,14 @@ public class UIManager : NetworkBehaviour
             {
                 Debug.Log("Client started...");
                 hasServerStarted = true;
+                isClient = true;
                 if (GameJoined != null)
                     GameJoined();
             }
 
             else
             {
-                Debug.Log("Host not started!");
+                Debug.Log("Client not started!");
                 hasServerStarted = false;
             }
         });
@@ -153,6 +158,7 @@ public class UIManager : NetworkBehaviour
             return;
 
         connectedPlayersText.gameObject.SetActive(isConnected);
+        roomCodeText.gameObject.SetActive(isConnected);
         startHostButton.gameObject.SetActive(!isConnected);
         startClientButton.gameObject.SetActive(!isConnected);
         networkAddressInput.gameObject.SetActive(!isConnected);
@@ -169,6 +175,12 @@ public class UIManager : NetworkBehaviour
     {
         if (PlayersManager.Instance != null && hasServerStarted)
             connectedPlayersText.text = $"Players in game: {PlayersManager.Instance.players.Count}";
+
+        if (hasServerStarted && !isClient)
+            roomCodeText.text = $"ROOM CODE: {RelayManager.Instance.roomCode}";
+
+        else if (hasServerStarted && isClient)
+            roomCodeText.text = $"ROOM CODE: {networkAddressInput.text}";
 
         UpdateButtonVisibilities(hasServerStarted);
     }
