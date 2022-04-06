@@ -2498,7 +2498,7 @@ RectTransform:
   m_GameObject: {fileID: 536566908}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.81275, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1878507937}
   m_RootOrder: 0
@@ -2565,7 +2565,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 6.75
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2920,7 +2920,7 @@ RectTransform:
   m_GameObject: {fileID: 596139889}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.81275, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7469644}
   m_RootOrder: 0
@@ -2987,7 +2987,7 @@ MonoBehaviour:
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
-  m_characterSpacing: 0
+  m_characterSpacing: 6.75
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
