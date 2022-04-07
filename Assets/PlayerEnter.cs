@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerEnter : MonoBehaviour
 {
     public bool isChefZone;
-    
+
     public delegate void PlayerEnterZoneDelegate(bool isChefZone);
     public static event PlayerEnterZoneDelegate playersReady;
 
@@ -15,7 +15,7 @@ public class PlayerEnter : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // this player is ready
-        if (playersReady != null)
+        if (other.GetComponent<Collider>().tag == "Player" && playersReady != null)
         {
             playersReady(isChefZone);
         }
@@ -25,7 +25,7 @@ public class PlayerEnter : MonoBehaviour
     {
 
         // this player is not ready
-        if (playersNotReady != null)
+        if (other.GetComponent<Collider>().tag == "Player" && playersNotReady != null)
         {
             playersNotReady(isChefZone);
         }
