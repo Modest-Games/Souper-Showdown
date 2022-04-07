@@ -37,6 +37,9 @@ public class StruggleBehaviour : NetworkBehaviour
             return;
         }
 
+        //Debug.LogFormat("PlayerID: {0} struggled, held by: {1}, count: {2}",
+        //    NetworkObjectId, networkHeldPlayerID.Value, networkStruggleCount.Value);
+
         StruggleServerRpc();
     }
 
@@ -55,6 +58,8 @@ public class StruggleBehaviour : NetworkBehaviour
         // get the holder player controller
         PlayerController holderPC = GetNetworkObject(networkHeldPlayerID.Value).GetComponent<PlayerController>();
         holderPC.OnDropServerRpc(holderPC.GetComponent<Rigidbody>().velocity);
+
+        Debug.LogFormat("PlayerID: {0} broke free from player {1}!", NetworkObjectId, networkHeldPlayerID.Value);
     }
 
     [ServerRpc(RequireOwnership = false)]
