@@ -2793,7 +2793,7 @@ PrefabInstance:
       objectReference: {fileID: 210403197}
     - target: {fileID: 3569870885152564207, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
       propertyPath: gameDuration
-      value: 3
+      value: 500
       objectReference: {fileID: 0}
     - target: {fileID: 3569870885152564207, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
       propertyPath: tracks.Array.size
