@@ -436,7 +436,7 @@ public class PlayerController : NetworkBehaviour
                     PlayerState otherPlayerState = (otherPC.IsClient && otherPC.IsOwner)
                         ? otherPC.playerState : otherPC.networkPlayerState.Value;
 
-                    if (otherPC.networkIsChef.Value && otherPlayerState == PlayerState.Dashing)
+                    if (otherPC.networkIsChef.Value && otherPlayerState == PlayerState.Dashing && otherPC.IsReleasedForLongEnough)
                     {
                         OnBoop();
                     }

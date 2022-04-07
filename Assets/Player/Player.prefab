@@ -630,7 +630,7 @@ MonoBehaviour:
   dashForce: 10
   dashCooldown: 0.9
   dazeDuration: 5
-  releaseTime: 10
+  releaseTime: 5
   characterObject: {fileID: 11400000, guid: 1d85da3e7e51c5d45b26814cd41613cd, type: 2}
   playerState: 0
   lastKnownState: 0
@@ -833,8 +833,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   struggleRequirement: 15
-  networkStruggleCount:
-    m_InternalValue: 0
+  struggleCount: 0
   networkHeldPlayerID:
     m_InternalValue: 0
 --- !u!1 &3943127579979100775

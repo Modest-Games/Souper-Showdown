@@ -11,22 +11,13 @@ public class StruggleBehaviour : NetworkBehaviour
 
     private PlayerController playerController;
     
-    public NetworkVariable<int> networkStruggleCount = new NetworkVariable<int>();
+    public int struggleCount;
     public NetworkVariable<ulong> networkHeldPlayerID = new NetworkVariable<ulong>();
 
     void Start()
     {
         // setup variables
         playerController = GetComponent<PlayerController>();
-
-        // setup event listeners
-        networkStruggleCount.OnValueChanged += OnStruggleCountChanged;
-    }
-
-    new private void OnDestroy()
-    {
-        // clear event listeners
-        networkStruggleCount.OnValueChanged -= OnStruggleCountChanged;
     }
 
     public void BindControls(PlayerInput playerInput)
@@ -40,16 +31,23 @@ public class StruggleBehaviour : NetworkBehaviour
         if (playerController.networkPlayerState.Value != PlayerController.PlayerState.Ungrounded)
         {
             // reset the times struggled
-            if (networkStruggleCount.Value != 0)
-                ResetStruggleCountServerRpc();
+            if (struggleCount != 0)
+                struggleCount = 0;
 
             return;
         }
 
-        Debug.LogFormat("PlayerID: {0} struggled, held by: {1}, count: {2}",
-            NetworkObjectId, networkHeldPlayerID.Value, networkStruggleCount.Value);
+        //Debug.LogFormat("PlayerID: {0} struggled, held by: {1}, count: {2}",
+        //    NetworkObjectId, networkHeldPlayerID.Value, struggleCount);
 
-        StruggleServerRpc();
+        struggleCount++;
+
+        // check if struggled enough
+        if (struggleCount >= struggleRequirement)
+        {
+            BreakFree();
+            struggleCount = 0;
+        }
     }
 
     public void BreakFree()
@@ -58,8 +56,8 @@ public class StruggleBehaviour : NetworkBehaviour
         if (playerController.networkPlayerState.Value != PlayerController.PlayerState.Ungrounded)
         {
             // reset the times struggled
-            if (networkStruggleCount.Value != 0)
-                ResetStruggleCountServerRpc();
+            if (struggleCount != 0)
+                struggleCount = 0;
 
             return;
         }
@@ -72,28 +70,6 @@ public class StruggleBehaviour : NetworkBehaviour
         playerController.OnReleasedServerRpc();
 
         Debug.LogFormat("PlayerID: {0} broke free from player {1}!", NetworkObjectId, networkHeldPlayerID.Value);
-    }
-
-    private void OnStruggleCountChanged(int oldVal, int newVal)
-    {
-        // check if struggled enough
-        if (networkStruggleCount.Value >= struggleRequirement)
-        {
-            BreakFree();
-            networkStruggleCount.Value = 0;
-        }
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void StruggleServerRpc()
-    {
-        networkStruggleCount.Value = networkStruggleCount.Value + 1;
-    }
-
-    [ServerRpc(RequireOwnership = false)]
-    public void ResetStruggleCountServerRpc()
-    {
-        networkStruggleCount.Value = 0;
     }
 
     [ServerRpc(RequireOwnership = false)]
