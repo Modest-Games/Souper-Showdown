@@ -595,34 +595,49 @@ public class PlayerController : NetworkBehaviour
 
     public void MoveCancelled()
     {
-        if (Application.isFocused && IsClient && IsOwner)
-        {
-            movement = Vector2.zero;
+        // ensure the window is focused
+        if (!Application.isFocused)
+            return;
 
-            if (playerState != PlayerState.Dashing)
-            {
-                UpdatePlayerStateServerRpc(PlayerState.Idle);
-                playerState = PlayerState.Idle;
-            }
-        }
+        // ensure isclient and is owner
+        if (!(IsClient && IsOwner))
+            return;
+
+        // ensure the player is not ungrounded
+        if (playerState == PlayerState.Ungrounded)
+            return;
+        
+        movement = Vector2.zero;
+
+        // ensure the player is not dashing
+        if (playerState == PlayerState.Dashing)
+            return;
+
+        UpdatePlayerStateServerRpc(PlayerState.Idle);
+        playerState = PlayerState.Idle;
     }
 
     public void DashPerformed()
     {
-        if (Application.isFocused && IsClient && IsOwner)
+        // ensure the window is focused
+        if (!Application.isFocused)
+            return;
+
+        // ensure isclient and is owner
+        if (!(IsClient && IsOwner))
+            return;
+
+        // Calculate the time since the last dash, and if the player can dash:
+        float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
+        bool canDash = (playerState == PlayerState.Idle || playerState == PlayerState.Moving)
+            && timeSinceDashCompleted >= dashCooldown && networkCarryState.Value == PlayerCarryState.Empty;
+
+        if (canDash)
         {
-            // Calculate the time since the last dash, and if the player can dash:
-            float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
-            bool canDash = (playerState == PlayerState.Idle || playerState == PlayerState.Moving)
-                && timeSinceDashCompleted >= dashCooldown && networkCarryState.Value == PlayerCarryState.Empty;
+            timeOfLastDash = Time.time;
 
-            if (canDash)
-            {
-                timeOfLastDash = Time.time;
-
-                UpdatePlayerStateServerRpc(PlayerState.Dashing);
-                playerState = PlayerState.Dashing;
-            }
+            UpdatePlayerStateServerRpc(PlayerState.Dashing);
+            playerState = PlayerState.Dashing;
         }
     }
 
@@ -809,8 +824,8 @@ public class PlayerController : NetworkBehaviour
         camTargetGroup.RemoveMember(playerToHide.transform);
 
         var playerController = playerToHide.GetComponentInParent<PlayerController>();
-        playerController.playerState = PlayerState.Idle;
-        playerController.UpdatePlayerStateServerRpc(PlayerState.Idle);
+        playerController.playerState = PlayerState.Ungrounded;
+        playerController.UpdatePlayerStateServerRpc(PlayerState.Ungrounded);
 
         playerToHide.GetComponentInParent<Rigidbody>().isKinematic = true;
         playerToHide.GetComponentInParent<SphereCollider>().enabled = false;

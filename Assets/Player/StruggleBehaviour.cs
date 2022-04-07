@@ -18,6 +18,15 @@ public class StruggleBehaviour : NetworkBehaviour
     {
         // setup variables
         playerController = GetComponent<PlayerController>();
+
+        // setup event listeners
+        networkStruggleCount.OnValueChanged += OnStruggleCountChanged;
+    }
+
+    new private void OnDestroy()
+    {
+        // clear event listeners
+        networkStruggleCount.OnValueChanged -= OnStruggleCountChanged;
     }
 
     public void BindControls(PlayerInput playerInput)
@@ -62,17 +71,20 @@ public class StruggleBehaviour : NetworkBehaviour
         Debug.LogFormat("PlayerID: {0} broke free from player {1}!", NetworkObjectId, networkHeldPlayerID.Value);
     }
 
-    [ServerRpc(RequireOwnership = false)]
-    public void StruggleServerRpc()
+    private void OnStruggleCountChanged(int oldVal, int newVal)
     {
-        networkStruggleCount.Value++;
-
         // check if struggled enough
         if (networkStruggleCount.Value >= struggleRequirement)
         {
             BreakFree();
             networkStruggleCount.Value = 0;
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void StruggleServerRpc()
+    {
+        networkStruggleCount.Value = networkStruggleCount.Value + 1;
     }
 
     [ServerRpc(RequireOwnership = false)]
