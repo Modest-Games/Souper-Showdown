@@ -11,12 +11,14 @@ public class LobbyController : NetworkBehaviour
 
     public bool isDebugEnabled;
 
+    // countdown variables
     public int countdownTime;
+    private int countdownTimeOrig;
     public Text countdownTimer;
 
     // player manager (need this for the player list)
     PlayersManager playersManager;
-    [SerializeField] GameObject manager;
+    [SerializeField] GameObject playerManager;
 
     // total number of players (retrieved from the player list)
     private int numPlayers;
@@ -24,6 +26,10 @@ public class LobbyController : NetworkBehaviour
     private int numChefs;
     // number of players in the veggie zone
     private int numVeggies;
+
+    // scene switcher
+    public delegate void LobbyControllerDelegate();
+    public static event LobbyControllerDelegate SwitchScene;
 
     private void Awake()
     {
@@ -36,19 +42,23 @@ public class LobbyController : NetworkBehaviour
             Instance = this;
         }
 
-        playersManager = manager.GetComponent<PlayersManager>();
+        playersManager = playerManager.GetComponent<PlayersManager>();
+
+        // store original value of countdown timer
+        countdownTimeOrig = countdownTime;
     }
 
     void Start()
     {
         //NetworkManager.Singleton.StartHost();
-        FindObjectOfType<PlayerEnter>().playersReady += OnPlayerEnter;
+        PlayerEnter.playersReady += OnPlayerEnter;
+        PlayerEnter.playersNotReady += OnPlayerLeave;
     }
 
     public void OnPlayerEnter(bool isChefZone)
     {
-        Debug.Log("player entered and I'm an event");
-        Debug.Log(isChefZone);
+        Debug.Log("player entered and I'm an event " + isChefZone);
+
         // get total number of players
         numPlayers = playersManager.players.Count;
 
@@ -69,20 +79,30 @@ public class LobbyController : NetworkBehaviour
         }
     }
 
+    public void OnPlayerLeave()
+    {
+        // interrupt coroutine
+        handleCountDown(false);
+    }
+
     // handles countdown coroutine and resets timers if interrupted
     public void handleCountDown(bool beginCountdown)
     {
         if (beginCountdown == true) {
             StartCoroutine(startCountdown());
         } else if (beginCountdown == false) {
-            StopCoroutine(startCountdown());
+            // when a player leaves their zone, interrupt the coroutine and reset countdown timer
+            StopAllCoroutines();
+            countdownTime = countdownTimeOrig;
+            countdownTimer.text = countdownTime.ToString();
+            countdownTimer.gameObject.SetActive(false);
+            Debug.Log("Countdown interrupted and reset timer");
         }
     }
 
     public IEnumerator startCountdown()
     {
-        int countdownTime = 5;
-        Debug.Log("coroutine started");
+        Debug.Log("countdown started");
 
         // handles countdown timer
         countdownTimer.gameObject.SetActive(true);
@@ -90,12 +110,12 @@ public class LobbyController : NetworkBehaviour
         while (countdownTime > 0)
         {
             countdownTimer.text = countdownTime.ToString();
-            yield return new WaitForSeconds(1f);
+            yield return new WaitForSeconds(1.0f);
             countdownTime--;
         }
 
-        // if(PlayersReady != null && countdownTime == 0) 
-        //     PlayersReady();
+        if(SwitchScene != null && countdownTime == 0) 
+            SwitchScene();
 
     }
 }
