@@ -190,6 +190,9 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Rotate Trap"].performed += ctx => RotateTrapPerformed();
             playerInput.actions["Place Trap"].performed += ctx => PlaceTrapPerformed();
 
+            // bind struggle controls
+            GetComponent<StruggleBehaviour>().BindControls(playerInput);
+
             controlsBound = true;
         }
     }
@@ -721,17 +724,20 @@ public class PlayerController : NetworkBehaviour
             {
                 for (int i = 0; i < reachableCollectables.Count; i++)
                 {
+                    // check if the other object is a player
                     if (reachableCollectables[i].CompareTag("Player") && networkIsChef.Value)
                     {
                         var otherPlayer = reachableCollectables[i];
 
                         PlayerController otherPC = otherPlayer.GetComponentInParent<PlayerController>();
+                        StruggleBehaviour otherStruggleBehaviour = otherPlayer.GetComponentInParent<StruggleBehaviour>();
 
                         if (!(otherPC.IsClient && otherPC.IsOwner))
                         {
-                            var playerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
+                            var playerID = otherPC.GetComponent<NetworkObject>().NetworkObjectId;
                             HideGrabbedPlayerServerRpc(playerID);
                             OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value, (int)playerID);
+                            otherStruggleBehaviour.UpdateHeldPlayerIDServerRpc(NetworkObjectId);
                         }
 
                         return;
