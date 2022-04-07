@@ -11,7 +11,7 @@ public class StruggleBehaviour : NetworkBehaviour
 
     private PlayerController playerController;
     
-    private NetworkVariable<int> networkStruggleCount = new NetworkVariable<int>();
+    public NetworkVariable<int> networkStruggleCount = new NetworkVariable<int>();
     public NetworkVariable<ulong> networkHeldPlayerID = new NetworkVariable<ulong>();
 
     void Start()
@@ -37,8 +37,8 @@ public class StruggleBehaviour : NetworkBehaviour
             return;
         }
 
-        //Debug.LogFormat("PlayerID: {0} struggled, held by: {1}, count: {2}",
-        //    NetworkObjectId, networkHeldPlayerID.Value, networkStruggleCount.Value);
+        Debug.LogFormat("PlayerID: {0} struggled, held by: {1}, count: {2}",
+            NetworkObjectId, networkHeldPlayerID.Value, networkStruggleCount.Value);
 
         StruggleServerRpc();
     }
