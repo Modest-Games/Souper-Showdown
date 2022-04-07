@@ -567,6 +567,9 @@ MonoBehaviour:
   playerNum: 0
   PlayerBarPrefab: {fileID: 5192126967263973209, guid: 6cc62198f0688084a93f73cc41d9abcd, type: 3}
   PlayerBars: []
+  endScreenDuration: 30
+  endScreenTimer: 0
+  timerUI: {fileID: 1846966084}
   GraphPanel: {fileID: 5164782179740839459}
   numPlayers: 7
   spoilerMaterials:
@@ -1790,6 +1793,11 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5164782180061964949, guid: c156252f9612ee0458061939ad19b32f, type: 3}
   m_PrefabInstance: {fileID: 5164782179740839458}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1846966084 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5164782178883082735, guid: c156252f9612ee0458061939ad19b32f, type: 3}
+  m_PrefabInstance: {fileID: 5164782179740839458}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1979344470
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2990,6 +2998,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 496911862}
     m_Modifications:
+    - target: {fileID: 5164782178883082733, guid: c156252f9612ee0458061939ad19b32f, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5164782179147790990, guid: c156252f9612ee0458061939ad19b32f, type: 3}
       propertyPath: m_Name
       value: End Screen

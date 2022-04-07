@@ -5,9 +5,6 @@ using System.Linq;
 
 public class EndScreenManager : MonoBehaviour
 {
-    //Particle materials
-   //public Material[] particles;
-
     //Variables used for setting bar graph parameters
     public float maxHeight = 523.0f;
 
@@ -18,6 +15,10 @@ public class EndScreenManager : MonoBehaviour
     public int playerNum = 0;
     public GameObject PlayerBarPrefab;
     public GameObject[] PlayerBars;
+
+    public int endScreenDuration = 30;
+    public float endScreenTimer = 0;
+    public GameObject timerUI;
 
     public Transform GraphPanel;
 
@@ -81,32 +82,8 @@ public class EndScreenManager : MonoBehaviour
 
     void SortBars()
     {
-        /*
-        int len = PlayerBars.Length;
-
-        for (int i = 0; i < len; i++)
-        {
-            //for (int j = 0; j < len - i - 1; j++)
-            for (int j = 0; j < len - i - 1; j++)
-            {
-                Debug.Log(PlayerBars[j].transform.GetChild(0).GetComponent<PlayerBar>().score);
-                Debug.Log(PlayerBars[j + 1].transform.GetChild(0).GetComponent<PlayerBar>().score);
-                if (PlayerBars[j].transform.GetChild(0).GetComponent<PlayerBar>().score < PlayerBars[j + 1].transform.GetChild(0).GetComponent<PlayerBar>().score)
-                {
-                    //Swap player bars
-                    GameObject tmp = PlayerBars[j];
-                    PlayerBars[j] = PlayerBars[j + 1];
-                    PlayerBars[j + 1] = tmp;
-                }
-            }
-        }
-        */
-
-
         List<GameObject> list1 = new List<GameObject>();
-
         list1 = PlayerBars.OfType<GameObject>().ToList();
-
         list1.Sort((element2, element1) => element1.transform.GetChild(0).GetComponent<PlayerBar>().score.CompareTo(element2.transform.GetChild(0).GetComponent<PlayerBar>().score));
 
         PlayerBars = list1.ToArray();
@@ -140,7 +117,6 @@ public class EndScreenManager : MonoBehaviour
         }
 
         //playerNum++;
-
         return playerBar;
     }
 
@@ -205,9 +181,28 @@ public class EndScreenManager : MonoBehaviour
     }
 
 
+    void ResetEndScreen()
+    {
+        endScreenTimer = 0;
+        hasGameEnded = false;
+        GameController.GameStopped += OnGameOver;
+        endScreen.SetActive(false);
+    }
+
     // Update is called once per frame
     void Update()
     {
-        
+        if (hasGameEnded) {
+            endScreenTimer += Time.deltaTime;
+
+            int timeRemaining = endScreenDuration - (int)endScreenTimer;
+            timerUI.GetComponent<TMPro.TextMeshProUGUI>().text = timeRemaining.ToString();
+
+            if (endScreenTimer >= endScreenDuration)
+            {
+                ResetEndScreen();
+                //Restart Game
+            }
+         }
     }
 }
