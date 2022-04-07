@@ -58,6 +58,7 @@ public class PlayerController : NetworkBehaviour
     public float dashCooldown;
     public float dazeDuration;
     public float releaseTime;
+    public Transform interaction;
 
     [Header("Character")]
     public Character characterObject;
@@ -1186,10 +1187,14 @@ public class PlayerController : NetworkBehaviour
 
     public IEnumerator TempDisablePickup()
     {
+        Collider interactionCollider = interaction.GetComponent<Collider>();
+
+        interactionCollider.enabled = false;
         justThrew = true;
 
         yield return new WaitForSeconds(0.50f);
 
+        interactionCollider.GetComponent<Collider>().enabled = true;
         justThrew = false;
     }
 
