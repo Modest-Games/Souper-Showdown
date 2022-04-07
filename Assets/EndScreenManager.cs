@@ -54,7 +54,8 @@ public class EndScreenManager : MonoBehaviour
     private void OnDestroy()
     {
         // clear event listeners
-
+        PlayerTokenBehaviour.BackActionStarted -= BackActionStarted;
+        PlayerTokenBehaviour.BackActionCancelled -= BackActionCancelled;
     }
 
     // Update is called once per frame
