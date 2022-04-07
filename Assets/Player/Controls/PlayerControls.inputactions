@@ -164,6 +164,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Struggle",
+                    "type": "Button",
+                    "id": "f2ba8d99-ddae-4ad5-a462-f42a9f7516b4",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -307,6 +316,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Place Trap",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "97256b89-fd76-47c7-a2ed-9e0fd63d0457",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Struggle",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b95401fd-3d8a-46d4-b8e9-ee8cb632210c",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Struggle",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

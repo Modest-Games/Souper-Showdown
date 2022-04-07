@@ -52,6 +52,9 @@ MonoBehaviour:
   stiffArms: {fileID: 5935687640928085423}
   stillLegs: {fileID: 1523796387137377463}
   movingLegs: {fileID: 6220310057447588241}
+  face: {fileID: 4624188499178573417}
+  idleFace: {fileID: 2100000, guid: 9b86d876b52934048ad60936350c3052, type: 2}
+  dashingFace: {fileID: 2100000, guid: 7ee192d8cf9810341ace55d20db3a27e, type: 2}
 --- !u!1001 &2916043066852398272
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -280,6 +283,11 @@ PrefabInstance:
 --- !u!4 &5793676600694519046 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 20cc365463e202a4b998975f1903563f, type: 3}
+  m_PrefabInstance: {fileID: 6336000976039629549}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4624188499178573417 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 20cc365463e202a4b998975f1903563f, type: 3}
   m_PrefabInstance: {fileID: 6336000976039629549}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &7890415572553880163

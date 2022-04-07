@@ -28,9 +28,9 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 2404076242133583925}
   - {fileID: 1434577609543521809}
   - {fileID: 1053266376615791181}
-  - {fileID: 2404076242133583925}
   - {fileID: 4588202304383960516}
   - {fileID: 7715821157705663627}
   m_Father: {fileID: 0}
@@ -52,6 +52,9 @@ MonoBehaviour:
   stiffArms: {fileID: 2192434099589685221}
   stillLegs: {fileID: 7715821157705663627}
   movingLegs: {fileID: 4588202304383960516}
+  face: {fileID: 262203151892737406}
+  idleFace: {fileID: 2100000, guid: 9b86d876b52934048ad60936350c3052, type: 2}
+  dashingFace: {fileID: 2100000, guid: 7ee192d8cf9810341ace55d20db3a27e, type: 2}
 --- !u!1001 &1419168123376714335
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -135,7 +138,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 65831021ecce89a418b6c09ed6ce54ec, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 65831021ecce89a418b6c09ed6ce54ec, type: 3}
       propertyPath: m_LocalScale.x
@@ -195,13 +198,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 65831021ecce89a418b6c09ed6ce54ec, type: 3}
       propertyPath: m_Name
-      value: CarrotFace
+      value: JalapenoFace
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 65831021ecce89a418b6c09ed6ce54ec, type: 3}
 --- !u!4 &1434577609543521809 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 65831021ecce89a418b6c09ed6ce54ec, type: 3}
+  m_PrefabInstance: {fileID: 1468769144537051642}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &262203151892737406 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: -7511558181221131132, guid: 65831021ecce89a418b6c09ed6ce54ec, type: 3}
   m_PrefabInstance: {fileID: 1468769144537051642}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &2537462011808754771
@@ -213,7 +221,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3290746428772886046, guid: 63dc8662372581845a507f02df2432dc, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 3290746428772886046, guid: 63dc8662372581845a507f02df2432dc, type: 3}
       propertyPath: m_LocalPosition.x
@@ -297,7 +305,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: c3f14c6e238dd4fe3823cf6a6b9be014, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c3f14c6e238dd4fe3823cf6a6b9be014, type: 3}
       propertyPath: m_LocalScale.x
@@ -317,7 +325,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c3f14c6e238dd4fe3823cf6a6b9be014, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.43
+      value: 0.19
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c3f14c6e238dd4fe3823cf6a6b9be014, type: 3}
       propertyPath: m_LocalPosition.z
@@ -353,7 +361,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c3f14c6e238dd4fe3823cf6a6b9be014, type: 3}
       propertyPath: m_Name
-      value: jalapeno
+      value: Jalapeno
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c3f14c6e238dd4fe3823cf6a6b9be014, type: 3}
       propertyPath: m_Layer

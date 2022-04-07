@@ -7,18 +7,33 @@ public class ToggleControls : MonoBehaviour
 {
     public GameObject image;
 
+    private Animator animator;
+
+    void Start()
+    {
+        animator = image.GetComponent<Animator>();
+    }
+
+
+    public void DisableObject()
+    {
+        image.SetActive(false);
+    }
+
     public void Toggle()
     {
-        Debug.Log("hi");
 
         if (image.activeInHierarchy == false)
         {
             image.SetActive(true);
+            animator.ResetTrigger("Drop");
         }
 
         else
         {
-            image.SetActive(false);
+            Debug.Log("Drop recieved");
+            animator.StopPlayback();
+            animator.SetTrigger("Drop");
         }
     }
 }

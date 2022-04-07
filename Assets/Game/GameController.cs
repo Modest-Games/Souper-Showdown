@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using NaughtyAttributes;
@@ -41,10 +42,39 @@ public class GameController : NetworkBehaviour
     public bool autoStart;
     [Tooltip("The duration of the game in seconds")] public float gameDuration;
 
+    [Header("UI Components")]
+    public Transform timer;
+    private float nextTimestamp;
+    private float songInterval = 5.0f;
+
+    [Header("Music Components")]
+    //unchangeable attributes
+    private float beatInterval = 3.25f;
+    private float endTrackTime = 55.30561f;
+    public GameObject MusicManager;
+    public GameObject[] tracks;
+    private int trackNum = 0;
+    private float timeToChange = 0f;
+    private float runningTime = 0f;
+    private bool canSwitchTrack = false;
+    private float[] timestamps;
+    private int currentTrack = 0;
+
+
     [SerializeField] [ReadOnly] private float gameTimeElapsed;
     private SoupPot_Behaviour soupPot;
     private ObjectSpawner spawner;
     private PlayerControlsMapping controls;
+
+    private void setTrackTimestamps()
+    {
+        float quarterMatch = gameDuration / 4f;
+        timestamps = new float[4];
+        timestamps[0] = gameDuration - quarterMatch;
+        timestamps[1] = endTrackTime + quarterMatch;
+        timestamps[2] = endTrackTime;
+        timestamps[3] = 0;
+    }
 
     private void Awake()
     {
@@ -57,6 +87,9 @@ public class GameController : NetworkBehaviour
         {
             Instance = this;
         }
+
+        //set music timestamps
+        setTrackTimestamps();
 
         controls = new PlayerControlsMapping();
 
@@ -94,6 +127,12 @@ public class GameController : NetworkBehaviour
 
     public void InitializeGame()
     {
+        //Start the music
+        nextTimestamp = gameDuration - songInterval;
+        //Play first track
+        tracks[trackNum].GetComponent<TransitionMusic>().ChangeSong();
+        runningTime = 0f;
+
         if (IsServer)
         {
             // setup the map
@@ -104,6 +143,13 @@ public class GameController : NetworkBehaviour
                 gameState.Value = GameState.Running;
         }
     }
+
+
+    void UpdateMusic()
+    {
+
+    }
+
 
     void Update()
     {
@@ -121,6 +167,42 @@ public class GameController : NetworkBehaviour
                     {
                         // add delta time to the time elapsed
                         gameTimeElapsed += Time.deltaTime;
+                        //update timer var
+                        float timeRemaining = gameDuration - gameTimeElapsed;
+
+                        //convert time remaining into xx:xx format
+                        var ts = TimeSpan.FromSeconds(timeRemaining);
+                        string timerVar = string.Format("{0:00}:{1:00}", ts.TotalMinutes, ts.Seconds);
+
+                        //detract the first 0 from string for spacing purposes
+                        if (timerVar[0] == '0')
+                        {
+                            timerVar = timerVar.Remove(0, 1);
+                        }
+
+                        runningTime += Time.deltaTime;
+
+                        if (timeRemaining < timestamps[currentTrack] && !canSwitchTrack)
+                        {
+                            canSwitchTrack = true;
+                            timeToChange = ((float)Math.Ceiling(runningTime / beatInterval)) * beatInterval;
+                        }
+
+                        if (canSwitchTrack && runningTime > timeToChange && currentTrack < 3)
+                        {
+                            currentTrack++;
+                            //Switch song
+                            Debug.Log("Song switching to track #: " + currentTrack);
+                            nextTimestamp = timeRemaining - songInterval;
+                            tracks[currentTrack].GetComponent<TransitionMusic>().ChangeSong();
+                            if (currentTrack == 3)
+                            {
+                                tracks[currentTrack].GetComponent<TransitionMusic>().PlayFromStart();
+                            }
+                            canSwitchTrack = false;
+                        }
+
+                        timer.GetComponent<TMPro.TextMeshProUGUI>().text = timerVar;
                     }
 
                     break;

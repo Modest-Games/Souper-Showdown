@@ -186,6 +186,15 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Struggle"",
+                    ""type"": ""Button"",
+                    ""id"": ""f2ba8d99-ddae-4ad5-a462-f42a9f7516b4"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -331,6 +340,28 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""action"": ""Place Trap"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""97256b89-fd76-47c7-a2ed-9e0fd63d0457"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Struggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b95401fd-3d8a-46d4-b8e9-ee8cb632210c"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Struggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -403,6 +434,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         m_Gameplay_PreviousTrap = m_Gameplay.FindAction("Previous Trap", throwIfNotFound: true);
         m_Gameplay_RotateTrap = m_Gameplay.FindAction("Rotate Trap", throwIfNotFound: true);
         m_Gameplay_PlaceTrap = m_Gameplay.FindAction("Place Trap", throwIfNotFound: true);
+        m_Gameplay_Struggle = m_Gameplay.FindAction("Struggle", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_ToggleDebug = m_Debug.FindAction("ToggleDebug", throwIfNotFound: true);
@@ -509,6 +541,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
     private readonly InputAction m_Gameplay_PreviousTrap;
     private readonly InputAction m_Gameplay_RotateTrap;
     private readonly InputAction m_Gameplay_PlaceTrap;
+    private readonly InputAction m_Gameplay_Struggle;
     public struct GameplayActions
     {
         private @PlayerControlsMapping m_Wrapper;
@@ -524,6 +557,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         public InputAction @PreviousTrap => m_Wrapper.m_Gameplay_PreviousTrap;
         public InputAction @RotateTrap => m_Wrapper.m_Gameplay_RotateTrap;
         public InputAction @PlaceTrap => m_Wrapper.m_Gameplay_PlaceTrap;
+        public InputAction @Struggle => m_Wrapper.m_Gameplay_Struggle;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -566,6 +600,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @PlaceTrap.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPlaceTrap;
                 @PlaceTrap.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPlaceTrap;
                 @PlaceTrap.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnPlaceTrap;
+                @Struggle.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnStruggle;
+                @Struggle.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnStruggle;
+                @Struggle.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnStruggle;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -603,6 +640,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @PlaceTrap.started += instance.OnPlaceTrap;
                 @PlaceTrap.performed += instance.OnPlaceTrap;
                 @PlaceTrap.canceled += instance.OnPlaceTrap;
+                @Struggle.started += instance.OnStruggle;
+                @Struggle.performed += instance.OnStruggle;
+                @Struggle.canceled += instance.OnStruggle;
             }
         }
     }
@@ -657,6 +697,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         void OnPreviousTrap(InputAction.CallbackContext context);
         void OnRotateTrap(InputAction.CallbackContext context);
         void OnPlaceTrap(InputAction.CallbackContext context);
+        void OnStruggle(InputAction.CallbackContext context);
     }
     public interface IDebugActions
     {

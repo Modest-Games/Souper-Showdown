@@ -80,7 +80,7 @@ public class PollutantBehaviour : NetworkBehaviour
                 if (pollutantObject.playerID != -1)
                 {
                     ReplaceLiveMeshClientRpc((ulong) pollutantObject.playerID);
-                    gameObject.SetActive(false);
+                    GetComponent<SphereCollider>().enabled = false;
                 }
 
                 break;
@@ -92,20 +92,7 @@ public class PollutantBehaviour : NetworkBehaviour
     [ClientRpc]
     public void ReplaceLiveMeshClientRpc(ulong playerID)
     {
-        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(playerID, out var playerToTeleport);
-        if (playerToTeleport == null) return;
-
-        playerToTeleport.GetComponentInParent<Rigidbody>().isKinematic = false;
-        playerToTeleport.GetComponentInParent<SphereCollider>().enabled = true;
-        playerToTeleport.transform.Find("Character").gameObject.SetActive(true);
-
-        var playerController = playerToTeleport.GetComponent<PlayerController>();
-        playerController.TeleportPlayer(transform.position);
-
-        CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
-        camTargetGroup.AddMember(playerToTeleport.transform, 1f, 0f);
-
-        gameObject.SetActive(false);
+        StartCoroutine(LivePlayerRespawnTiming(playerID));
     }
 
     [ClientRpc]
@@ -128,6 +115,32 @@ public class PollutantBehaviour : NetworkBehaviour
     public void OnThrowClientRpc()
     {
         StartCoroutine(ThrowEffectsDelay());
+    }
+
+    public IEnumerator LivePlayerRespawnTiming(ulong playerID)
+    {
+        NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(playerID, out var playerToTeleport);
+        if (playerToTeleport == null) yield return null;
+
+        var playerController = playerToTeleport.GetComponent<PlayerController>();
+        playerController.TeleportPlayer(transform.position);
+
+        yield return new WaitForSeconds(0.5f);
+
+        transform.GetChild(0).gameObject.SetActive(false);
+
+        playerToTeleport.GetComponentInParent<Rigidbody>().isKinematic = false;
+        playerToTeleport.GetComponentInParent<SphereCollider>().enabled = true;
+        playerToTeleport.transform.Find("Character").gameObject.SetActive(true);
+
+        CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
+        camTargetGroup.AddMember(playerToTeleport.transform, 1f, 0f);
+
+        playerController.vfx.Play();
+
+        yield return new WaitForSeconds(5f);
+
+        Destroy(gameObject);
     }
 
     public IEnumerator ThrowEffectsDelay()

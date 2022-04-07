@@ -57,6 +57,8 @@ public class PlayerController : NetworkBehaviour
     public float dashForce;
     public float dashCooldown;
     public float dazeDuration;
+    public float releaseTime;
+    public Transform interaction;
 
     [Header("Character")]
     public Character characterObject;
@@ -82,7 +84,7 @@ public class PlayerController : NetworkBehaviour
     public bool canMove;
     private GameObject dazeIndicator;
     private CharacterBehaviour characterBehaviour;
-    private VisualEffect vfx;
+    public VisualEffect vfx;
     private UnplacedTrap trapPlacer;
 
     private bool justThrew;
@@ -105,6 +107,7 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     public NetworkVariable<int> networkScore = new NetworkVariable<int>();
+    public NetworkVariable<float> networkTimeSinceReleased = new NetworkVariable<float>();
 
     public int numberVeggies;
     public int numberChefs;
@@ -158,7 +161,7 @@ public class PlayerController : NetworkBehaviour
 
         if (IsClient && !IsOwner)
         {
-            OnCharacterNameChanged(" ", networkCharacterName.Value);
+            RefreshCharacter();
         }
  
         PlayersManager.Instance.AddPlayerToList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
@@ -190,6 +193,9 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Rotate Trap"].performed += ctx => RotateTrapPerformed();
             playerInput.actions["Place Trap"].performed += ctx => PlaceTrapPerformed();
 
+            // bind struggle controls
+            GetComponent<StruggleBehaviour>().BindControls(playerInput);
+
             controlsBound = true;
         }
     }
@@ -204,8 +210,6 @@ public class PlayerController : NetworkBehaviour
             playerState = PlayerState.Idle;
             UpdatePlayerStateServerRpc(PlayerState.Idle);
         }
-
-        vfx.Play();
     }
 
     public void PlayerRandomSpawnPoint(bool isChef)
@@ -279,7 +283,10 @@ public class PlayerController : NetworkBehaviour
         }
 
         if (characterBehaviour != null)
+        {
             characterBehaviour.UpdateLegs(playerStateVal);
+            characterBehaviour.UpdateFace(playerStateVal);
+        }
     }
 
     private void PlayerMovement()
@@ -430,7 +437,7 @@ public class PlayerController : NetworkBehaviour
                     PlayerState otherPlayerState = (otherPC.IsClient && otherPC.IsOwner)
                         ? otherPC.playerState : otherPC.networkPlayerState.Value;
 
-                    if (otherPC.networkIsChef.Value && otherPlayerState == PlayerState.Dashing)
+                    if (otherPC.networkIsChef.Value && otherPlayerState == PlayerState.Dashing && IsReleasedForLongEnough)
                     {
                         OnBoop();
                     }
@@ -481,21 +488,24 @@ public class PlayerController : NetworkBehaviour
 
     private void RefreshCharacter()
     {
-        // Check if there is a character mesh ready:
-        GameObject newCharacterMesh = characterObject == null ?
-            CharacterManager.Instance.GetCharacter(0).characterPrefab : characterObject.characterPrefab;
+        // Don't refresh character if a characterObject is not set
+        if (characterObject == null || networkCharacterName.Value.IsEmpty)
+            return;
+
+        // get the new character mesh
+        GameObject newCharacterMesh = characterObject.characterPrefab;
 
         if (newCharacterMesh == transform.Find("Character").gameObject) return;
         
         Destroy(transform.Find("Character").gameObject);
 
-        if (transform.Find("Character").gameObject != null)
-            Destroy(transform.Find("Character").gameObject);
+        if (transform.Find("Character") != null)
+        {
+            GameObject newMesh = Instantiate(newCharacterMesh, transform);
+            newMesh.name = "Character";
 
-        GameObject newMesh = Instantiate(newCharacterMesh, transform);
-        newMesh.name = "Character";
-
-        characterBehaviour = newMesh.GetComponent<CharacterBehaviour>();
+            characterBehaviour = newMesh.GetComponent<CharacterBehaviour>();
+        }
 
         // update the player in the list of players in the players manager
         PlayersManager.Instance.UpdatePlayerInList(OwnerClientId, playerIndex.Value, NetworkObjectId, networkCharacterName.Value.ToString());
@@ -559,9 +569,12 @@ public class PlayerController : NetworkBehaviour
 
             if (reachableCollectables[i].CompareTag("Player"))
             {
-                var playerState = reachableCollectables[i].GetComponentInParent<PlayerController>().networkPlayerState;
+                var otherPC = reachableCollectables[i].GetComponentInParent<PlayerController>();
 
-                if (playerState.Value != PlayerState.Dazed)
+                PlayerState otherPlayerState = (otherPC.IsClient && otherPC.IsOwner)
+                        ? otherPC.playerState : otherPC.networkPlayerState.Value;
+
+                if (otherPlayerState != PlayerState.Dazed)
                     reachableCollectables.RemoveAt(i);
             }
         }
@@ -583,34 +596,45 @@ public class PlayerController : NetworkBehaviour
 
     public void MoveCancelled()
     {
-        if (Application.isFocused && IsClient && IsOwner)
-        {
-            movement = Vector2.zero;
+        // ensure the window is focused
+        if (!Application.isFocused)
+            return;
 
-            if (playerState != PlayerState.Dashing)
-            {
-                UpdatePlayerStateServerRpc(PlayerState.Idle);
-                playerState = PlayerState.Idle;
-            }
-        }
+        // ensure isclient and is owner
+        if (!(IsClient && IsOwner))
+            return;
+
+        movement = Vector2.zero;
+
+        // ensure the player state is able to be changed
+        if (!(playerState == PlayerState.Idle || playerState == PlayerState.Moving))
+            return;
+        
+        UpdatePlayerStateServerRpc(PlayerState.Idle);
+        playerState = PlayerState.Idle;
     }
 
     public void DashPerformed()
     {
-        if (Application.isFocused && IsClient && IsOwner)
+        // ensure the window is focused
+        if (!Application.isFocused)
+            return;
+
+        // ensure isclient and is owner
+        if (!(IsClient && IsOwner))
+            return;
+
+        // Calculate the time since the last dash, and if the player can dash:
+        float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
+        bool canDash = (playerState == PlayerState.Idle || playerState == PlayerState.Moving)
+            && timeSinceDashCompleted >= dashCooldown && networkCarryState.Value == PlayerCarryState.Empty;
+
+        if (canDash)
         {
-            // Calculate the time since the last dash, and if the player can dash:
-            float timeSinceDashCompleted = (Time.time - timeOfLastDash) - dashDuration;
-            bool canDash = (playerState == PlayerState.Idle || playerState == PlayerState.Moving)
-                && timeSinceDashCompleted >= dashCooldown && networkCarryState.Value == PlayerCarryState.Empty;
+            timeOfLastDash = Time.time;
 
-            if (canDash)
-            {
-                timeOfLastDash = Time.time;
-
-                UpdatePlayerStateServerRpc(PlayerState.Dashing);
-                playerState = PlayerState.Dashing;
-            }
+            UpdatePlayerStateServerRpc(PlayerState.Dashing);
+            playerState = PlayerState.Dashing;
         }
     }
 
@@ -703,29 +727,47 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public bool IsReleasedForLongEnough
+    {
+        get
+        {
+            return (NetworkManager.Singleton.LocalTime.TimeAsFloat - networkTimeSinceReleased.Value) >= releaseTime;
+        }
+    }
+
+    private bool CanPickup
+    {
+        get
+        {
+            return (networkCarryState.Value == PlayerCarryState.Empty) && (reachableCollectables.Count > 0);
+        }
+    }
+
     public void GrabStarted()
     {
         if (IsClient && IsOwner && Application.isFocused)
         {
             RefreshReachableCollectables();
 
-            bool canPickup = (networkCarryState.Value == PlayerCarryState.Empty) && (reachableCollectables.Count > 0);
-
-            if (canPickup)
+            if (CanPickup)
             {
                 for (int i = 0; i < reachableCollectables.Count; i++)
                 {
+                    // check if the other object is a player
                     if (reachableCollectables[i].CompareTag("Player") && networkIsChef.Value)
                     {
                         var otherPlayer = reachableCollectables[i];
 
                         PlayerController otherPC = otherPlayer.GetComponentInParent<PlayerController>();
+                        StruggleBehaviour otherStruggleBehaviour = otherPlayer.GetComponentInParent<StruggleBehaviour>();
 
-                        if (!(otherPC.IsClient && otherPC.IsOwner))
+                        if (otherPC.IsReleasedForLongEnough)
                         {
-                            var playerID = otherPlayer.GetComponentInParent<NetworkObject>().NetworkObjectId;
+                            var playerID = otherPC.GetComponent<NetworkObject>().NetworkObjectId;
                             HideGrabbedPlayerServerRpc(playerID);
                             OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value, (int)playerID);
+                            otherStruggleBehaviour.UpdateHeldPlayerIDServerRpc(NetworkObjectId);
+                            otherPC.UpdatePlayerStateServerRpc(PlayerState.Ungrounded);
                         }
 
                         return;
@@ -779,8 +821,8 @@ public class PlayerController : NetworkBehaviour
         camTargetGroup.RemoveMember(playerToHide.transform);
 
         var playerController = playerToHide.GetComponentInParent<PlayerController>();
-        playerController.playerState = PlayerState.Idle;
-        playerController.UpdatePlayerStateServerRpc(PlayerState.Idle);
+        playerController.playerState = PlayerState.Ungrounded;
+        playerController.UpdatePlayerStateServerRpc(PlayerState.Ungrounded);
 
         playerToHide.GetComponentInParent<Rigidbody>().isKinematic = true;
         playerToHide.GetComponentInParent<SphereCollider>().enabled = false;
@@ -1011,6 +1053,12 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
+    public void OnReleasedServerRpc()
+    {
+        networkTimeSinceReleased.Value = NetworkManager.Singleton.LocalTime.TimeAsFloat;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
     private void OnGrabServerRpc(ulong objToPickupID)
     {
         NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(objToPickupID, out var objToPickup);
@@ -1139,10 +1187,14 @@ public class PlayerController : NetworkBehaviour
 
     public IEnumerator TempDisablePickup()
     {
+        Collider interactionCollider = interaction.GetComponent<Collider>();
+
+        interactionCollider.enabled = false;
         justThrew = true;
 
         yield return new WaitForSeconds(0.50f);
 
+        interactionCollider.GetComponent<Collider>().enabled = true;
         justThrew = false;
     }
 
