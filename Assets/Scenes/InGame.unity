@@ -233,7 +233,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: c3b1ceb4c8265e24580cf8a975275257, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.339
+  m_Volume: 0.181
   m_Pitch: 1
   Loop: 1
   Mute: 1
@@ -1320,7 +1320,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 0456645ac3962314ba1df28d7b1e43a4, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.339
+  m_Volume: 0.181
   m_Pitch: 1
   Loop: 1
   Mute: 1
@@ -1466,7 +1466,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 46c1017313348ba4a96693bd8b395f0c, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.339
+  m_Volume: 0.181
   m_Pitch: 1
   Loop: 1
   Mute: 1
@@ -1906,7 +1906,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: b8ae4cbe9a293644ea5a41e849d38692, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.339
+  m_Volume: 0.181
   m_Pitch: 1
   Loop: 1
   Mute: 1
@@ -2793,7 +2793,7 @@ PrefabInstance:
       objectReference: {fileID: 210403197}
     - target: {fileID: 3569870885152564207, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
       propertyPath: gameDuration
-      value: 160
+      value: 300
       objectReference: {fileID: 0}
     - target: {fileID: 3569870885152564207, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
       propertyPath: tracks.Array.size
