@@ -13,5 +13,6 @@ MonoBehaviour:
   m_Name: RustyCan
   m_EditorClassIdentifier: 
   type: Can
-  mesh: {fileID: 8942720635596149187, guid: 4ba19c20deb7c624c8f6fa1886b4bc1d, type: 3}
+  mesh: {fileID: 8268095151417554452, guid: f0e8e3d821b264342b1c64740f3aaa55, type: 3}
   effectAmount: 10
+  playerID: -1

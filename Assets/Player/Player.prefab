@@ -746,7 +746,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   holdPosition: {x: 0, y: 0, z: 0}
-  throwForce: 5
+  throwForce: 8
   moveSpeed: 4
   rotateSpeed: 15
   dashDuration: 0.3
@@ -754,6 +754,49 @@ MonoBehaviour:
   dashCooldown: 0.9
   dazeDuration: 5
   releaseTime: 5
+  throwChargeMax: 4
+  throwEffect:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.24071702
+      value: 0.7045886
+      inSlope: 0.40866747
+      outSlope: 0.40866747
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.14232181
+    - serializedVersion: 3
+      time: 0.77264905
+      value: 0.84797543
+      inSlope: 0.40301132
+      outSlope: 0.40301132
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0.35213897
+      outSlope: 0.35213897
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.15157357
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   interaction: {fileID: 1651331327288946184}
   characterObject: {fileID: 11400000, guid: 1d85da3e7e51c5d45b26814cd41613cd, type: 2}
   playerState: 0
@@ -918,6 +961,8 @@ MonoBehaviour:
   networkScore:
     m_InternalValue: 0
   networkTimeSinceReleased:
+    m_InternalValue: 0
+  networkTimeOfCharge:
     m_InternalValue: 0
   numberVeggies: 0
   numberChefs: 0
