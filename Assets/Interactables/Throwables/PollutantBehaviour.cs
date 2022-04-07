@@ -136,7 +136,7 @@ public class PollutantBehaviour : NetworkBehaviour
         CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
         camTargetGroup.AddMember(playerToTeleport.transform, 1f, 0f);
 
-        playerController.vfx.Play();
+        playerController.dirtVFX.Play();
 
         yield return new WaitForSeconds(5f);
 

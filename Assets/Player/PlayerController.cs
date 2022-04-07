@@ -84,8 +84,10 @@ public class PlayerController : NetworkBehaviour
     public bool canMove;
     private GameObject dazeIndicator;
     private CharacterBehaviour characterBehaviour;
-    public VisualEffect vfx;
     private UnplacedTrap trapPlacer;
+    public VisualEffect smokeVFX;
+    public VisualEffect dirtVFX;
+    private ParticleSystem dashParticles;
 
     private bool justThrew;
     private float timeDazed;
@@ -142,7 +144,9 @@ public class PlayerController : NetworkBehaviour
         characterBehaviour = transform.Find("Character").GetComponent<CharacterBehaviour>();
         debugCanvasObj = transform.GetComponentInChildren<PlayerDebugUI>().transform;
         trapPlacer = transform.Find("Trap Placer").GetComponentInChildren<UnplacedTrap>();
-        vfx = transform.Find("VFX").GetComponent<VisualEffect>();
+        smokeVFX = transform.Find("Smoke Cloud VFX").GetComponent<VisualEffect>();
+        dirtVFX = transform.Find("Dirt Cloud VFX").GetComponent<VisualEffect>();
+        dashParticles = transform.Find("Dash Particles").GetComponent<ParticleSystem>();
 
         lastKnownState = networkCarryState.Value;
 
@@ -635,6 +639,8 @@ public class PlayerController : NetworkBehaviour
 
             UpdatePlayerStateServerRpc(PlayerState.Dashing);
             playerState = PlayerState.Dashing;
+
+            PlayDashEffectServerRpc();
         }
     }
 
@@ -968,9 +974,9 @@ public class PlayerController : NetworkBehaviour
         
         RefreshCharacter();
 
-        if(vfx != null)
+        if(smokeVFX != null)
         {
-            vfx.Play();
+            smokeVFX.Play();
         }
 
         if (CharacterChanged != null)
@@ -1050,6 +1056,18 @@ public class PlayerController : NetworkBehaviour
         }
 
         return pollutantObject;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void PlayDashEffectServerRpc()
+    {
+        PlayDashEffectClientRpc();
+    }
+
+    [ClientRpc]
+    public void PlayDashEffectClientRpc()
+    {
+        dashParticles.Play();
     }
 
     [ServerRpc(RequireOwnership = false)]
