@@ -195,6 +195,15 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Back"",
+                    ""type"": ""Button"",
+                    ""id"": ""2815762b-e024-47ab-b32b-662b99a9662b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -362,6 +371,17 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""action"": ""Struggle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7c1791b7-fa72-4ca4-a005-8005dd9c2429"",
+                    ""path"": ""<Gamepad>/select"",
+                    ""interactions"": ""Hold"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -435,6 +455,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         m_Gameplay_RotateTrap = m_Gameplay.FindAction("Rotate Trap", throwIfNotFound: true);
         m_Gameplay_PlaceTrap = m_Gameplay.FindAction("Place Trap", throwIfNotFound: true);
         m_Gameplay_Struggle = m_Gameplay.FindAction("Struggle", throwIfNotFound: true);
+        m_Gameplay_Back = m_Gameplay.FindAction("Back", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_ToggleDebug = m_Debug.FindAction("ToggleDebug", throwIfNotFound: true);
@@ -542,6 +563,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
     private readonly InputAction m_Gameplay_RotateTrap;
     private readonly InputAction m_Gameplay_PlaceTrap;
     private readonly InputAction m_Gameplay_Struggle;
+    private readonly InputAction m_Gameplay_Back;
     public struct GameplayActions
     {
         private @PlayerControlsMapping m_Wrapper;
@@ -558,6 +580,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         public InputAction @RotateTrap => m_Wrapper.m_Gameplay_RotateTrap;
         public InputAction @PlaceTrap => m_Wrapper.m_Gameplay_PlaceTrap;
         public InputAction @Struggle => m_Wrapper.m_Gameplay_Struggle;
+        public InputAction @Back => m_Wrapper.m_Gameplay_Back;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -603,6 +626,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @Struggle.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnStruggle;
                 @Struggle.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnStruggle;
                 @Struggle.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnStruggle;
+                @Back.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBack;
+                @Back.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBack;
+                @Back.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBack;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -643,6 +669,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @Struggle.started += instance.OnStruggle;
                 @Struggle.performed += instance.OnStruggle;
                 @Struggle.canceled += instance.OnStruggle;
+                @Back.started += instance.OnBack;
+                @Back.performed += instance.OnBack;
+                @Back.canceled += instance.OnBack;
             }
         }
     }
@@ -698,6 +727,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         void OnRotateTrap(InputAction.CallbackContext context);
         void OnPlaceTrap(InputAction.CallbackContext context);
         void OnStruggle(InputAction.CallbackContext context);
+        void OnBack(InputAction.CallbackContext context);
     }
     public interface IDebugActions
     {
