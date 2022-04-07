@@ -153,6 +153,8 @@ public class GameController : NetworkBehaviour
 
     void Update()
     {
+        UpdateTimer();
+
         if (IsServer)
         {
             switch (gameState.Value)
@@ -167,47 +169,82 @@ public class GameController : NetworkBehaviour
                     {
                         // add delta time to the time elapsed
                         gameTimeElapsed += Time.deltaTime;
-                        //update timer var
-                        float timeRemaining = gameDuration - gameTimeElapsed;
-
-                        //convert time remaining into xx:xx format
-                        var ts = TimeSpan.FromSeconds(timeRemaining);
-                        string timerVar = string.Format("{0:00}:{1:00}", ts.TotalMinutes, ts.Seconds);
-
-                        //detract the first 0 from string for spacing purposes
-                        if (timerVar[0] == '0')
-                        {
-                            timerVar = timerVar.Remove(0, 1);
-                        }
-
-                        runningTime += Time.deltaTime;
-
-                        if (timeRemaining < timestamps[currentTrack] && !canSwitchTrack)
-                        {
-                            canSwitchTrack = true;
-                            timeToChange = ((float)Math.Ceiling(runningTime / beatInterval)) * beatInterval;
-                        }
-
-                        if (canSwitchTrack && runningTime > timeToChange && currentTrack < 3)
-                        {
-                            currentTrack++;
-                            //Switch song
-                            Debug.Log("Song switching to track #: " + currentTrack);
-                            nextTimestamp = timeRemaining - songInterval;
-                            tracks[currentTrack].GetComponent<TransitionMusic>().ChangeSong();
-                            if (currentTrack == 3)
-                            {
-                                tracks[currentTrack].GetComponent<TransitionMusic>().PlayFromStart();
-                            }
-                            canSwitchTrack = false;
-                        }
-
-                        timer.GetComponent<TMPro.TextMeshProUGUI>().text = timerVar;
                     }
 
                     break;
             }
         }
+    }
+
+    string timeFormat(float time)
+    {
+        string format = "";
+        int minutes = (int)(Mathf.Floor(time / 60.0f));
+        int seconds = (int)(time - (60 * minutes));
+
+        string secondsAsString;
+        if (seconds >= 10)
+        {
+            secondsAsString = seconds.ToString();
+        }
+        else
+        {
+            secondsAsString = "0" + seconds.ToString();
+        }
+
+        format = minutes + ":" + secondsAsString;
+        return format;
+    }
+
+    public void UpdateTimer()
+    {
+        //update timer var
+        float timeRemaining = gameDuration - gameTimeElapsed;
+
+        /*
+        //convert time remaining into xx:xx format
+        var ts = TimeSpan.FromSeconds(timeRemaining);
+        string timerVar = string.Format("{0:00}:{1:00}", ts.TotalMinutes, ts.Seconds);
+
+        Debug.Log("timeRemaining: " + timeRemaining);
+        Debug.Log("ts: " + ts);
+        Debug.Log("TimerVar: " + timerVar);
+
+
+        //detract the first 0 from string for spacing purposes
+        if (timerVar[0] == '0')
+        {
+            timerVar = timerVar.Remove(0, 1);
+        }
+        
+        */
+
+
+        runningTime += Time.deltaTime;
+
+        if (timeRemaining < timestamps[currentTrack] && !canSwitchTrack)
+        {
+            canSwitchTrack = true;
+            timeToChange = ((float)Math.Ceiling(runningTime / beatInterval)) * beatInterval;
+        }
+
+        if (canSwitchTrack && runningTime > timeToChange && currentTrack < 3)
+        {
+            currentTrack++;
+            //Switch song
+            Debug.Log("Song switching to track #: " + currentTrack);
+            nextTimestamp = timeRemaining - songInterval;
+            tracks[currentTrack].GetComponent<TransitionMusic>().ChangeSong();
+            if (currentTrack == 3)
+            {
+                tracks[currentTrack].GetComponent<TransitionMusic>().PlayFromStart();
+            }
+            canSwitchTrack = false;
+        }
+
+
+        string timerVar = timeFormat(timeRemaining);
+        timer.GetComponent<TMPro.TextMeshProUGUI>().text = timerVar;
     }
 
     public void SetupMap()
