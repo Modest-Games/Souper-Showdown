@@ -44,6 +44,9 @@ public class LobbyController : NetworkBehaviour
 
         playersManager = playerManager.GetComponent<PlayersManager>();
 
+        numChefs = 0;
+        numVeggies = 0;
+
         // store original value of countdown timer
         countdownTimeOrig = countdownTime;
     }
@@ -57,7 +60,6 @@ public class LobbyController : NetworkBehaviour
 
     public void OnPlayerEnter(bool isChefZone)
     {
-        Debug.Log("player entered and I'm an event " + isChefZone);
 
         // get total number of players
         numPlayers = playersManager.players.Count;
@@ -69,6 +71,10 @@ public class LobbyController : NetworkBehaviour
             numVeggies++;
         }
 
+        Debug.Log("Total players " + numPlayers);
+        Debug.Log("Total chefs " + numChefs);
+        Debug.Log("Total veggies " + numVeggies);
+
         // if all players are on zones and there is at least one chef and one veggie, start countdown
         if (
             numChefs >= 1 &&
@@ -79,8 +85,19 @@ public class LobbyController : NetworkBehaviour
         }
     }
 
-    public void OnPlayerLeave()
+    public void OnPlayerLeave(bool isChefZone)
     {
+        // update number of veggies and chefs
+        if (isChefZone == true) {
+            numChefs--;
+        } else {
+            numVeggies--;
+        }
+        
+        Debug.Log("Total players " + numPlayers);
+        Debug.Log("Total chefs " + numChefs);
+        Debug.Log("Total veggies " + numVeggies);
+        
         // interrupt coroutine
         handleCountDown(false);
     }

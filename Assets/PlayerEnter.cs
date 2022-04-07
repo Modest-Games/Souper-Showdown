@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class PlayerEnter : MonoBehaviour
 {
-
+    public bool isChefZone;
+    
     public delegate void PlayerEnterZoneDelegate(bool isChefZone);
     public static event PlayerEnterZoneDelegate playersReady;
-    public bool isChefZone;
 
-    public delegate void PlayerLeaveZoneDelegate();
+    public delegate void PlayerLeaveZoneDelegate(bool isChefZone);
     public static event PlayerLeaveZoneDelegate playersNotReady;
 
     private void OnTriggerEnter(Collider other)
@@ -27,7 +27,7 @@ public class PlayerEnter : MonoBehaviour
         // this player is not ready
         if (playersNotReady != null)
         {
-            playersNotReady();
+            playersNotReady(isChefZone);
         }
     }
 
