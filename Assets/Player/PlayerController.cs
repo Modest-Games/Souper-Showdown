@@ -436,7 +436,7 @@ public class PlayerController : NetworkBehaviour
                     PlayerState otherPlayerState = (otherPC.IsClient && otherPC.IsOwner)
                         ? otherPC.playerState : otherPC.networkPlayerState.Value;
 
-                    if (otherPC.networkIsChef.Value && otherPlayerState == PlayerState.Dashing && otherPC.IsReleasedForLongEnough)
+                    if (otherPC.networkIsChef.Value && otherPlayerState == PlayerState.Dashing && IsReleasedForLongEnough)
                     {
                         OnBoop();
                     }
@@ -603,16 +603,12 @@ public class PlayerController : NetworkBehaviour
         if (!(IsClient && IsOwner))
             return;
 
-        // ensure the player is not ungrounded
-        if (playerState == PlayerState.Ungrounded)
-            return;
-        
         movement = Vector2.zero;
 
-        // ensure the player is not dashing
-        if (playerState == PlayerState.Dashing)
+        // ensure the player state is able to be changed
+        if (!(playerState == PlayerState.Idle || playerState == PlayerState.Moving))
             return;
-
+        
         UpdatePlayerStateServerRpc(PlayerState.Idle);
         playerState = PlayerState.Idle;
     }
