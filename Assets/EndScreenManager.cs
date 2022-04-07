@@ -110,6 +110,14 @@ public class EndScreenManager : MonoBehaviour
         }
     }
 
+    public float BackButtonHeldAmount
+    {
+        get
+        {
+            return (timeWhenBackStarted > 0f) ? Mathf.InverseLerp(0f, backButtonHoldDuration, (Time.time - timeWhenBackStarted)) : 0f;
+        }
+    }
+
     //ADD WHENEVER NEW VEGGIE CREATED
     void loadSpoilerLibrary()
     {
