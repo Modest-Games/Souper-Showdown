@@ -57,6 +57,7 @@ public class PlayerController : NetworkBehaviour
     public float dashForce;
     public float dashCooldown;
     public float dazeDuration;
+    public float releaseTime;
 
     [Header("Character")]
     public Character characterObject;
@@ -105,6 +106,7 @@ public class PlayerController : NetworkBehaviour
     public NetworkVariable<PlayerCarryState> networkCarryState = new NetworkVariable<PlayerCarryState>();
     public NetworkVariable<PlayerState> networkPlayerState = new NetworkVariable<PlayerState>();
     public NetworkVariable<int> networkScore = new NetworkVariable<int>();
+    public NetworkVariable<float> networkTimeSinceReleased = new NetworkVariable<float>();
 
     public int numberVeggies;
     public int numberChefs;
@@ -712,15 +714,29 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public bool IsReleasedForLongEnough
+    {
+        get
+        {
+            return (NetworkManager.Singleton.LocalTime.TimeAsFloat - networkTimeSinceReleased.Value) >= releaseTime;
+        }
+    }
+
+    private bool CanPickup
+    {
+        get
+        {
+            return (networkCarryState.Value == PlayerCarryState.Empty) && (reachableCollectables.Count > 0);
+        }
+    }
+
     public void GrabStarted()
     {
         if (IsClient && IsOwner && Application.isFocused)
         {
             RefreshReachableCollectables();
 
-            bool canPickup = (networkCarryState.Value == PlayerCarryState.Empty) && (reachableCollectables.Count > 0);
-
-            if (canPickup)
+            if (CanPickup)
             {
                 for (int i = 0; i < reachableCollectables.Count; i++)
                 {
@@ -732,12 +748,14 @@ public class PlayerController : NetworkBehaviour
                         PlayerController otherPC = otherPlayer.GetComponentInParent<PlayerController>();
                         StruggleBehaviour otherStruggleBehaviour = otherPlayer.GetComponentInParent<StruggleBehaviour>();
 
-                        if (!(otherPC.IsClient && otherPC.IsOwner))
+                        if (!(otherPC.IsClient && otherPC.IsOwner && otherPC.NetworkObjectId == NetworkObjectId)
+                            && otherPC.IsReleasedForLongEnough)
                         {
                             var playerID = otherPC.GetComponent<NetworkObject>().NetworkObjectId;
                             HideGrabbedPlayerServerRpc(playerID);
                             OnPlayerGrabServerRpc(otherPC.networkCharacterName.Value, (int)playerID);
                             otherStruggleBehaviour.UpdateHeldPlayerIDServerRpc(NetworkObjectId);
+                            otherPC.UpdatePlayerStateServerRpc(PlayerState.Ungrounded);
                         }
 
                         return;

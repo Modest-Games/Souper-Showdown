@@ -351,6 +351,17 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""action"": ""Struggle"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""b95401fd-3d8a-46d4-b8e9-ee8cb632210c"",
+                    ""path"": ""<Keyboard>/s"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Struggle"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },

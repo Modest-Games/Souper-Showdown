@@ -101,6 +101,7 @@ public class PollutantBehaviour : NetworkBehaviour
 
         var playerController = playerToTeleport.GetComponent<PlayerController>();
         playerController.TeleportPlayer(transform.position);
+        playerController.UpdatePlayerStateServerRpc(PlayerController.PlayerState.Idle);
 
         CinemachineTargetGroup camTargetGroup = GameObject.Find("CineMachine Target Group").GetComponent<CinemachineTargetGroup>();
         camTargetGroup.AddMember(playerToTeleport.transform, 1f, 0f);
