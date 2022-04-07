@@ -83,7 +83,7 @@ public class PlayerController : NetworkBehaviour
     public bool canMove;
     private GameObject dazeIndicator;
     private CharacterBehaviour characterBehaviour;
-    private VisualEffect vfx;
+    public VisualEffect vfx;
     private UnplacedTrap trapPlacer;
 
     private bool justThrew;
@@ -209,8 +209,6 @@ public class PlayerController : NetworkBehaviour
             playerState = PlayerState.Idle;
             UpdatePlayerStateServerRpc(PlayerState.Idle);
         }
-
-        vfx.Play();
     }
 
     public void PlayerRandomSpawnPoint(bool isChef)
@@ -570,9 +568,12 @@ public class PlayerController : NetworkBehaviour
 
             if (reachableCollectables[i].CompareTag("Player"))
             {
-                var playerState = reachableCollectables[i].GetComponentInParent<PlayerController>().networkPlayerState;
+                var otherPC = reachableCollectables[i].GetComponentInParent<PlayerController>();
 
-                if (playerState.Value != PlayerState.Dazed)
+                PlayerState otherPlayerState = (otherPC.IsClient && otherPC.IsOwner)
+                        ? otherPC.playerState : otherPC.networkPlayerState.Value;
+
+                if (otherPlayerState != PlayerState.Dazed)
                     reachableCollectables.RemoveAt(i);
             }
         }
@@ -748,8 +749,7 @@ public class PlayerController : NetworkBehaviour
                         PlayerController otherPC = otherPlayer.GetComponentInParent<PlayerController>();
                         StruggleBehaviour otherStruggleBehaviour = otherPlayer.GetComponentInParent<StruggleBehaviour>();
 
-                        if (!(otherPC.IsClient && otherPC.IsOwner && otherPC.NetworkObjectId == NetworkObjectId)
-                            && otherPC.IsReleasedForLongEnough)
+                        if (otherPC.IsReleasedForLongEnough)
                         {
                             var playerID = otherPC.GetComponent<NetworkObject>().NetworkObjectId;
                             HideGrabbedPlayerServerRpc(playerID);
