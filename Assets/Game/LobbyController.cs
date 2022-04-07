@@ -18,7 +18,6 @@ public class LobbyController : NetworkBehaviour
 
     // player manager (need this for the player list)
     PlayersManager playersManager;
-    [SerializeField] GameObject playerManager;
 
     // total number of players (retrieved from the player list)
     private int numPlayers;
@@ -42,7 +41,6 @@ public class LobbyController : NetworkBehaviour
             Instance = this;
         }
 
-        playersManager = playerManager.GetComponent<PlayersManager>();
 
         numChefs = 0;
         numVeggies = 0;
@@ -62,7 +60,7 @@ public class LobbyController : NetworkBehaviour
     {
 
         // get total number of players
-        numPlayers = playersManager.players.Count;
+        numPlayers = PlayersManager.Instance.players.Count;
 
         // handle player count
         if (isChefZone == true) {
