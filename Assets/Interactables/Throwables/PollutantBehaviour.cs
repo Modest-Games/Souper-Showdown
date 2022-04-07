@@ -81,7 +81,6 @@ public class PollutantBehaviour : NetworkBehaviour
                 {
                     ReplaceLiveMeshClientRpc((ulong) pollutantObject.playerID);
                     GetComponent<SphereCollider>().enabled = false;
-                    transform.GetChild(0).gameObject.SetActive(false);
                 }
 
                 break;
@@ -126,7 +125,9 @@ public class PollutantBehaviour : NetworkBehaviour
         var playerController = playerToTeleport.GetComponent<PlayerController>();
         playerController.TeleportPlayer(transform.position);
 
-        yield return new WaitForSeconds(0.25f);
+        yield return new WaitForSeconds(0.5f);
+
+        transform.GetChild(0).gameObject.SetActive(false);
 
         playerToTeleport.GetComponentInParent<Rigidbody>().isKinematic = false;
         playerToTeleport.GetComponentInParent<SphereCollider>().enabled = true;
