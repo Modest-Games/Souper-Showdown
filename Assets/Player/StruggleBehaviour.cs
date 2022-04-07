@@ -68,6 +68,9 @@ public class StruggleBehaviour : NetworkBehaviour
         PlayerController holderPC = GetNetworkObject(networkHeldPlayerID.Value).GetComponent<PlayerController>();
         holderPC.OnDropServerRpc(holderPC.GetComponent<Rigidbody>().velocity);
 
+        // reset the released time
+        playerController.OnReleasedServerRpc();
+
         Debug.LogFormat("PlayerID: {0} broke free from player {1}!", NetworkObjectId, networkHeldPlayerID.Value);
     }
 

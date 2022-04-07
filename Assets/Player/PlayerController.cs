@@ -1056,6 +1056,12 @@ public class PlayerController : NetworkBehaviour
     }
 
     [ServerRpc(RequireOwnership = false)]
+    public void OnReleasedServerRpc()
+    {
+        networkTimeSinceReleased.Value = NetworkManager.Singleton.LocalTime.TimeAsFloat;
+    }
+
+    [ServerRpc(RequireOwnership = false)]
     private void OnGrabServerRpc(ulong objToPickupID)
     {
         NetworkManager.SpawnManager.SpawnedObjects.TryGetValue(objToPickupID, out var objToPickup);
