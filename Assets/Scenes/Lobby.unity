@@ -5671,6 +5671,10 @@ PrefabInstance:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 4574332219942526918, guid: 2adc9e8ea236ec84aa2ee14fe0e3559b, type: 3}
+      propertyPath: m_TagString
+      value: VeggieZone
+      objectReference: {fileID: 0}
     - target: {fileID: 7335596313217129448, guid: 2adc9e8ea236ec84aa2ee14fe0e3559b, type: 3}
       propertyPath: m_LocalPosition.x
       value: -9.88
