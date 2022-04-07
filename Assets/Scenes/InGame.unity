@@ -562,6 +562,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHeight: 523
+  backButtonHoldDuration: 5
   BarGraphPanel: {fileID: 1835271351}
   endScreen: {fileID: 5164782179740839460}
   playerNum: 0
@@ -1713,23 +1714,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db34bfb37245c1742b6c29920987404e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1787823855 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 3569870885152564206, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
-  m_PrefabInstance: {fileID: 3569870883982984930}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1787823859
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1787823855}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bb39c6c79fa94a85b35333c4696d032, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &1814586379
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2874,14 +2858,6 @@ PrefabInstance:
       propertyPath: MusicManager
       value: 
       objectReference: {fileID: 210403197}
-    - target: {fileID: 3569870885152564207, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
-      propertyPath: gameDuration
-      value: 500
-      objectReference: {fileID: 0}
-    - target: {fileID: 3569870885152564207, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
-      propertyPath: tracks.Array.size
-      value: 4
-      objectReference: {fileID: 0}
     - target: {fileID: 3569870885152564207, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
       propertyPath: tracks.Array.data[0]
       value: 

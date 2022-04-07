@@ -7,6 +7,7 @@ public class EndScreenManager : MonoBehaviour
 {
     //Variables used for setting bar graph parameters
     public float maxHeight = 523.0f;
+    public float backButtonHoldDuration;
 
     public GameObject BarGraphPanel;
 
@@ -36,6 +37,78 @@ public class EndScreenManager : MonoBehaviour
 
     Dictionary<string, int> spoilerDictionary;
 
+    private float timeWhenBackStarted;
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        hasGameEnded = false;
+        GameController.GameStopped += OnGameOver;
+        endScreen.SetActive(false);
+
+        // setup event listeners
+        PlayerTokenBehaviour.BackActionStarted += BackActionStarted;
+        PlayerTokenBehaviour.BackActionCancelled += BackActionCancelled;
+    }
+
+    private void OnDestroy()
+    {
+        // clear event listeners
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        if (hasGameEnded)
+        {
+            endScreenTimer += Time.deltaTime;
+
+            int timeRemaining = endScreenDuration - (int)endScreenTimer;
+            timerUI.GetComponent<TMPro.TextMeshProUGUI>().text = timeRemaining.ToString();
+
+            if (endScreenTimer >= endScreenDuration)
+            {
+                ResetEndScreen();
+                //Restart Game
+            }
+
+            // check if the back button has been triggered
+            if (BackButtonTriggered)
+            {
+                // TODO: exit the game session and return to the main menu
+                //Debug.Log("Back button triggered");
+            }
+        }
+    }
+
+    private void BackActionStarted()
+    {
+        // code here will be called when a local player stops pressing the back button
+
+        // ensure another player isn't already holding the back button
+        if (timeWhenBackStarted > 0f)
+            return;
+
+        // set the time when the back button starting being held
+        timeWhenBackStarted = Time.time;
+    }
+
+    private void BackActionCancelled()
+    {
+        // code here will be called when a local player starts pressing the back button
+
+        timeWhenBackStarted = -1f;
+    }
+
+    private bool BackButtonTriggered
+    {
+        get
+        {
+            return (timeWhenBackStarted > 0f) ? (Time.time - timeWhenBackStarted) >= backButtonHoldDuration : false;
+        }
+    }
+
     //ADD WHENEVER NEW VEGGIE CREATED
     void loadSpoilerLibrary()
     {
@@ -60,7 +133,6 @@ public class EndScreenManager : MonoBehaviour
         return p.transform.GetChild(0).GetComponent<PlayerBar>().score;
     }
     
-
     void setHeights()
     {
         float maxScore = getScoreFromBar(PlayerBars[0]);
@@ -100,7 +172,6 @@ public class EndScreenManager : MonoBehaviour
         }
     }
 
-
     GameObject MakeBar(string spoiler, int score, Sprite playerNum) 
     {
         //Create player bar
@@ -120,16 +191,6 @@ public class EndScreenManager : MonoBehaviour
         return playerBar;
     }
 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        hasGameEnded = false;
-        GameController.GameStopped += OnGameOver;
-        endScreen.SetActive(false);
-    }
-
-
     private IEnumerator StaggerAnimation()
     {
         //Triggers animations consecutively, leaving short delay for the winner
@@ -145,9 +206,11 @@ public class EndScreenManager : MonoBehaviour
 
     private void OnGameOver()
     {
+        // ensure that the game hasn't already ended ended
         if (hasGameEnded)
             return;
 
+        // show the end screen
         hasGameEnded = true;
         endScreen.SetActive(true);
 
@@ -180,29 +243,11 @@ public class EndScreenManager : MonoBehaviour
 
     }
 
-
     void ResetEndScreen()
     {
         endScreenTimer = 0;
         hasGameEnded = false;
         GameController.GameStopped += OnGameOver;
         endScreen.SetActive(false);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        if (hasGameEnded) {
-            endScreenTimer += Time.deltaTime;
-
-            int timeRemaining = endScreenDuration - (int)endScreenTimer;
-            timerUI.GetComponent<TMPro.TextMeshProUGUI>().text = timeRemaining.ToString();
-
-            if (endScreenTimer >= endScreenDuration)
-            {
-                ResetEndScreen();
-                //Restart Game
-            }
-         }
     }
 }

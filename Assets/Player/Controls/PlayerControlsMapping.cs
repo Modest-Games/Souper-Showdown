@@ -376,7 +376,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""name"": """",
                     ""id"": ""7c1791b7-fa72-4ca4-a005-8005dd9c2429"",
                     ""path"": ""<Gamepad>/select"",
-                    ""interactions"": ""Hold"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Back"",

@@ -6,6 +6,10 @@ using Unity.Netcode;
 
 public class PlayerTokenBehaviour : MonoBehaviour
 {
+    public delegate void PlayerTokenActionDelegate();
+    public static event PlayerTokenActionDelegate BackActionStarted;
+    public static event PlayerTokenActionDelegate BackActionCancelled;
+
     private PlayerInput playerInput;
 
     private void Awake()
@@ -19,6 +23,10 @@ public class PlayerTokenBehaviour : MonoBehaviour
 
         PlayersManager.Instance.RequestPlayerServerRpc(
             playerInput.playerIndex, LocalPlayerManager.Instance.thisClientId);
+
+        // bind back action events
+        playerInput.actions["Back"].started += ctx => { if (BackActionStarted != null) BackActionStarted(); };
+        playerInput.actions["Back"].canceled += ctx => { if (BackActionCancelled != null) BackActionCancelled(); };
     }
 
     private void OnEnable()
