@@ -201,25 +201,6 @@ public class GameController : NetworkBehaviour
         //update timer var
         float timeRemaining = gameDuration - gameTimeElapsed;
 
-        /*
-        //convert time remaining into xx:xx format
-        var ts = TimeSpan.FromSeconds(timeRemaining);
-        string timerVar = string.Format("{0:00}:{1:00}", ts.TotalMinutes, ts.Seconds);
-
-        Debug.Log("timeRemaining: " + timeRemaining);
-        Debug.Log("ts: " + ts);
-        Debug.Log("TimerVar: " + timerVar);
-
-
-        //detract the first 0 from string for spacing purposes
-        if (timerVar[0] == '0')
-        {
-            timerVar = timerVar.Remove(0, 1);
-        }
-        
-        */
-
-
         runningTime += Time.deltaTime;
 
         if (timeRemaining < timestamps[currentTrack] && !canSwitchTrack)
@@ -242,7 +223,7 @@ public class GameController : NetworkBehaviour
             canSwitchTrack = false;
         }
 
-
+        //Format and update the timer
         string timerVar = timeFormat(timeRemaining);
         timer.GetComponent<TMPro.TextMeshProUGUI>().text = timerVar;
     }
