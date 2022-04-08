@@ -25,9 +25,6 @@ public class ArrowBehaviour : NetworkBehaviour
         shouldUpdate = true; // TEMP
         startPosition = transform.position;
         meshHolder = transform.Find("Mesh");
-
-        // refresh the mesh
-        RefreshMesh();
     }
 
     void Update()
@@ -39,6 +36,9 @@ public class ArrowBehaviour : NetworkBehaviour
         {
             if (hasCollided)
             {
+                GetComponent<Rigidbody>().isKinematic = true;
+                GetComponent<BoxCollider>().enabled = false;
+
                 // if the arrow has collided, check if it should expire
                 if (timeSinceCollision >= expireTime)
                 {
@@ -87,11 +87,6 @@ public class ArrowBehaviour : NetworkBehaviour
 
         // update distance travelled
         distanceTravelled += moveAmount;
-    }
-
-    public void RefreshMesh()
-    {
-
     }
 
     private void OnTriggerEnter(Collider other)
