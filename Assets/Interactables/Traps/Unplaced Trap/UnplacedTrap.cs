@@ -47,12 +47,14 @@ public class UnplacedTrap : NetworkBehaviour
     private void OnEnable()
     {
         // setup event listeners
+        if (TrapManager.Instance == null) return;
         TrapManager.Instance.networkNumTrapsPlaced.OnValueChanged += OnNumTrapsChanged;
     }
 
     private void OnDisable()
     {
         // clear event listeners
+        if (TrapManager.Instance == null) return;
         TrapManager.Instance.networkNumTrapsPlaced.OnValueChanged -= OnNumTrapsChanged;
 
         canPlace = false;
