@@ -1099,7 +1099,7 @@ public class PlayerController : NetworkBehaviour
 
     private void SoupPot_Behaviour_OnSoupReceivedTrash(float influence, ulong throwerId)
     {
-        if (IsServer && throwerId == NetworkObjectId)
+        if (IsServer && throwerId == NetworkObjectId && GameController.Instance.gameState.Value == GameController.GameState.Running)
         {
             if (networkIsChef.Value)
                 networkScore.Value = Mathf.Max(0, Mathf.RoundToInt(networkScore.Value - influence));
