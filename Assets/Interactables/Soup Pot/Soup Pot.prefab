@@ -4978,6 +4978,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ps: {fileID: 3248281095464908923}
+  SplashSounds:
+  - {fileID: 8300000, guid: 2c5496febca2265429f2bd257d180a4a, type: 3}
+  - {fileID: 8300000, guid: 26a38e12c80843648abc18e03f122e59, type: 3}
+  - {fileID: 8300000, guid: 38818a2f43d0ca14c9310b24de00f289, type: 3}
+  - {fileID: 8300000, guid: 3c60d1f04ea4b374382bd57b6daded26, type: 3}
+  - {fileID: 8300000, guid: 1a27efae1243ca748a6761c0d5a892de, type: 3}
 --- !u!1 &8220125978040838863
 GameObject:
   m_ObjectHideFlags: 0
