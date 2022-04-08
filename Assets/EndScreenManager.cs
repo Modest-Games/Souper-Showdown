@@ -344,12 +344,60 @@ public class EndScreenManager : NetworkBehaviour
         SpoilMeter.Instance.gameObject.SetActive(false);
     }
 
+    private void MakeKingOfTheHillChef()
+    {
+        // only perform on the server
+        if (!IsServer)
+            return;
+
+        // get a sorted list of players by score
+        List<PlayersManager.Player> players = PlayersManager.Instance.players;
+        players.Sort((p2, p1) => PlayersManager.Instance.GetPlayerScore(p1.networkObjId).CompareTo(PlayersManager.Instance.GetPlayerScore(p2.networkObjId)));
+
+        // make the highest score player the next chef and all the other players spoilers
+        for (int i = 0; i < players.Count; i++)
+        {
+            GetNetworkObject(players[i].networkObjId).GetComponent<PlayerController>().UpdateIsChefServerRpc(i == 0);
+        }
+    }
+    private void MakeRandomChefs()
+    {
+        // only perform on the server
+        if (!IsServer)
+            return;
+
+        int numChef = PlayersManager.Instance.NumberOfChefs;
+        ulong[] chosenChefPlayers = new ulong[numChef];
+
+        List<PlayersManager.Player> potentialChefs = PlayersManager.Instance.players;
+
+        // select random chefs
+        for (int i = 0; i < numChef; i++)
+        {
+            int randomSelection = Random.Range(0, potentialChefs.Count);
+            chosenChefPlayers[i] = potentialChefs[randomSelection].networkObjId;
+            potentialChefs.RemoveAt(i);
+        }
+
+        // set spoilers
+        foreach (PlayersManager.Player player in potentialChefs)
+        {
+            GetNetworkObject(player.networkObjId).GetComponent<PlayerController>().UpdateIsChefServerRpc(false);
+        }
+
+        // set chefs
+        foreach (ulong playerId in chosenChefPlayers)
+        {
+            GetNetworkObject(playerId).GetComponent<PlayerController>().UpdateIsChefServerRpc(true);
+        }
+    }
+
     void RestartGame()
     {
         endScreenTimer = 0;
         hasGameEnded = false;
         endScreen.SetActive(false);
-
+        MakeKingOfTheHillChef();
         SceneSwitcher.Instance.SwitchToInGame();
     }
 }

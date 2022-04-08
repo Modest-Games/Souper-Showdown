@@ -40,7 +40,6 @@ public class SoupPot_Behaviour : NetworkBehaviour
     private IEnumerator OnPollutantEnter(GameObject pollutant)
     {
         var liveMeshPlayerID = pollutant.GetComponent<PollutantBehaviour>().pollutantObject.playerID;
-        SoundManager.Instance.RandomSoundEffect(SplashSounds);
 
         if (liveMeshPlayerID != -1)
             RespawnPlayerFromLiveMeshClientRpc((ulong) liveMeshPlayerID);
@@ -72,5 +71,6 @@ public class SoupPot_Behaviour : NetworkBehaviour
     private void OnPollutantEnterClientRpc()
     {
         ps.Play();
+        SoundManager.Instance.RandomSoundEffect(SplashSounds);
     }
 }
