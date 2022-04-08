@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Linq;
+using Unity.Netcode;
+using Unity.Services.Relay;
 
-public class EndScreenManager : MonoBehaviour
+public class EndScreenManager : NetworkBehaviour
 {
     //Variables used for setting bar graph parameters
     public float maxHeight = 523.0f;
@@ -11,7 +14,9 @@ public class EndScreenManager : MonoBehaviour
 
     public GameObject BarGraphPanel;
 
-    public GameObject endScreen; 
+    public GameObject endScreen;
+
+    public Scene lobbyScene;
 
     public int playerNum = 0;
     public GameObject PlayerBarPrefab;
@@ -77,8 +82,17 @@ public class EndScreenManager : MonoBehaviour
             // check if the back button has been triggered
             if (BackButtonTriggered)
             {
-                // TODO: exit the game session and return to the main menu
-                //Debug.Log("Back button triggered");
+                //TODO: exit the game session and return to the main menu
+                Debug.Log("Back button triggered");
+
+                NetworkManager.Singleton.DisconnectClient(NetworkManager.Singleton.LocalClientId);
+                NetworkManager.Singleton.Shutdown();
+
+               // NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>().DisconnectLocalClient();
+
+
+                SceneManager.LoadScene("Lobby");
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName("Lobby"));
             }
         }
     }
@@ -86,7 +100,7 @@ public class EndScreenManager : MonoBehaviour
     private void BackActionStarted()
     {
         // code here will be called when a local player stops pressing the back button
-
+        Debug.Log("Back button starts");
         // ensure another player isn't already holding the back button
         if (timeWhenBackStarted > 0f)
             return;
