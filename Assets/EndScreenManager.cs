@@ -309,33 +309,28 @@ public class EndScreenManager : NetworkBehaviour
 
         loadSpoilerLibrary();
 
-        int numSpoilers = PlayersManager.Instance.NumberOfSpoilers;
-        PlayerBars = new GameObject[numSpoilers]; //numSpoilers
+        int numPlayers = PlayersManager.Instance.players.Count;
+        PlayerBars = new GameObject[PlayersManager.Instance.NumberOfSpoilers]; //numSpoilers
 
         List<PlayersManager.Player> players = PlayersManager.Instance.players;
 
-        //collect total chef score and add to UI
+        players.Sort((p2, p1) => PlayersManager.Instance.GetPlayerScore(p1.networkObjId).CompareTo(PlayersManager.Instance.GetPlayerScore(p2.networkObjId)));
+
+        //collect total chef score and add to UI, and create player bars for spoilers
         int totalChefScore = 0;
+        int playerBarIterator = 0;
         foreach (PlayersManager.Player p in players)
         {
             if (GetNetworkObject(p.networkObjId).GetComponent<PlayerController>().networkIsChef.Value)
             {
                 totalChefScore += PlayersManager.Instance.GetPlayerScore(p.networkObjId);
+            } else
+            {
+                PlayerBars[playerBarIterator] = MakeBar(p.character, PlayersManager.Instance.GetPlayerScore(p.networkObjId), playerNumbers[playerBarIterator]);
+                playerBarIterator++;
             }
         }
         chefScore.GetComponent<TMPro.TextMeshProUGUI>().text = totalChefScore.ToString();
-
-        players.Sort((p2, p1) => PlayersManager.Instance.GetPlayerScore(p1.networkObjId).CompareTo(PlayersManager.Instance.GetPlayerScore(p2.networkObjId)));
-
-
-        for (int i = 0; i < numSpoilers; i++)
-        {
-            PlayersManager.Player p = PlayersManager.Instance.players[i];
-            if (!GetNetworkObject(p.networkObjId).GetComponent<PlayerController>().networkIsChef.Value)
-            {
-                PlayerBars[i] = MakeBar(p.character, PlayersManager.Instance.GetPlayerScore(p.networkObjId), playerNumbers[i]);
-            }
-        }
 
         //Sort bars
         //SortBars();
