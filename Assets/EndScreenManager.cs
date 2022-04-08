@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Linq;
 using Unity.Netcode;
@@ -15,8 +16,11 @@ public class EndScreenManager : NetworkBehaviour
     public float backButtonHoldDuration;
 
     public GameObject BarGraphPanel;
+    public GameObject spoilMeter;
 
     public GameObject endScreen;
+    public GameObject chefScore;
+    public GameObject highlightBubble;
 
     public Scene lobbyScene;
 
@@ -37,7 +41,6 @@ public class EndScreenManager : NetworkBehaviour
     public Sprite[] spoilerIcons;
     public Color[] spoilerColors;
 
-    //public int[] presetScores = new int[]{ 1200, 3600, 4300, 2000, 2500, 6000, 500};
     public string[] spoilers = new string[] { "Tomato", "Carrot", "Mushroom", "Eggplant", "Corn", "Onion", "Jalapeno" };
     public Sprite[] playerNumbers;
 
@@ -94,6 +97,16 @@ public class EndScreenManager : NetworkBehaviour
                 //Restart Game
             }
 
+            if (BackButtonHeldAmount > 0)
+            {
+                float opacityValue = 255.0f * BackButtonHeldAmount;
+
+                Color bubble = highlightBubble.GetComponent<Image>().color;
+                bubble.a = opacityValue;
+                Debug.Log(opacityValue);
+                highlightBubble.GetComponent<Image>().color = bubble;
+            }
+
             // check if the back button has been triggered
             if (BackButtonTriggered)
             {
@@ -103,8 +116,7 @@ public class EndScreenManager : NetworkBehaviour
                 NetworkManager.Singleton.DisconnectClient(NetworkManager.Singleton.LocalClientId);
                 NetworkManager.Singleton.Shutdown();
 
-               // NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>().DisconnectLocalClient();
-
+                //NetworkManager.Singleton.gameObject.GetComponent<UnityTransport>().DisconnectLocalClient();
 
                 SceneManager.LoadScene("Lobby");
                 SceneManager.SetActiveScene(SceneManager.GetSceneByName("Lobby"));
@@ -170,13 +182,13 @@ public class EndScreenManager : NetworkBehaviour
     {
         return p.transform.GetChild(0).GetComponent<PlayerBar>().score;
     }
-    
+
     void setHeights()
     {
         float maxScore = getScoreFromBar(PlayerBars[0]);
         float minScore = getScoreFromBar(PlayerBars[PlayerBars.Length - 1]);
 
-        for(int i = 0; i < PlayerBars.Length - 0; i++)
+        for (int i = 0; i < PlayerBars.Length - 0; i++)
         {
             float val = Mathf.InverseLerp(minScore, maxScore, getScoreFromBar(PlayerBars[i]));
             val = (val / 2.0f) + 0.45f;
@@ -198,7 +210,7 @@ public class EndScreenManager : NetworkBehaviour
 
         PlayerBars = list1.ToArray();
 
-        
+
 
 
         foreach (GameObject pb in PlayerBars)
@@ -210,7 +222,7 @@ public class EndScreenManager : NetworkBehaviour
         }
     }
 
-    GameObject MakeBar(string spoiler, int score, Sprite playerNum) 
+    GameObject MakeBar(string spoiler, int score, Sprite playerNum)
     {
         //Create player bar
         GameObject playerBar = Instantiate(PlayerBarPrefab, GraphPanel);
@@ -255,19 +267,31 @@ public class EndScreenManager : NetworkBehaviour
         loadSpoilerLibrary();
 
         numPlayers = PlayersManager.Instance.players.Count;
-        PlayerBars = new GameObject[numPlayers];
+        PlayerBars = new GameObject[numPlayers]; //numPlayers
 
         List<PlayersManager.Player> players = PlayersManager.Instance.players;
+
+        //collect total chef score and add to UI
+        int totalChefScore = 0;
+        foreach (PlayersManager.Player p in players)
+        {
+            if (GetNetworkObject(p.networkObjId).GetComponent<PlayerController>().networkIsChef.Value)
+            {
+                totalChefScore += PlayersManager.Instance.GetPlayerScore(p.networkObjId);
+            }
+        }
+        chefScore.GetComponent<TMPro.TextMeshProUGUI>().text = totalChefScore.ToString();
+
         players.Sort((p2, p1) => PlayersManager.Instance.GetPlayerScore(p1.networkObjId).CompareTo(PlayersManager.Instance.GetPlayerScore(p2.networkObjId)));
 
-        //Create bars
+
         for (int i = 0; i < numPlayers; i++)
         {
-            //PlayerBars[i] = MakeBar(spoilers[i], presetScores[i], playerNumbers[0]);
-
-            PlayersManager.Player currentPlayer = players[i];
-
-            PlayerBars[i] = MakeBar(currentPlayer.character, PlayersManager.Instance.GetPlayerScore(currentPlayer.networkObjId), playerNumbers[0]);
+            PlayersManager.Player p = PlayersManager.Instance.players[i];
+            if (!GetNetworkObject(p.networkObjId).GetComponent<PlayerController>().networkIsChef.Value)
+            {
+                PlayerBars[i] = MakeBar(p.character, PlayersManager.Instance.GetPlayerScore(p.networkObjId), playerNumbers[i]);
+            }
         }
 
         //Sort bars
@@ -279,6 +303,7 @@ public class EndScreenManager : NetworkBehaviour
         //Start Animating
         StartCoroutine(StaggerAnimation());
 
+        spoilMeter.SetActive(false);
     }
 
     void ResetEndScreen()
