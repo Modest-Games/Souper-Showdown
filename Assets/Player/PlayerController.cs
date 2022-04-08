@@ -284,18 +284,17 @@ public class PlayerController : NetworkBehaviour
 
         UpdateTrapPlacerVisuals();
 
-        if (lastKnownState == PlayerCarryState.CarryingObject && carryStateVal == PlayerCarryState.Empty)
+        // Arm Animator:
+        if ((lastKnownState == PlayerCarryState.CarryingObject || lastKnownState == PlayerCarryState.PlacingTrap) && carryStateVal == PlayerCarryState.Empty)
         {
             characterBehaviour.AnimateArms("ArmsThrow");
-            Debug.Log("Throwing Anim");
 
             lastKnownState = carryStateVal;
         }
 
-        else if (lastKnownState == PlayerCarryState.Empty && carryStateVal == PlayerCarryState.CarryingObject)
+        else if (lastKnownState == PlayerCarryState.Empty && (carryStateVal == PlayerCarryState.CarryingObject || carryStateVal == PlayerCarryState.PlacingTrap))
         {
             characterBehaviour.AnimateArms("ArmsPickup");
-            Debug.Log("Pickup Anim");
 
             lastKnownState = carryStateVal;
         }
@@ -314,6 +313,7 @@ public class PlayerController : NetworkBehaviour
         {
             characterBehaviour.AnimateArms("ArmsIdle");
         }
+        // End of Arm Animator
 
         switch (carryStateVal)
         {
