@@ -284,18 +284,41 @@ public class PlayerController : NetworkBehaviour
 
         UpdateTrapPlacerVisuals();
 
-        if (lastKnownState != carryStateVal)
+        if (lastKnownState == PlayerCarryState.CarryingObject && carryStateVal == PlayerCarryState.Empty)
         {
-            characterBehaviour.UpdateArms(carryStateVal);
+            characterBehaviour.AnimateArms("ArmsThrow");
+            Debug.Log("Throwing Anim");
 
             lastKnownState = carryStateVal;
+        }
+
+        else if (lastKnownState == PlayerCarryState.Empty && carryStateVal == PlayerCarryState.CarryingObject)
+        {
+            characterBehaviour.AnimateArms("ArmsPickup");
+            Debug.Log("Pickup Anim");
+
+            lastKnownState = carryStateVal;
+        }
+
+        if (playerStateVal == PlayerState.Dashing)
+        {
+            characterBehaviour.AnimateArms("ArmsDash");
+        }
+
+        else if (playerStateVal == PlayerState.Moving && carryStateVal == PlayerCarryState.Empty && canMove)
+        {
+            characterBehaviour.AnimateArms("ArmsWalking");
+        }
+
+        else if (carryStateVal == PlayerCarryState.Empty && canMove)
+        {
+            characterBehaviour.AnimateArms("ArmsIdle");
         }
 
         switch (carryStateVal)
         {
             case PlayerCarryState.Empty:
                 heldObject.SetActive(false);
-
                 break;
 
             case PlayerCarryState.CarryingObject:
@@ -329,7 +352,7 @@ public class PlayerController : NetworkBehaviour
 
         if (characterBehaviour != null)
         {
-            characterBehaviour.UpdateLegs(playerStateVal);
+            characterBehaviour.UpdateLegs(playerStateVal, canMove);
             characterBehaviour.UpdateFace(playerStateVal);
         }
     }
@@ -680,6 +703,8 @@ public class PlayerController : NetworkBehaviour
 
             UpdatePlayerStateServerRpc(PlayerState.Dashing);
             playerState = PlayerState.Dashing;
+
+            if (!canMove) return;
 
             PlayDashEffectServerRpc();
         }

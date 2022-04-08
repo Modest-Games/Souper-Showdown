@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7139608958510711713}
   - component: {fileID: 2260957046316649036}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Legs_Moving
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -111,6 +111,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: left_leg
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3dfc0a4584592224eb00aacac4ee1b6f, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3dfc0a4584592224eb00aacac4ee1b6f, type: 3}
 --- !u!4 &5934777300111221608 stripped
@@ -176,6 +180,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 3dfc0a4584592224eb00aacac4ee1b6f, type: 3}
       propertyPath: m_Name
       value: right_leg
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 3dfc0a4584592224eb00aacac4ee1b6f, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3dfc0a4584592224eb00aacac4ee1b6f, type: 3}
