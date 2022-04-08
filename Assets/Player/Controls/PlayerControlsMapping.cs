@@ -204,6 +204,33 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""VoteOption1"",
+                    ""type"": ""Button"",
+                    ""id"": ""0771e6c1-0869-4392-855d-c2fc22ea39ed"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""VoteOption2"",
+                    ""type"": ""Button"",
+                    ""id"": ""0d48e38a-21d6-444c-b0cd-cd06aa50795b"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""VoteOption3"",
+                    ""type"": ""Button"",
+                    ""id"": ""e1767f06-33f6-487c-b209-afa6c0a42cc6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -393,6 +420,39 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""action"": ""Back"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d62b8d75-ba32-4a97-9217-7d2d5f005b19"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VoteOption1"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""7f817a31-c2b0-48ac-bcae-654dcffd6673"",
+                    ""path"": ""<Gamepad>/dpad/right"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VoteOption2"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""33441cb7-68d3-4330-a570-2dcd155d6ab6"",
+                    ""path"": ""<Gamepad>/dpad/down"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""VoteOption3"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -467,6 +527,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         m_Gameplay_PlaceTrap = m_Gameplay.FindAction("Place Trap", throwIfNotFound: true);
         m_Gameplay_Struggle = m_Gameplay.FindAction("Struggle", throwIfNotFound: true);
         m_Gameplay_Back = m_Gameplay.FindAction("Back", throwIfNotFound: true);
+        m_Gameplay_VoteOption1 = m_Gameplay.FindAction("VoteOption1", throwIfNotFound: true);
+        m_Gameplay_VoteOption2 = m_Gameplay.FindAction("VoteOption2", throwIfNotFound: true);
+        m_Gameplay_VoteOption3 = m_Gameplay.FindAction("VoteOption3", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_ToggleDebug = m_Debug.FindAction("ToggleDebug", throwIfNotFound: true);
@@ -575,6 +638,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
     private readonly InputAction m_Gameplay_PlaceTrap;
     private readonly InputAction m_Gameplay_Struggle;
     private readonly InputAction m_Gameplay_Back;
+    private readonly InputAction m_Gameplay_VoteOption1;
+    private readonly InputAction m_Gameplay_VoteOption2;
+    private readonly InputAction m_Gameplay_VoteOption3;
     public struct GameplayActions
     {
         private @PlayerControlsMapping m_Wrapper;
@@ -592,6 +658,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         public InputAction @PlaceTrap => m_Wrapper.m_Gameplay_PlaceTrap;
         public InputAction @Struggle => m_Wrapper.m_Gameplay_Struggle;
         public InputAction @Back => m_Wrapper.m_Gameplay_Back;
+        public InputAction @VoteOption1 => m_Wrapper.m_Gameplay_VoteOption1;
+        public InputAction @VoteOption2 => m_Wrapper.m_Gameplay_VoteOption2;
+        public InputAction @VoteOption3 => m_Wrapper.m_Gameplay_VoteOption3;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -640,6 +709,15 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @Back.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBack;
                 @Back.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBack;
                 @Back.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnBack;
+                @VoteOption1.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption1;
+                @VoteOption1.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption1;
+                @VoteOption1.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption1;
+                @VoteOption2.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption2;
+                @VoteOption2.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption2;
+                @VoteOption2.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption2;
+                @VoteOption3.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption3;
+                @VoteOption3.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption3;
+                @VoteOption3.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption3;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -683,6 +761,15 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @Back.started += instance.OnBack;
                 @Back.performed += instance.OnBack;
                 @Back.canceled += instance.OnBack;
+                @VoteOption1.started += instance.OnVoteOption1;
+                @VoteOption1.performed += instance.OnVoteOption1;
+                @VoteOption1.canceled += instance.OnVoteOption1;
+                @VoteOption2.started += instance.OnVoteOption2;
+                @VoteOption2.performed += instance.OnVoteOption2;
+                @VoteOption2.canceled += instance.OnVoteOption2;
+                @VoteOption3.started += instance.OnVoteOption3;
+                @VoteOption3.performed += instance.OnVoteOption3;
+                @VoteOption3.canceled += instance.OnVoteOption3;
             }
         }
     }
@@ -739,6 +826,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         void OnPlaceTrap(InputAction.CallbackContext context);
         void OnStruggle(InputAction.CallbackContext context);
         void OnBack(InputAction.CallbackContext context);
+        void OnVoteOption1(InputAction.CallbackContext context);
+        void OnVoteOption2(InputAction.CallbackContext context);
+        void OnVoteOption3(InputAction.CallbackContext context);
     }
     public interface IDebugActions
     {

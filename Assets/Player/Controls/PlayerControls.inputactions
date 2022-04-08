@@ -182,6 +182,33 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "VoteOption1",
+                    "type": "Button",
+                    "id": "0771e6c1-0869-4392-855d-c2fc22ea39ed",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "VoteOption2",
+                    "type": "Button",
+                    "id": "0d48e38a-21d6-444c-b0cd-cd06aa50795b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "VoteOption3",
+                    "type": "Button",
+                    "id": "e1767f06-33f6-487c-b209-afa6c0a42cc6",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -369,6 +396,39 @@
                     "processors": "",
                     "groups": "",
                     "action": "Back",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d62b8d75-ba32-4a97-9217-7d2d5f005b19",
+                    "path": "<Gamepad>/dpad/up",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "VoteOption1",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7f817a31-c2b0-48ac-bcae-654dcffd6673",
+                    "path": "<Gamepad>/dpad/right",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "VoteOption2",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "33441cb7-68d3-4330-a570-2dcd155d6ab6",
+                    "path": "<Gamepad>/dpad/down",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "VoteOption3",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

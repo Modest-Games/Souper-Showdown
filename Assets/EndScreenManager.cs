@@ -8,6 +8,8 @@ using Unity.Services.Relay;
 
 public class EndScreenManager : NetworkBehaviour
 {
+    public static EndScreenManager Instance { get; private set; }
+
     //Variables used for setting bar graph parameters
     public float maxHeight = 523.0f;
     public float backButtonHoldDuration;
@@ -44,6 +46,18 @@ public class EndScreenManager : NetworkBehaviour
 
     private float timeWhenBackStarted;
 
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -56,7 +70,7 @@ public class EndScreenManager : NetworkBehaviour
         PlayerTokenBehaviour.BackActionCancelled += BackActionCancelled;
     }
 
-    private void OnDestroy()
+    new private void OnDestroy()
     {
         // clear event listeners
         PlayerTokenBehaviour.BackActionStarted -= BackActionStarted;

@@ -108,6 +108,11 @@ public class PlayersManager : NetworkBehaviour
         return players.Find(p => p.networkObjId == networkObjId);
     }
 
+    public Player GetPlayerFromList(ulong clientIndex, int controllerIndex)
+    {
+        return players.Find(p => p.clientIndex == clientIndex && p.controllerIndex == controllerIndex);
+    }
+
     public int GetPlayerIndex(ulong networkObjId)
     {
         return players.IndexOf(players.Find(p => p.networkObjId == networkObjId));
