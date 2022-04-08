@@ -128,6 +128,11 @@ public class PlayersManager : NetworkBehaviour
         return GetNetworkObject(networkObjId).GetComponent<PlayerController>().networkScore.Value;
     }
 
+    public int GetPlayerVote(ulong networkObjId)
+    {
+        return GetNetworkObject(networkObjId).GetComponent<PlayerVoter>().networkVoteOption.Value;
+    }
+
     public int NumberOfChefs
     {
         get

@@ -628,6 +628,7 @@ GameObject:
   - component: {fileID: 8611187689009542501}
   - component: {fileID: 8483061068536328959}
   - component: {fileID: 6883000223329185731}
+  - component: {fileID: -1245674920620117001}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1005,6 +1006,20 @@ MonoBehaviour:
   struggleRequirement: 15
   struggleCount: 0
   networkHeldPlayerID:
+    m_InternalValue: 0
+--- !u!114 &-1245674920620117001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3608877965232234398}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7db82e8ec4496741bc9c5b908d3da35, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  networkVoteOption:
     m_InternalValue: 0
 --- !u!1 &3740605896094510413
 GameObject:

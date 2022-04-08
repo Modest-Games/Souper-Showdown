@@ -33,11 +33,6 @@ public class PlayerTokenBehaviour : MonoBehaviour
 
         // bind scene change events
         SceneManager.sceneLoaded += SceneManager_sceneLoaded;
-
-        // bind vote action events
-        playerInput.actions["VoteOption1"].performed += ctx => { VoteForOption(1); };
-        playerInput.actions["VoteOption2"].performed += ctx => { VoteForOption(2); };
-        playerInput.actions["VoteOption3"].performed += ctx => { VoteForOption(3); };
     }
 
     private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode sceneLoadMode)
@@ -45,16 +40,7 @@ public class PlayerTokenBehaviour : MonoBehaviour
         if (scene.name == "Lobby")
             Destroy(gameObject);
     }
-
-    private void VoteForOption(int option)
-    {
-        if (PlayerVoted != null)
-            PlayerVoted(option, PlayersManager.Instance.GetPlayerFromList(
-                LocalPlayerManager.Instance.thisClientId, playerInput.playerIndex).networkObjId);
-
-        Debug.LogFormat("Finding player with clientId: {0}, networkObjectId: {1}", LocalPlayerManager.Instance.thisClientId, playerInput.playerIndex);
-    }
-
+    
     private void OnEnable()
     {
         LocalPlayerManager.Instance.inputPlayers.Add(playerInput);

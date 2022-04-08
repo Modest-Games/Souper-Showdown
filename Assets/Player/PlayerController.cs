@@ -200,8 +200,9 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Rotate Trap"].performed += ctx => RotateTrapPerformed();
             playerInput.actions["Place Trap"].performed += ctx => PlaceTrapPerformed();
 
-            // bind struggle controls
+            // bind other controls
             GetComponent<StruggleBehaviour>().BindControls(playerInput);
+            GetComponent<PlayerVoter>().BindControls(playerInput);
 
             controlsBound = true;
         }
@@ -229,8 +230,9 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Rotate Trap"].performed -= ctx => RotateTrapPerformed();
             playerInput.actions["Place Trap"].performed -= ctx => PlaceTrapPerformed();
 
-            // unbind struggle controls
+            // unbind other controls
             GetComponent<StruggleBehaviour>().UnbindControls(playerInput);
+            GetComponent<PlayerVoter>().UnbindControls(playerInput);
 
             controlsBound = false;
         }
