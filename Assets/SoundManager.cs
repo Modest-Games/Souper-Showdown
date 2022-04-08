@@ -4,50 +4,43 @@ using UnityEngine;
 
 public class SoundManager : MonoBehaviour
 {
-	// Audio players components.
-	public AudioSource EffectsSource;
+    //public static AudioPlayer audioPlayerInstance;
 
-	// Random pitch adjustment range.
-	public float LowPitchRange = .95f;
-	public float HighPitchRange = 1.05f;
+    public AudioClip[] audioClips;
+    public AudioSource sourcePrefab;
 
-	// Singleton instance.
-	public static SoundManager Instance = null;
+    private void Awake()
+    {
+        //if (audioPlayerInstance == null) { audioPlayerInstance = this; }
+    }
 
-	// Initialize the singleton instance.
-	private void Awake()
-	{
-		// If there is not already an instance of SoundManager, set it to this.
-		if (Instance == null)
-		{
-			Instance = this;
-		}
-		//If an instance already exists, destroy whatever this object is to enforce the singleton.
-		else if (Instance != this)
-		{
-			Destroy(gameObject);
-		}
+    public void PlayClip(AudioClip sound, bool loop, float volume)
+    {
+        AudioSource temp;
 
-		//Set SoundManager to DontDestroyOnLoad so that it won't be destroyed when reloading our scene.
-		DontDestroyOnLoad(gameObject);
-	}
+        temp = Instantiate(sourcePrefab);
+        Destroy(temp, sound.length + 1.0f);
 
-	// Play a single clip through the sound effects source.
-	public void Play(AudioClip clip)
-	{
-		EffectsSource.clip = clip;
-		EffectsSource.Play();
-	}
+        if (loop)
+        {
+            temp.loop = true;
+        }
 
-	// Play a random clip from an array, and randomize the pitch slightly.
-	public void RandomSoundEffect(params AudioClip[] clips)
-	{
-		int randomIndex = Random.Range(0, clips.Length);
-		float randomPitch = Random.Range(LowPitchRange, HighPitchRange);
+        temp.clip = sound;
+        temp.volume = volume;
+        temp.Play();
+    }
 
-		EffectsSource.pitch = randomPitch;
-		EffectsSource.clip = clips[randomIndex];
-		EffectsSource.Play();
-	}
 
+    // Start is called before the first frame update
+    void Start()
+    {
+        
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        
+    }
 }

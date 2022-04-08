@@ -79,11 +79,6 @@ public class PlayerController : NetworkBehaviour
 
     [SerializeField] private GameObject pollutantPrefab;
 
-    [Header("SFX")]
-    public AudioClip[] DeathSounds;
-    public AudioClip[] DashSounds;
-    public AudioClip[] DazedSounds;
-
     private LineRenderer aimIndicator;
     private Rigidbody rb;
     private PlayerInput playerInput;
@@ -628,9 +623,6 @@ public class PlayerController : NetworkBehaviour
             timeDazed = 0f;
 
             GrabCancelled();
-
-
-            SoundManager.Instance.RandomSoundEffect(DazedSounds);
 
             playerState = PlayerState.Dazed;
             UpdatePlayerStateServerRpc(PlayerState.Dazed);
@@ -1184,7 +1176,6 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void PlayDashEffectClientRpc()
     {
-        SoundManager.Instance.RandomSoundEffect(DashSounds);
         dashParticles.Play();
     }
 
@@ -1321,7 +1312,6 @@ public class PlayerController : NetworkBehaviour
     [ClientRpc]
     public void KillPlayerClientRpc(ClientRpcParams clientRpcParams = default)
     {
-        SoundManager.Instance.RandomSoundEffect(DeathSounds);
         StartCoroutine(RespawnTiming());
     }
 

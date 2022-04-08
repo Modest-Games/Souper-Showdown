@@ -55,11 +55,6 @@ MonoBehaviour:
   throwerId:
     m_InternalValue: 0
   rb: {fileID: 0}
-  DropSounds:
-  - {fileID: 8300000, guid: 29db1bd10dd8bd94883ae3beced7e270, type: 3}
-  - {fileID: 8300000, guid: 4cdafa5f14e6e534ba570628aea1560d, type: 3}
-  - {fileID: 8300000, guid: c143f6214dac1ef4a9ea765999a4dc60, type: 3}
-  - {fileID: 8300000, guid: c4ca1819b5a195642a9fcdd710a2b785, type: 3}
 --- !u!135 &6332544153703697550
 SphereCollider:
   m_ObjectHideFlags: 0

@@ -10,7 +10,6 @@ public class SoupPot_Behaviour : NetworkBehaviour
     public static event SoupPotDelegate SoupReceivedTrash;
 
     public ParticleSystem ps;
-    public AudioClip[] SplashSounds;
 
     private void OnTriggerEnter(Collider other)
     {
@@ -40,9 +39,7 @@ public class SoupPot_Behaviour : NetworkBehaviour
     private IEnumerator OnPollutantEnter(GameObject pollutant)
     {
         var liveMeshPlayerID = pollutant.GetComponent<PollutantBehaviour>().pollutantObject.playerID;
-        SoundManager.Instance.RandomSoundEffect(SplashSounds);
-
-        if (liveMeshPlayerID != -1)
+        if(liveMeshPlayerID != -1)
             RespawnPlayerFromLiveMeshClientRpc((ulong) liveMeshPlayerID);
 
         yield return new WaitForSeconds(0.25f);

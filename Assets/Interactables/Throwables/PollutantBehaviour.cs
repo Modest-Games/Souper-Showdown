@@ -27,7 +27,6 @@ public class PollutantBehaviour : NetworkBehaviour
     private TrailRenderer trail;
 
     public Rigidbody rb;
-    public AudioClip[] DropSounds;
 
     void Awake()
     {
@@ -76,9 +75,6 @@ public class PollutantBehaviour : NetworkBehaviour
         {
             case "Ground":
                 trail.emitting = false;
-
-                SoundManager.Instance.RandomSoundEffect(DropSounds);
-
                 state = PollutantState.Idle;
 
                 if (pollutantObject.playerID != -1)

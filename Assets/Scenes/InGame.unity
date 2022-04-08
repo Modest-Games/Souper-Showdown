@@ -2039,7 +2039,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2003390083
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2052,9 +2052,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c08a62cfe71b7704f9e2f135831bac56, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EffectsSource: {fileID: 2003390084}
-  LowPitchRange: 0.95
-  HighPitchRange: 1.05
+  audioClips: []
+  sourcePrefab: {fileID: 0}
 --- !u!82 &2003390084
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2065,11 +2064,11 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 0
-  m_Volume: 0.789
+  m_audioClip: {fileID: 8300000, guid: 4da7e2eb94a94804b8bd46a5f89cf98a, type: 3}
+  m_PlayOnAwake: 1
+  m_Volume: 0.01
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -2666,10 +2665,6 @@ PrefabInstance:
       propertyPath: MusicManager
       value: 
       objectReference: {fileID: 210403197}
-    - target: {fileID: 3569870885152564207, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
-      propertyPath: gameDuration
-      value: 120
-      objectReference: {fileID: 0}
     - target: {fileID: 3569870885152564207, guid: 98b5e0a2e9b6fca49997faad57811d6f, type: 3}
       propertyPath: tracks.Array.data[0]
       value: 

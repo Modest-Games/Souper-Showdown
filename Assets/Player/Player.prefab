@@ -808,24 +808,6 @@ MonoBehaviour:
   lookVector: {x: 0, y: 0, z: 0}
   timeOfLastDash: 0
   pollutantPrefab: {fileID: 5288980905173298321, guid: 440a5ac09cb64e44a8d21b77ae348f52, type: 3}
-  DeathSounds:
-  - {fileID: 8300000, guid: ab79b585b82d8314fab0d87681298671, type: 3}
-  - {fileID: 8300000, guid: 7a8ab167e094d404ca3b19cef5a94e81, type: 3}
-  - {fileID: 8300000, guid: 83830c530d8b59d4e8b6a553875dd247, type: 3}
-  - {fileID: 8300000, guid: ecf758e93b41127458c62172cb046729, type: 3}
-  - {fileID: 8300000, guid: 2c5a5a13e8e6ba843bc770263f7ffaad, type: 3}
-  DashSounds:
-  - {fileID: 8300000, guid: d63309c0208bfbe4e9e422d07d1db9e8, type: 3}
-  - {fileID: 8300000, guid: b610536b6f17fa14ba539299cb255dc5, type: 3}
-  - {fileID: 8300000, guid: e93086f1b14007a44a1e781728aa6465, type: 3}
-  - {fileID: 8300000, guid: 2fc0e3ddffb8bbf4b9b87a275352247a, type: 3}
-  - {fileID: 8300000, guid: 188027910e37f244eac19291f1cc9cf3, type: 3}
-  DazedSounds:
-  - {fileID: 8300000, guid: 571dc4b1b81e0304285b214459cc8183, type: 3}
-  - {fileID: 8300000, guid: 1e4a485eef7d0234fb0da9a1d831355a, type: 3}
-  - {fileID: 8300000, guid: 2e2ed2a19c6bbb84d83d6a588ea9edc2, type: 3}
-  - {fileID: 8300000, guid: 4e9a8b6d51c873b4b8549660975eef7f, type: 3}
-  - {fileID: 8300000, guid: c69d932b6e989224e89658c1be15a291, type: 3}
   canMove: 0
   smokeVFX: {fileID: 0}
   dirtVFX: {fileID: 0}
