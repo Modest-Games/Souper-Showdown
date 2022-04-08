@@ -355,6 +355,7 @@ public class EndScreenManager : NetworkBehaviour
         hasGameEnded = false;
         endScreen.SetActive(false);
 
+        SceneSwitcher.Instance.RandomizeIsChef();
         SceneSwitcher.Instance.SwitchToInGame();
     }
 }

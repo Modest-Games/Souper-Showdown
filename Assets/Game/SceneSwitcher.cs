@@ -59,6 +59,38 @@ public class SceneSwitcher : NetworkBehaviour
         }
     }
 
+    public void RandomizeIsChef()
+    {
+        // only perform on the server
+        if (!IsServer)
+            return;
+
+        int numChef = PlayersManager.Instance.NumberOfChefs;
+        ulong[] chosenChefPlayers = new ulong[numChef];
+
+        List<PlayersManager.Player> potentialChefs = PlayersManager.Instance.players;
+
+        // select random chefs
+        for (int i = 0; i < numChef; i++)
+        {
+            int randomSelection = Random.Range(0, potentialChefs.Count);
+            chosenChefPlayers[i] = potentialChefs[randomSelection].networkObjId;
+            potentialChefs.RemoveAt(i);
+        }
+
+        // set spoilers
+        foreach (PlayersManager.Player player in potentialChefs)
+        {
+            GetNetworkObject(player.networkObjId).GetComponent<PlayerController>().UpdateIsChefServerRpc(false);
+        }
+
+        // set chefs
+        foreach (ulong playerId in chosenChefPlayers)
+        {
+            GetNetworkObject(playerId).GetComponent<PlayerController>().UpdateIsChefServerRpc(true);
+        }
+    }
+
     public void SwitchToLobby()
     {
         NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
