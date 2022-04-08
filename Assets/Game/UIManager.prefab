@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 6620624001080799109}
   - component: {fileID: 6620624001080799110}
-  - component: {fileID: 6823884810936702687}
   m_Layer: 0
   m_Name: UIManager
   m_TagString: Untagged
@@ -45,24 +44,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startHostButton: {fileID: 0}
-  startServerButton: {fileID: 0}
   startClientButton: {fileID: 0}
   connectedPlayersText: {fileID: 0}
+  roomCodeText: {fileID: 0}
   startGameButton: {fileID: 0}
-  switchSceneButton: {fileID: 0}
-  characterSelector: {fileID: 0}
-  isChefToggle: {fileID: 0}
-  chosenCharacterName: 
-  chosenCharacterIndex: 0
---- !u!114 &6823884810936702687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6620624001080799111}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 24364db7e9669ed438e802b130c147f1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  networkAddressInput: {fileID: 0}
+  characterSelectionUI: {fileID: 0}
+  souperLogo: {fileID: 0}
+  mainMenuUI: {fileID: 0}
+  menuControls: {fileID: 0}
+  menuBlur: {fileID: 0}
+  controlsButton: {fileID: 0}
