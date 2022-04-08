@@ -70,6 +70,7 @@ public class SpoilMeter : NetworkBehaviour
         {
             // end the game for clients
             EndGameClientRpc();
+            EndScreenManager.Instance.SpoilersWin();
 
             // end the game for server
             if (SoupSpoiled != null)

@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class CardRenderer : MonoBehaviour
 {
     private NumberCounter numberCounter;
+    public int scoreMultiplier = 10;
     private int score = 0;
     private ulong playerNetworkId;
 
@@ -42,7 +43,7 @@ public class CardRenderer : MonoBehaviour
 
     public void AddScore(int val)
     {
-        score += val;
+        score += (val * scoreMultiplier);
         //scoreLabel.text = scoreValue.ToString();
         numberCounter.Value = score;
     }

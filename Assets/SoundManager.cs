@@ -50,4 +50,16 @@ public class SoundManager : MonoBehaviour
 		EffectsSource.Play();
 	}
 
+	// Play a random clip from an array, and randomize the pitch slightly.
+	public void RandomSoundEffect(float vol, params AudioClip[] clips)
+	{
+		int randomIndex = Random.Range(0, clips.Length);
+		float randomPitch = Random.Range(LowPitchRange, HighPitchRange);
+
+		EffectsSource.pitch = randomPitch;
+		EffectsSource.clip = clips[randomIndex];
+		EffectsSource.volume = vol;
+		EffectsSource.Play();
+	}
+
 }

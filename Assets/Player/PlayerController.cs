@@ -1185,7 +1185,7 @@ public class PlayerController : NetworkBehaviour
     public void PlayDashEffectClientRpc()
     {
         dashParticles.Play();
-        SoundManager.Instance.RandomSoundEffect(DashSounds);
+        SoundManager.Instance.RandomSoundEffect(0.3f, DashSounds);
     }
 
     [ServerRpc(RequireOwnership = false)]

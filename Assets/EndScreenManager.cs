@@ -32,6 +32,10 @@ public class EndScreenManager : NetworkBehaviour
 
     public GameObject timerUI;
 
+
+    public GameObject chefWins;
+    public GameObject spoilersWin;
+
     public Transform GraphPanel;
 
     public int numPlayers;
@@ -218,6 +222,20 @@ public class EndScreenManager : NetworkBehaviour
             //pb.transform.SetParent(GameObject.FindGameObjectWithTag("BarGraph").transform, false);
             pb.transform.SetParent(GraphPanel, false);
         }
+    }
+
+    public void ChefWins()
+    {
+        Debug.Log("Chef team wins!");
+        chefWins.SetActive(true);
+        spoilersWin.SetActive(false);
+    }
+
+    public void SpoilersWin()
+    {
+        Debug.Log("Spoiler team wins!");
+        chefWins.SetActive(false);
+        spoilersWin.SetActive(true);
     }
 
     GameObject MakeBar(string spoiler, int score, Sprite playerNum)

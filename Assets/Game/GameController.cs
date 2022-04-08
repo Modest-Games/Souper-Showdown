@@ -23,6 +23,8 @@ public class GameController : NetworkBehaviour
     public static event DebugDelegate DebugEnabled;
     public static event DebugDelegate DebugDisabled;
 
+    public static event GameStateDelegate ChefTeamWin;
+
     public delegate void GameStateDelegate();
     public static event GameStateDelegate GameCreated;
     public static event GameStateDelegate GameStarted;
@@ -168,6 +170,9 @@ public class GameController : NetworkBehaviour
                     // check if the game should be over
                     if (TimeElapsed >= gameDuration)
                         gameState.Value = GameState.Stopped;
+                        
+                    
+                            EndScreenManager.Instance.ChefWins();
 
                     break;
             }
