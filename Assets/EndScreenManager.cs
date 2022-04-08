@@ -211,8 +211,6 @@ public class EndScreenManager : NetworkBehaviour
         PlayerBars = list1.ToArray();
 
 
-
-
         foreach (GameObject pb in PlayerBars)
         {
             Debug.Log(pb);
