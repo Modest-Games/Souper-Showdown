@@ -62,6 +62,9 @@ public class GameController : NetworkBehaviour
 
 
     [SerializeField] [ReadOnly] private float gameTimeElapsed;
+
+    public NetworkVariable<float> networkTimeStarted = new NetworkVariable<float>();
+
     private SoupPot_Behaviour soupPot;
     private ObjectSpawner spawner;
     private PlayerControlsMapping controls;
@@ -138,6 +141,9 @@ public class GameController : NetworkBehaviour
             // setup the map
             SetupMap();
 
+            // set the time the game started
+            networkTimeStarted.Value = NetworkManager.Singleton.LocalTime.TimeAsFloat;
+
             // start the game (server only)
             if (autoStart)
                 gameState.Value = GameState.Running;
@@ -161,15 +167,8 @@ public class GameController : NetworkBehaviour
             {
                 case GameState.Running:
                     // check if the game should be over
-                    if (gameTimeElapsed >= gameDuration)
-                    {
-                        // stop the game
+                    if (TimeElapsed >= gameDuration)
                         gameState.Value = GameState.Stopped;
-                    } else
-                    {
-                        // add delta time to the time elapsed
-                        gameTimeElapsed += Time.deltaTime;
-                    }
 
                     break;
             }
@@ -196,14 +195,27 @@ public class GameController : NetworkBehaviour
         return format;
     }
 
+    public float TimeElapsed
+    {
+        get
+        {
+            return NetworkManager.LocalTime.TimeAsFloat - networkTimeStarted.Value;
+        }
+    }
+
+    public float TimeRemaining
+    {
+        get
+        {
+            return Mathf.Max(0f, gameDuration - TimeElapsed);
+        }
+    }
+
     public void UpdateTimer()
     {
-        //update timer var
-        float timeRemaining = gameDuration - gameTimeElapsed;
-
         runningTime += Time.deltaTime;
 
-        if (timeRemaining < timestamps[currentTrack] && !canSwitchTrack)
+        if (TimeRemaining < timestamps[currentTrack] && !canSwitchTrack)
         {
             canSwitchTrack = true;
             timeToChange = ((float)Math.Ceiling(runningTime / beatInterval)) * beatInterval;
@@ -214,7 +226,7 @@ public class GameController : NetworkBehaviour
             currentTrack++;
             //Switch song
             Debug.Log("Song switching to track #: " + currentTrack);
-            nextTimestamp = timeRemaining - songInterval;
+            nextTimestamp = TimeRemaining - songInterval;
             tracks[currentTrack].GetComponent<TransitionMusic>().ChangeSong();
             if (currentTrack == 3)
             {
@@ -224,7 +236,7 @@ public class GameController : NetworkBehaviour
         }
 
         //Format and update the timer
-        string timerVar = timeFormat(timeRemaining);
+        string timerVar = timeFormat(TimeRemaining);
         timer.GetComponent<TMPro.TextMeshProUGUI>().text = timerVar;
     }
 
@@ -280,14 +292,6 @@ public class GameController : NetworkBehaviour
         }
 
         Debug.Log("Debug toggled. Now set to: " + isDebugEnabled);
-    }
-
-    public float TimeRemaining
-    {
-        get
-        {
-            return Mathf.Max(gameDuration - gameTimeElapsed, 0f);
-        }
     }
 
     private void OnSoupReceivedTrash(float amount, ulong throwerId)

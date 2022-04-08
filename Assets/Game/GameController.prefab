@@ -51,7 +51,7 @@ MonoBehaviour:
     m_InternalValue: 0
   numStartingPollutants: 20
   autoStart: 1
-  gameDuration: 500
+  gameDuration: 120
   timer: {fileID: 0}
   MusicManager: {fileID: 0}
   tracks:
@@ -60,6 +60,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   gameTimeElapsed: 0
+  networkTimeStarted:
+    m_InternalValue: 0
 --- !u!114 &4324836108296228691
 MonoBehaviour:
   m_ObjectHideFlags: 0

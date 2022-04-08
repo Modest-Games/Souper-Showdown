@@ -26,6 +26,7 @@ public class EndScreenManager : NetworkBehaviour
 
     public int endScreenDuration = 30;
     public float endScreenTimer = 0;
+
     public GameObject timerUI;
 
     public Transform GraphPanel;
