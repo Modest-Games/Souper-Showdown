@@ -77,7 +77,7 @@ public class PollutantBehaviour : NetworkBehaviour
             case "Ground":
                 trail.emitting = false;
 
-                SoundManager.Instance.RandomSoundEffect(DropSounds);
+                MakeSoundClientRpc();
 
                 state = PollutantState.Idle;
 
@@ -91,8 +91,12 @@ public class PollutantBehaviour : NetworkBehaviour
         }
     }
 
+    [ClientRpc]
+    private void MakeSoundClientRpc()
+    {
+        SoundManager.Instance.RandomSoundEffect(DropSounds);
+    }
     
-
     [ClientRpc]
     public void ReplaceLiveMeshClientRpc(ulong playerID)
     {
