@@ -2,11 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Netcode;
+using TMPro;
 
 public class EndScreenVotingManager : NetworkBehaviour
 {
     public int[] votes;
-    
+
+    public Transform option1;
+    public Transform option2;
+    public Transform option3;
+
     public static EndScreenVotingManager Instance { get; private set; }
 
     private void Awake()
@@ -36,6 +41,15 @@ public class EndScreenVotingManager : NetworkBehaviour
                 votes[playerVoteOption]++;
             }
         }
+
+        UpdateVoteIndicators();
+    }
+
+    private void UpdateVoteIndicators()
+    {
+        option1.GetComponent<TMP_Text>().text = votes[0].ToString();
+        option2.GetComponent<TMP_Text>().text = votes[1].ToString();
+        option3.GetComponent<TMP_Text>().text = votes[2].ToString();
     }
 
     void Start()

@@ -13,16 +13,25 @@ public class PlayerVoter : NetworkBehaviour
 
     public void BindControls(PlayerInput playerInput)
     {
-        playerInput.actions["VoteOption1"].performed += ctx => VoteServerRpc(1);
-        playerInput.actions["VoteOption2"].performed += ctx => VoteServerRpc(2);
-        playerInput.actions["VoteOption3"].performed += ctx => VoteServerRpc(3);
+        playerInput.actions["VoteOption1"].performed += ctx => OnVotePerformed(1);
+        playerInput.actions["VoteOption2"].performed += ctx => OnVotePerformed(2);
+        playerInput.actions["VoteOption3"].performed += ctx => OnVotePerformed(3);
     }
 
     public void UnbindControls(PlayerInput playerInput)
     {
-        playerInput.actions["VoteOption1"].performed -= ctx => VoteServerRpc(1);
-        playerInput.actions["VoteOption2"].performed -= ctx => VoteServerRpc(2);
-        playerInput.actions["VoteOption3"].performed -= ctx => VoteServerRpc(3);
+        playerInput.actions["VoteOption1"].performed -= ctx => OnVotePerformed(1);
+        playerInput.actions["VoteOption2"].performed -= ctx => OnVotePerformed(2);
+        playerInput.actions["VoteOption3"].performed -= ctx => OnVotePerformed(3);
+    }
+
+    private void OnVotePerformed(int option)
+    {
+        // ensure the window is focused
+        if (!Application.isFocused)
+            return;
+
+        VoteServerRpc(option);
     }
 
     [ServerRpc(RequireOwnership = false)]
