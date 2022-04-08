@@ -319,6 +319,8 @@ public class PlayerController : NetworkBehaviour
         {
             case PlayerCarryState.Empty:
                 heldObject.SetActive(false);
+                // update the aim indicator
+                aimIndicator.gameObject.SetActive(true);
                 break;
 
             case PlayerCarryState.CarryingObject:
@@ -330,12 +332,11 @@ public class PlayerController : NetworkBehaviour
                     // update the aim indicator
                     aimIndicator.gameObject.SetActive(true);
                     aimIndicator.transform.localScale = Vector3.one * Mathf.Lerp(0.25f, 1.5f, CalculatedThrowFactor);
+                } else
+                {
+                    // update the aim indicator
+                    aimIndicator.gameObject.SetActive(false);
                 }
-
-                break;
-
-            case PlayerCarryState.CarryingPlayer:
-                // Carrying Player
 
                 break;
         }
