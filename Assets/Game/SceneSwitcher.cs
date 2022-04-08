@@ -38,7 +38,25 @@ public class SceneSwitcher : NetworkBehaviour
     public void SwitchToInGame()
     {
         NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
-        Debug.Log("Switching to InGame scene");
+
+        var traps = GameObject.FindGameObjectsWithTag("Trap");
+        var pollutants = GameObject.FindGameObjectsWithTag("Pollutant");
+        var projectiles = GameObject.FindGameObjectsWithTag("Projectile");
+
+        foreach (GameObject obj in traps)
+        {
+            Destroy(obj);
+        }
+
+        foreach (GameObject obj in pollutants)
+        {
+            Destroy(obj);
+        }
+
+        foreach (GameObject obj in projectiles)
+        {
+            Destroy(obj);
+        }
     }
 
     public void SwitchToLobby()
