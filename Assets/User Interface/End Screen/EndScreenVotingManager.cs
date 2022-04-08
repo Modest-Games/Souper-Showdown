@@ -25,13 +25,14 @@ public class EndScreenVotingManager : NetworkBehaviour
     {
         votes = new int[3];
 
-        foreach (PlayersManager.Player player in PlayersManager.Instance.players)
+        for (int i = 0; i < PlayersManager.Instance.players.Count; i++)
         {
+            PlayersManager.Player player = PlayersManager.Instance.players[i];
             int playerVoteOption = PlayersManager.Instance.GetPlayerVote(player.networkObjId) - 1;
 
             if (playerVoteOption >= 0)
             {
-                Debug.LogFormat("Player {0} voted for option {1}", player.networkObjId, playerVoteOption);
+                Debug.LogFormat("Player {0} voted for option {1}", i + 1, playerVoteOption);
                 votes[playerVoteOption]++;
             }
         }
