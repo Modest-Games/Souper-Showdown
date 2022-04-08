@@ -320,7 +320,7 @@ public class PlayerController : NetworkBehaviour
             case PlayerCarryState.Empty:
                 heldObject.SetActive(false);
                 // update the aim indicator
-                aimIndicator.gameObject.SetActive(true);
+                aimIndicator.gameObject.SetActive(false);
                 break;
 
             case PlayerCarryState.CarryingObject:
