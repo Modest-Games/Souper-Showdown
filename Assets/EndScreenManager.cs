@@ -38,8 +38,6 @@ public class EndScreenManager : NetworkBehaviour
 
     public Transform GraphPanel;
 
-    public int numPlayers;
-
     public Material[] spoilerMaterials;
     public Sprite[] spoilerIcons;
     public Color[] spoilerColors;
@@ -311,8 +309,8 @@ public class EndScreenManager : NetworkBehaviour
 
         loadSpoilerLibrary();
 
-        numPlayers = PlayersManager.Instance.players.Count;
-        PlayerBars = new GameObject[numPlayers]; //numPlayers
+        int numPlayers = PlayersManager.Instance.players.Count;
+        PlayerBars = new GameObject[PlayersManager.Instance.NumberOfSpoilers]; //numSpoilers
 
         List<PlayersManager.Player> players = PlayersManager.Instance.players;
 
