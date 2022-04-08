@@ -207,6 +207,35 @@ public class PlayerController : NetworkBehaviour
         }
     }
 
+    public void UnbindControls()
+    {
+        if (IsClient && IsOwner)
+        {
+            // unbind control inputs:
+            playerInput.actions["Dash"].performed -= ctx => DashPerformed();
+            playerInput.actions["Move"].performed -= ctx => MovePerformed(ctx.ReadValue<Vector2>());
+            playerInput.actions["Move"].canceled -= ctx => MoveCancelled();
+            playerInput.actions["Grab"].started -= ctx => GrabStarted();
+            //playerInput.actions["Grab"].canceled -= ctx => GrabCancelled();
+            playerInput.actions["Throw"].canceled -= ctx => ThrowPerformed();
+            playerInput.actions["Throw"].started -= ctx => ThrowStarted();
+            playerInput.actions["Next Character"].performed -= ctx => NextCharacterPerformed();
+            playerInput.actions["Previous Character"].performed -= ctx => PreviousCharacterPerformed();
+
+            // unbind chef control inputs:
+            playerInput.actions["Toggle Trap Mode"].performed -= ctx => ToggleTrapModePerformed();
+            playerInput.actions["Next Trap"].performed -= ctx => NextTrapPerformed();
+            playerInput.actions["Previous Trap"].performed -= ctx => PreviousTrapPerformed();
+            playerInput.actions["Rotate Trap"].performed -= ctx => RotateTrapPerformed();
+            playerInput.actions["Place Trap"].performed -= ctx => PlaceTrapPerformed();
+
+            // unbind struggle controls
+            GetComponent<StruggleBehaviour>().UnbindControls(playerInput);
+
+            controlsBound = false;
+        }
+    }
+
     public void TeleportPlayer(Vector3 pos)
     {
         if (IsClient && IsOwner)
@@ -1088,6 +1117,9 @@ public class PlayerController : NetworkBehaviour
     {
         // remove the player from the players list in players manager
         PlayersManager.Instance.RemovePlayerFromList(NetworkObjectId);
+
+        // unbinds the controls
+        UnbindControls();
     }
 
     private Pollutant GetPollutantObject(string type)

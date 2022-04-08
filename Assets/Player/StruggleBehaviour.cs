@@ -25,6 +25,11 @@ public class StruggleBehaviour : NetworkBehaviour
         playerInput.actions["Struggle"].performed += ctx => OnStrugglePerformed();
     }
 
+    public void UnbindControls(PlayerInput playerInput)
+    {
+        playerInput.actions["Struggle"].performed -= ctx => OnStrugglePerformed();
+    }
+
     private void OnStrugglePerformed()
     {
         // ensure the player is able to struggle

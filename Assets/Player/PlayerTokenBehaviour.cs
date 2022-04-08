@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Netcode;
+using UnityEngine.SceneManagement;
 
 public class PlayerTokenBehaviour : MonoBehaviour
 {
@@ -27,6 +28,15 @@ public class PlayerTokenBehaviour : MonoBehaviour
         // bind back action events
         playerInput.actions["Back"].started += ctx => { if (BackActionStarted != null) BackActionStarted(); };
         playerInput.actions["Back"].canceled += ctx => { if (BackActionCancelled != null) BackActionCancelled(); };
+
+        // bind scene change events
+        SceneManager.sceneLoaded += SceneManager_sceneLoaded;
+    }
+
+    private void SceneManager_sceneLoaded(Scene scene, LoadSceneMode sceneLoadMode)
+    {
+        if (scene.name == "Lobby")
+            Destroy(gameObject);
     }
 
     private void OnEnable()
