@@ -166,7 +166,7 @@ public class PlayerController : NetworkBehaviour
 
         debugCanvasObj.gameObject.SetActive(LobbyController.Instance.isDebugEnabled);
 
-        if (IsClient && !IsOwner)
+        if (IsClient && !IsOwner && !networkCharacterName.Value.IsEmpty)
         {
             RefreshCharacter();
         }
