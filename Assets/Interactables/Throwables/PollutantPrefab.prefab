@@ -52,6 +52,8 @@ MonoBehaviour:
   pollutantObject: {fileID: 0}
   meshInitialized: 0
   state: 0
+  throwerId:
+    m_InternalValue: 0
   rb: {fileID: 0}
 --- !u!135 &6332544153703697550
 SphereCollider:
@@ -64,8 +66,8 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.6
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Radius: 0.7
+  m_Center: {x: 0.2, y: 0, z: 0}
 --- !u!96 &6188385872918704861
 TrailRenderer:
   serializedVersion: 2
