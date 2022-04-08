@@ -62,7 +62,8 @@ public class SpoilMeter : NetworkBehaviour
         value = Mathf.Clamp(value + pollutantValue, 0f, maxValue);
 
         // Change Spoil Meter for all clients:
-        ChangeSpoilMeterClientRpc(pollutantValue);
+        if (IsServer)
+            ChangeSpoilMeterClientRpc(pollutantValue);
 
         // handle the soup being spoiled (avengers end game)
         if (value >= maxValue)

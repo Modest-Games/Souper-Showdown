@@ -43,7 +43,6 @@ public class GameController : NetworkBehaviour
     [Tooltip("The duration of the game in seconds")] public float gameDuration;
 
     [Header("UI Components")]
-    public Transform timer;
     private float nextTimestamp;
     private float songInterval = 5.0f;
 
@@ -237,7 +236,7 @@ public class GameController : NetworkBehaviour
 
         //Format and update the timer
         string timerVar = timeFormat(TimeRemaining);
-        timer.GetComponent<TMPro.TextMeshProUGUI>().text = timerVar;
+        SpoilMeter.Instance.transform.Find("Timer Text").GetComponent<TMPro.TextMeshProUGUI>().text = timerVar;
     }
 
     public void SetupMap()
