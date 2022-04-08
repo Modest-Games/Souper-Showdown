@@ -309,8 +309,8 @@ public class EndScreenManager : NetworkBehaviour
 
         loadSpoilerLibrary();
 
-        int numPlayers = PlayersManager.Instance.players.Count;
-        PlayerBars = new GameObject[PlayersManager.Instance.NumberOfSpoilers]; //numSpoilers
+        int numSpoilers = PlayersManager.Instance.NumberOfSpoilers;
+        PlayerBars = new GameObject[numSpoilers]; //numSpoilers
 
         List<PlayersManager.Player> players = PlayersManager.Instance.players;
 
@@ -328,7 +328,7 @@ public class EndScreenManager : NetworkBehaviour
         players.Sort((p2, p1) => PlayersManager.Instance.GetPlayerScore(p1.networkObjId).CompareTo(PlayersManager.Instance.GetPlayerScore(p2.networkObjId)));
 
 
-        for (int i = 0; i < numPlayers; i++)
+        for (int i = 0; i < numSpoilers; i++)
         {
             PlayersManager.Player p = PlayersManager.Instance.players[i];
             if (!GetNetworkObject(p.networkObjId).GetComponent<PlayerController>().networkIsChef.Value)
@@ -355,7 +355,6 @@ public class EndScreenManager : NetworkBehaviour
         hasGameEnded = false;
         endScreen.SetActive(false);
 
-        SceneSwitcher.Instance.RandomizeIsChef();
         SceneSwitcher.Instance.SwitchToInGame();
     }
 }
