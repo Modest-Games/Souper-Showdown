@@ -16,7 +16,6 @@ public class EndScreenManager : NetworkBehaviour
     public float backButtonHoldDuration;
 
     public GameObject BarGraphPanel;
-    public GameObject spoilMeter;
 
     public GameObject endScreen;
     public GameObject chefScore;
@@ -66,12 +65,12 @@ public class EndScreenManager : NetworkBehaviour
     void Start()
     {
         hasGameEnded = false;
-        GameController.GameStopped += OnGameOver;
         endScreen.SetActive(false);
 
         // setup event listeners
         PlayerTokenBehaviour.BackActionStarted += BackActionStarted;
         PlayerTokenBehaviour.BackActionCancelled += BackActionCancelled;
+        GameController.GameStopped += OnGameOver;
     }
 
     new private void OnDestroy()
@@ -79,6 +78,7 @@ public class EndScreenManager : NetworkBehaviour
         // clear event listeners
         PlayerTokenBehaviour.BackActionStarted -= BackActionStarted;
         PlayerTokenBehaviour.BackActionCancelled -= BackActionCancelled;
+        GameController.GameStopped -= OnGameOver;
     }
 
     // Update is called once per frame
@@ -93,7 +93,7 @@ public class EndScreenManager : NetworkBehaviour
 
             if (endScreenTimer >= endScreenDuration)
             {
-                ResetEndScreen();
+                RestartGame();
                 //Restart Game
             }
 
@@ -260,6 +260,7 @@ public class EndScreenManager : NetworkBehaviour
 
         // show the end screen
         hasGameEnded = true;
+        //endScreen = GameObject.Find("End Screen");
         endScreen.SetActive(true);
 
         loadSpoilerLibrary();
@@ -301,14 +302,15 @@ public class EndScreenManager : NetworkBehaviour
         //Start Animating
         StartCoroutine(StaggerAnimation());
 
-        spoilMeter.SetActive(false);
+        SpoilMeter.Instance.gameObject.SetActive(false);
     }
 
-    void ResetEndScreen()
+    void RestartGame()
     {
         endScreenTimer = 0;
         hasGameEnded = false;
-        GameController.GameStopped += OnGameOver;
         endScreen.SetActive(false);
+
+        SceneSwitcher.Instance.SwitchToInGame();
     }
 }

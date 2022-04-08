@@ -26,15 +26,25 @@ public class SceneSwitcher : NetworkBehaviour
         switch (SceneManager.GetActiveScene().name)
         {
             case "Lobby":
-                NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
-                Debug.Log("Switching to InGame scene");
+                SwitchToInGame();
                 break;
 
             case "InGame":
-                NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
-                Debug.Log("Switching to Lobby scene");
+                SwitchToLobby();
                 break;
         }
+    }
+
+    public void SwitchToInGame()
+    {
+        NetworkManager.Singleton.SceneManager.LoadScene("InGame", LoadSceneMode.Single);
+        Debug.Log("Switching to InGame scene");
+    }
+
+    public void SwitchToLobby()
+    {
+        NetworkManager.Singleton.SceneManager.LoadScene("Lobby", LoadSceneMode.Single);
+        Debug.Log("Switching to Lobby scene");
     }
 
     private void OnEnable()

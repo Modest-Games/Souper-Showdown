@@ -51,7 +51,7 @@ MonoBehaviour:
     m_InternalValue: 0
   numStartingPollutants: 20
   autoStart: 1
-  gameDuration: 120
+  gameDuration: 240
   timer: {fileID: 0}
   MusicManager: {fileID: 0}
   tracks:
