@@ -37,8 +37,6 @@ public class UIManager : NetworkBehaviour
 
     [SerializeField] private Image menuBlur;
 
-    [SerializeField] private Button controlsButton;
-
     private bool hasServerStarted;
     private bool isClient;
 
@@ -90,7 +88,6 @@ public class UIManager : NetworkBehaviour
         startClientButton = networkUICanvas.Find("Start Client").GetComponentInChildren<Button>();
         connectedPlayersText = networkUICanvas.Find("Players").GetComponent<TextMeshProUGUI>();
         startGameButton = networkUICanvas.Find("Start Game").GetComponentInChildren<Button>();
-        controlsButton = networkUICanvas.Find("Controls Toggle").GetComponentInChildren<Button>();
         networkAddressInput = networkUICanvas.Find("NetworkAddressInput").GetComponent<TMP_InputField>();
 
         BindUIEvents();
@@ -162,8 +159,6 @@ public class UIManager : NetworkBehaviour
         startHostButton.gameObject.SetActive(!isConnected);
         startClientButton.gameObject.SetActive(!isConnected);
         networkAddressInput.gameObject.SetActive(!isConnected);
-        startGameButton.gameObject.SetActive(isConnected);
-        controlsButton.gameObject.SetActive(isConnected);
         mainMenuUI.gameObject.SetActive(!isConnected);
         characterSelectionUI.gameObject.SetActive(isConnected);
         souperLogo.gameObject.SetActive(!isConnected);

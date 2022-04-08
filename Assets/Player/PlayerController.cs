@@ -300,31 +300,36 @@ public class PlayerController : NetworkBehaviour
         // Arm Animator:
         if ((lastKnownState == PlayerCarryState.CarryingObject || lastKnownState == PlayerCarryState.PlacingTrap) && carryStateVal == PlayerCarryState.Empty)
         {
-            characterBehaviour.AnimateArms("ArmsThrow");
+            if (characterBehaviour != null)
+                characterBehaviour.AnimateArms("ArmsThrow");
 
             lastKnownState = carryStateVal;
         }
 
         else if (lastKnownState == PlayerCarryState.Empty && (carryStateVal == PlayerCarryState.CarryingObject || carryStateVal == PlayerCarryState.PlacingTrap))
         {
-            characterBehaviour.AnimateArms("ArmsPickup");
+            if (characterBehaviour != null)
+                characterBehaviour.AnimateArms("ArmsPickup");
 
             lastKnownState = carryStateVal;
         }
 
         if (playerStateVal == PlayerState.Dashing)
         {
-            characterBehaviour.AnimateArms("ArmsDash");
+            if (characterBehaviour != null)
+                characterBehaviour.AnimateArms("ArmsDash");
         }
 
         else if (playerStateVal == PlayerState.Moving && carryStateVal == PlayerCarryState.Empty && canMove)
         {
-            characterBehaviour.AnimateArms("ArmsWalking");
+            if (characterBehaviour != null)
+                characterBehaviour.AnimateArms("ArmsWalking");
         }
 
         else if (carryStateVal == PlayerCarryState.Empty && canMove)
         {
-            characterBehaviour.AnimateArms("ArmsIdle");
+            if (characterBehaviour != null)
+                characterBehaviour.AnimateArms("ArmsIdle");
         }
         // End of Arm Animator
 
@@ -1193,6 +1198,8 @@ public class PlayerController : NetworkBehaviour
     public void PlayDashEffectClientRpc()
     {
         dashParticles.Play();
+
+        if (SoundManager.Instance == null) return;
         SoundManager.Instance.RandomSoundEffect(0.3f, DashSounds);
     }
 
