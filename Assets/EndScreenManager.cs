@@ -244,7 +244,40 @@ public class EndScreenManager : NetworkBehaviour
         GameObject playerBar = Instantiate(PlayerBarPrefab, GraphPanel);
 
         int spoilerIndex;
-        spoilerDictionary.TryGetValue(spoiler, out spoilerIndex);
+        if (spoiler == "Tomato")
+        {
+            spoilerIndex = 0;
+        }
+
+        else if (spoiler == "Carrot")
+        {
+            spoilerIndex = 1;
+        }
+
+        else if (spoiler == "Mushroom")
+        {
+            spoilerIndex = 2;
+        }
+
+        else if (spoiler == "Eggplant")
+        {
+            spoilerIndex = 3;
+        }
+
+        else if (spoiler == "Corn")
+        {
+            spoilerIndex = 4;
+        }
+
+        else if (spoiler == "Onion")
+        {
+            spoilerIndex = 5;
+        }
+
+        else
+        {
+            spoilerIndex = 6;
+        }
 
         playerBar.transform.GetChild(0).GetComponent<PlayerBar>().setUpBar(score, 1.0f, spoilerMaterials[spoilerIndex], spoilerIcons[spoilerIndex], playerNum, spoilerColors[spoilerIndex]);
 
