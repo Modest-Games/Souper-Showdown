@@ -244,14 +244,9 @@ public class EndScreenManager : NetworkBehaviour
         GameObject playerBar = Instantiate(PlayerBarPrefab, GraphPanel);
 
         int spoilerIndex;
-        bool hasValue = spoilerDictionary.TryGetValue(spoiler, out spoilerIndex);
+        spoilerDictionary.TryGetValue(spoiler, out spoilerIndex);
 
-        if (!hasValue)
-            Debug.Log("spoiler not found!");
-        else
-        {
-            playerBar.transform.GetChild(0).GetComponent<PlayerBar>().setUpBar(score, 1.0f, spoilerMaterials[spoilerIndex], spoilerIcons[spoilerIndex], playerNum, spoilerColors[spoilerIndex]);
-        }
+        playerBar.transform.GetChild(0).GetComponent<PlayerBar>().setUpBar(score, 1.0f, spoilerMaterials[spoilerIndex], spoilerIcons[spoilerIndex], playerNum, spoilerColors[spoilerIndex]);
 
         //playerNum++;
         return playerBar;
