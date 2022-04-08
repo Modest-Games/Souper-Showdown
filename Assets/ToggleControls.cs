@@ -5,9 +5,23 @@ using UnityEngine.UI;
 
 public class ToggleControls : MonoBehaviour
 {
+    public static ToggleControls Instance { get; private set; }
+
     public GameObject image;
 
     private Animator animator;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
 
     void Start()
     {

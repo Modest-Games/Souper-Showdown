@@ -169,10 +169,10 @@ public class GameController : NetworkBehaviour
                 case GameState.Running:
                     // check if the game should be over
                     if (TimeElapsed >= gameDuration)
+                    {
                         gameState.Value = GameState.Stopped;
-                        
-                    
-                            EndScreenManager.Instance.ChefWins();
+                        EndScreenManager.Instance.ChefWins();
+                    }
 
                     break;
             }

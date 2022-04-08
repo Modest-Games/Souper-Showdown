@@ -231,6 +231,15 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ShowControls"",
+                    ""type"": ""Button"",
+                    ""id"": ""210959b1-18e8-4740-9445-9c5e6f2ca4c0"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -453,6 +462,17 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                     ""action"": ""VoteOption3"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c3b933d0-5cbf-45db-8fe4-cc7183060da5"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ShowControls"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -530,6 +550,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         m_Gameplay_VoteOption1 = m_Gameplay.FindAction("VoteOption1", throwIfNotFound: true);
         m_Gameplay_VoteOption2 = m_Gameplay.FindAction("VoteOption2", throwIfNotFound: true);
         m_Gameplay_VoteOption3 = m_Gameplay.FindAction("VoteOption3", throwIfNotFound: true);
+        m_Gameplay_ShowControls = m_Gameplay.FindAction("ShowControls", throwIfNotFound: true);
         // Debug
         m_Debug = asset.FindActionMap("Debug", throwIfNotFound: true);
         m_Debug_ToggleDebug = m_Debug.FindAction("ToggleDebug", throwIfNotFound: true);
@@ -641,6 +662,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
     private readonly InputAction m_Gameplay_VoteOption1;
     private readonly InputAction m_Gameplay_VoteOption2;
     private readonly InputAction m_Gameplay_VoteOption3;
+    private readonly InputAction m_Gameplay_ShowControls;
     public struct GameplayActions
     {
         private @PlayerControlsMapping m_Wrapper;
@@ -661,6 +683,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         public InputAction @VoteOption1 => m_Wrapper.m_Gameplay_VoteOption1;
         public InputAction @VoteOption2 => m_Wrapper.m_Gameplay_VoteOption2;
         public InputAction @VoteOption3 => m_Wrapper.m_Gameplay_VoteOption3;
+        public InputAction @ShowControls => m_Wrapper.m_Gameplay_ShowControls;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -718,6 +741,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @VoteOption3.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption3;
                 @VoteOption3.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption3;
                 @VoteOption3.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnVoteOption3;
+                @ShowControls.started -= m_Wrapper.m_GameplayActionsCallbackInterface.OnShowControls;
+                @ShowControls.performed -= m_Wrapper.m_GameplayActionsCallbackInterface.OnShowControls;
+                @ShowControls.canceled -= m_Wrapper.m_GameplayActionsCallbackInterface.OnShowControls;
             }
             m_Wrapper.m_GameplayActionsCallbackInterface = instance;
             if (instance != null)
@@ -770,6 +796,9 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
                 @VoteOption3.started += instance.OnVoteOption3;
                 @VoteOption3.performed += instance.OnVoteOption3;
                 @VoteOption3.canceled += instance.OnVoteOption3;
+                @ShowControls.started += instance.OnShowControls;
+                @ShowControls.performed += instance.OnShowControls;
+                @ShowControls.canceled += instance.OnShowControls;
             }
         }
     }
@@ -829,6 +858,7 @@ public partial class @PlayerControlsMapping : IInputActionCollection2, IDisposab
         void OnVoteOption1(InputAction.CallbackContext context);
         void OnVoteOption2(InputAction.CallbackContext context);
         void OnVoteOption3(InputAction.CallbackContext context);
+        void OnShowControls(InputAction.CallbackContext context);
     }
     public interface IDebugActions
     {

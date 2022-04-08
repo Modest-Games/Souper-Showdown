@@ -197,6 +197,7 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Throw"].started += ctx => ThrowStarted();
             playerInput.actions["Next Character"].performed += ctx => NextCharacterPerformed();
             playerInput.actions["Previous Character"].performed += ctx => PreviousCharacterPerformed();
+            playerInput.actions["ShowControls"].performed += ctx => OnShowControlsPerformed();
 
             // Map chef control inputs:
             playerInput.actions["Toggle Trap Mode"].performed += ctx => ToggleTrapModePerformed();
@@ -227,6 +228,7 @@ public class PlayerController : NetworkBehaviour
             playerInput.actions["Throw"].started -= ctx => ThrowStarted();
             playerInput.actions["Next Character"].performed -= ctx => NextCharacterPerformed();
             playerInput.actions["Previous Character"].performed -= ctx => PreviousCharacterPerformed();
+            playerInput.actions["ShowControls"].performed -= ctx => OnShowControlsPerformed();
 
             // unbind chef control inputs:
             playerInput.actions["Toggle Trap Mode"].performed -= ctx => ToggleTrapModePerformed();
@@ -241,6 +243,12 @@ public class PlayerController : NetworkBehaviour
 
             controlsBound = false;
         }
+    }
+
+    private void OnShowControlsPerformed()
+    {
+        if (SceneManager.GetActiveScene().name == "Lobby")
+            ToggleControls.Instance.Toggle();
     }
 
     public void TeleportPlayer(Vector3 pos)
