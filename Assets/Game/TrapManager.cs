@@ -34,6 +34,12 @@ public class TrapManager : NetworkBehaviour
         }
     }
 
+    private void Start()
+    {
+        // refresh at start
+        OnNumChefsChanged();
+    }
+
     public TrapBox GetTrap(string trapName, bool doLog = false)
     {
         TrapBox foundTrapBox = traps.Find(x => x.name == trapName);
