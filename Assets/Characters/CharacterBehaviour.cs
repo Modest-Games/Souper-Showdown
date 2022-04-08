@@ -1,43 +1,31 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class CharacterBehaviour : MonoBehaviour
 {
-    public Transform looseArms;
-    public Transform stiffArms;
+    public Animator armsController;
+
     public Transform stillLegs;
     public Transform movingLegs;
+
     public MeshRenderer face;
 
     public Material idleFace;
     public Material dashingFace;
 
-    public void UpdateLegs(PlayerController.PlayerState playerState)
+    public void UpdateLegs(PlayerController.PlayerState playerState, bool canMove)
     {
         if (playerState == PlayerController.PlayerState.Idle)
         {
             stillLegs.gameObject.SetActive(true);
             movingLegs.gameObject.SetActive(false);
         }
+
         else
         {
+            if (!canMove) return;
+
             stillLegs.gameObject.SetActive(false);
             movingLegs.gameObject.SetActive(true);
-        }
-    }
-
-    public void UpdateArms(PlayerController.PlayerCarryState carryState)
-    {
-        if (carryState == PlayerController.PlayerCarryState.Empty)
-        {
-            looseArms.gameObject.SetActive(true);
-            stiffArms.gameObject.SetActive(false);
-        }
-        else
-        {
-            stiffArms.gameObject.SetActive(true);
-            looseArms.gameObject.SetActive(false);
         }
     }
 
@@ -52,5 +40,10 @@ public class CharacterBehaviour : MonoBehaviour
         {
             face.material = idleFace;
         }
+    }
+
+    public void AnimateArms(string animation)
+    {
+        armsController.Play(animation);
     }
 }
