@@ -6,14 +6,16 @@ using Unity.Netcode;
 
 public class SpoilMeter : NetworkBehaviour
 {
+    public static SpoilMeter Instance { get; private set; }
+
     public delegate void SpoilMeterDelegate();
     public static event SpoilMeterDelegate SoupSpoiled;
 
     [SerializeField] private float value;
     public float maxValue;
 
-    private RectTransform maskTransform;
-    private Image fillLine;
+    public RectTransform maskTransform;
+    public Image fillLine;
 
     private float smoothTime;
     private float velocity;
@@ -23,14 +25,27 @@ public class SpoilMeter : NetworkBehaviour
 
     private float currentTarget;
 
+    private void Awake()
+    {
+        // singleton stuff
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
+    }
+
     void Start()
     {
         // 0-100 value of the Spoil Meter:
         value = 0;
 
         // The transform for the Spoil Meter's mask:
-        maskTransform = GetComponent<RectTransform>();
-        fillLine = transform.GetChild(0).gameObject.GetComponent<Image>();
+        //maskTransform = GetComponent<RectTransform>();
+        //fillLine = transform.GetChild(0).gameObject.GetComponent<Image>();
 
         // Variables for smoothing value changes to the Spoil Meter:
         smoothTime = 1.0f;
@@ -47,7 +62,8 @@ public class SpoilMeter : NetworkBehaviour
         value = Mathf.Clamp(value + pollutantValue, 0f, maxValue);
 
         // Change Spoil Meter for all clients:
-        ChangeSpoilMeterClientRpc(pollutantValue);
+        if (IsServer)
+            ChangeSpoilMeterClientRpc(pollutantValue);
 
         // handle the soup being spoiled (avengers end game)
         if (value >= maxValue)

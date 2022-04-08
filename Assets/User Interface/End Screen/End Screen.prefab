@@ -1808,6 +1808,9 @@ GameObject:
   - component: {fileID: 5164782179147790991}
   - component: {fileID: 5164782179147790989}
   - component: {fileID: 5164782179147790988}
+  - component: {fileID: 2496793993461856866}
+  - component: {fileID: 6842040388135885856}
+  - component: {fileID: 9078476117965265214}
   m_Layer: 5
   m_Name: End Screen
   m_TagString: Untagged
@@ -1881,6 +1884,106 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2496793993461856866
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5164782179147790990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5b07fe8377a70e4987f04e5f6833c59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHeight: 523
+  backButtonHoldDuration: 5
+  BarGraphPanel: {fileID: 5164782180061964949}
+  spoilMeter: {fileID: 0}
+  endScreen: {fileID: 5164782179147790990}
+  chefScore: {fileID: 5164782180503632609}
+  highlightBubble: {fileID: 1024360345196319935}
+  lobbyScene:
+    m_Handle: 0
+  playerNum: 0
+  PlayerBarPrefab: {fileID: 5192126967263973209, guid: 6cc62198f0688084a93f73cc41d9abcd, type: 3}
+  PlayerBars: []
+  endScreenDuration: 30
+  endScreenTimer: 0
+  timerUI: {fileID: 5164782178883082735}
+  GraphPanel: {fileID: 5164782180061964954}
+  numPlayers: 7
+  spoilerMaterials:
+  - {fileID: 2100000, guid: 53db7c717c9da9947a82b8328998c149, type: 2}
+  - {fileID: 2100000, guid: 3afaf3360ac4e3649b31cde23b245e2b, type: 2}
+  - {fileID: 2100000, guid: bb9df464d4a202d4183f209d1229b43e, type: 2}
+  - {fileID: 2100000, guid: c6041b424d5a93742b7bbf4bde8d25a0, type: 2}
+  - {fileID: 2100000, guid: cc74a4266ea4ed64f9f73e92ffa65184, type: 2}
+  - {fileID: 2100000, guid: d3becf2613b4ab444bc7e1287f294c43, type: 2}
+  - {fileID: 2100000, guid: 42f9674329870244296e24bbf44dcf43, type: 2}
+  spoilerIcons:
+  - {fileID: 21300000, guid: 18aed4a70aecc1e46ba4c22d35f0fa04, type: 3}
+  - {fileID: 21300000, guid: 42331a0d9fe2f6a458c2e308837f32b7, type: 3}
+  - {fileID: 21300000, guid: 60f6a3476b5e2444f92ef5240e744725, type: 3}
+  - {fileID: 21300000, guid: 39897d6114b27b340a1b461128ca47c9, type: 3}
+  - {fileID: 21300000, guid: 7de6e6ef134152d4aa4568f92b696398, type: 3}
+  - {fileID: 21300000, guid: 4b438471c41e4584ab1d838507685846, type: 3}
+  - {fileID: 21300000, guid: 97ac86f789aa20c40991f3fdcba60304, type: 3}
+  spoilerColors:
+  - {r: 0.83137256, g: 0.25490198, b: 0.24705882, a: 1}
+  - {r: 0.83137256, g: 0.50971216, b: 0.24705882, a: 1}
+  - {r: 0.6603774, g: 0.50789803, b: 0.09033466, a: 1}
+  - {r: 0.6119342, g: 0.24705882, b: 0.83137256, a: 1}
+  - {r: 0.8867924, g: 0.73619366, b: 0.20496619, a: 1}
+  - {r: 0.7169812, g: 0.40370172, b: 0.08454966, a: 1}
+  - {r: 0.39779705, g: 0.6603774, b: 0.12771448, a: 1}
+  spoilers:
+  - Tomato
+  - Carrot
+  - Mushroom
+  - Eggplant
+  - Corn
+  - Onion
+  - Jalapeno
+  playerNumbers:
+  - {fileID: 21300000, guid: bd82f7bb0a8051042af4d2e90733ffc2, type: 3}
+  - {fileID: 21300000, guid: 0804cea9e8f3ad04382b096c15df58cd, type: 3}
+  - {fileID: 21300000, guid: 17a92b41e21866e46be0cce8190b89ea, type: 3}
+  - {fileID: 21300000, guid: faa192d28029bd44f9f0fbd79edff9a9, type: 3}
+  - {fileID: 21300000, guid: 9c4d30e19f2862a40aa88e4c5c8448c4, type: 3}
+  - {fileID: 21300000, guid: c41da1bef988e2f4796960d06d66a9bc, type: 3}
+--- !u!114 &6842040388135885856
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5164782179147790990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b16d69edff11184b99432483a532893, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  votes: 
+  option1: {fileID: 5922444856005958972}
+  option2: {fileID: 5621574682683033850}
+  option3: {fileID: 6840524982998830592}
+--- !u!114 &9078476117965265214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5164782179147790990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d5a57f767e5e46a458fc5d3c628d0cbb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  GlobalObjectIdHash: 951099334
+  AlwaysReplicateAsRoot: 0
+  DontDestroyWithOwner: 0
+  AutoObjectParentSync: 1
 --- !u!1 &5164782179179166370
 GameObject:
   m_ObjectHideFlags: 0
