@@ -1,8 +1,5 @@
 # Souper Showdown
-![DMOyPl](https://user-images.githubusercontent.com/60266939/164296335-85353c0c-2c92-4626-8b8f-92dd95f224de.png)
-![ou1aNx](https://user-images.githubusercontent.com/60266939/164296347-a1baeea4-c466-48d5-a88e-50b5bfbda002.gif)
-![Pmsj1V](https://user-images.githubusercontent.com/60266939/164296368-76d01949-a4db-4711-be12-05aa09eca879.gif)
-![J_F4iv](https://user-images.githubusercontent.com/60266939/164296395-12f69515-220b-4c0a-a7b0-ed4ef9b668b9.gif)
+![logo](https://user-images.githubusercontent.com/20271000/164370595-356c7322-f7e1-42b2-ac92-65993e272f3b.png)
 
 # About the Game
 Souper Showdown is a top-down party game about spoiling soup. Play as a chef or spoiler with as many friends as you have, or find new friends on our community Discord server (coming soon).
@@ -23,3 +20,9 @@ The game ends when the spoil meter is filled, ruining the soup, or when the time
 
 # How to Play
 ![E6C60t](https://user-images.githubusercontent.com/60266939/164296199-1548e905-d564-4d9e-b464-6e5c7b2d6558.png)
+
+# Teasers
+![DMOyPl](https://user-images.githubusercontent.com/60266939/164296335-85353c0c-2c92-4626-8b8f-92dd95f224de.png)
+![ou1aNx](https://user-images.githubusercontent.com/60266939/164296347-a1baeea4-c466-48d5-a88e-50b5bfbda002.gif)
+![Pmsj1V](https://user-images.githubusercontent.com/60266939/164296368-76d01949-a4db-4711-be12-05aa09eca879.gif)
+![J_F4iv](https://user-images.githubusercontent.com/60266939/164296395-12f69515-220b-4c0a-a7b0-ed4ef9b668b9.gif)
