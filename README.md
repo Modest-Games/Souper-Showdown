@@ -18,6 +18,7 @@ The game ends when the spoil meter is filled, ruining the soup, or when the time
 ![oUTsZv](https://user-images.githubusercontent.com/60266939/164297044-1e940deb-d50d-4b61-84d2-7e1298716577.gif)
 ![z7wBVY](https://user-images.githubusercontent.com/60266939/164297054-150773f3-5eb5-4696-8502-c462be7705b4.gif)
 ![cnGGEJ](https://user-images.githubusercontent.com/60266939/164297060-c5c8789a-9b2c-4ba0-b8f1-88a85eea47d5.gif)
+![Jalapeno_lowres](https://user-images.githubusercontent.com/20271000/164372525-9ee7bd99-b303-41b0-af7e-6a8a527378f0.gif)
 
 # How to Play
 ![E6C60t](https://user-images.githubusercontent.com/60266939/164296199-1548e905-d564-4d9e-b464-6e5c7b2d6558.png)
