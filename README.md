@@ -2,6 +2,7 @@
 ![logo](https://user-images.githubusercontent.com/20271000/164370595-356c7322-f7e1-42b2-ac92-65993e272f3b.png)
 
 # About the Game
+#### Play the game on Itch.io: https://markmcgregor.itch.io/souper-showdown
 Souper Showdown is a top-down party game about spoiling soup. Play as a chef or spoiler with as many friends as you have, or find new friends on our community Discord server (coming soon).
 
 As a chef, you'll protect your soup pot from spoilers, place traps like toothpick shooters, and throw spoilers in the soup to replenish its savour.
